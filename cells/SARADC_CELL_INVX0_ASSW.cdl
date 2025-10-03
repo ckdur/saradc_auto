@@ -1,0 +1,7 @@
+** Cell name: SARADC_CELL_INVX0_ASSW
+** Lib name: sg13g2f
+.SUBCKT SARADC_CELL_INVX0_ASSW i vdd vss zn vnw vpw
+*.PININFO i:B zn:B vdd:B vss:B 
+MU1_M_u2 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=3.600e-07
+MU1_M_u3 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS

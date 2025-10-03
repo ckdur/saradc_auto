@@ -1,0 +1,4 @@
+** Cell name: SARADC_FILL1
+.SUBCKT SARADC_FILL1 vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS

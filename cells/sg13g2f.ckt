@@ -1,0 +1,1373 @@
+** Created by: circuit_gen.AN2D0
+** Cell name: AN2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AN2D0 a1 a2 vdd vss z
+*.PININFO a1:B a2:B vdd:B vss:B z:B 
+XM_u2_M_u3 net6 a1 x_u2_net6 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u3_M_u2 z net6 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u2_M_u4 x_u2_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u3_M_u3 z net6 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u2_M_u2 net6 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u2_M_u1 net6 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.AN2D1
+** Cell name: AN2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AN2D1 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XM_u2_M_u3 net6 a1 x_u2_net6 vss sg13_lv_nmos l=1.300e-07 w=6.550e-07
+XM_u3_M_u2 z net6 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_M_u4 x_u2_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=6.550e-07
+XM_u3_M_u3 z net6 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_M_u2 net6 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_M_u1 net6 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.AN2D2
+** Cell name: AN2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AN2D2 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XM_u2_M_u3 net10 a1 x_u2_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_M_u2_0 z net10 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_M_u2_1 z net10 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_M_u4 x_u2_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_M_u3_0 z net10 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_M_u3_1 z net10 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_M_u2 net10 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_M_u1 net10 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.AN2D4
+** Cell name: AN2D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AN2D4 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XM_u2_0_M_u3 p0 a1 x_u2_0_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_0_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_1_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_2_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_3_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_0_M_u4 x_u2_0_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_1_M_u4 x_u2_1_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_1_M_u3 p0 a1 x_u2_1_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_0_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_1_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_2_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_3_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_0_M_u2 p0 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_0_M_u1 p0 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_1_M_u2 p0 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_1_M_u1 p0 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.AO21D0
+** Cell name: AO21D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AO21D0 a1 a2 b vdd vss z
+*.PININFO a1:I a2:I b:I z:O vdd:B vss:B 
+XMI7 net32 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7 net59 a1 net32 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI6 net59 b vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI8_M_u2 z net59 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u3 net22 a1 net59 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI8_M_u3 z net59 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u4 net22 a2 net59 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u2 net22 b vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.AO21D1
+** Cell name: AO21D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AO21D1 a1 a2 b vdd vss z
+*.PININFO a1:I a2:I b:I z:O vdd:B vss:B 
+XMI7 net32 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u7 net59 a1 net32 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI6 net59 b vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8_M_u2 z net59 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3 net22 a1 net59 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI8_M_u3 z net59 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u4 net22 a2 net59 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2 net22 b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.AO21D2
+** Cell name: AO21D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AO21D2 a1 a2 b vdd vss z
+*.PININFO a1:I a2:I b:I z:O vdd:B vss:B 
+XMI7 net32 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u7 net59 a1 net32 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI6 net59 b vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8_0_M_u2 z net59 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8_1_M_u2 z net59 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3 net22 a1 net59 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI8_0_M_u3 z net59 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI8_1_M_u3 z net59 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u4 net22 a2 net59 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2 net22 b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.AOI21D0
+** Cell name: AOI21D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AOI21D0 a1 a2 b vdd vss zn
+*.PININFO a1:I a2:I b:I zn:O vdd:B vss:B 
+XMI2 zn a1 net27 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI7 net27 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI6 zn b vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI5 zn a2 net13 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u2 net13 b vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI4 zn a1 net13 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.AOI21D1
+** Cell name: AOI21D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_AOI21D1 a1 a2 b vdd vss zn
+*.PININFO a1:I a2:I b:I zn:O vdd:B vss:B 
+XMI2 zn a1 net27 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI3 net27 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u7 zn b vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u4 net13 a2 zn vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2 net13 b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3 net13 a1 zn vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.ANTENNA
+** Cell name: ANTENNA
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ANTENNA i vdd vss
+*.PININFO i:I vdd:B vss:B
+Ddn_1 vss i dantenna m=1 w=1.485u l=970n a=1440.45f
+DD0 i vdd dpantenna m=1 w=1.485u l=970n a=1440.45f
+.ENDS
+
+** Created by: circuit_gen.BUFFD0
+** Cell name: BUFFD0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD0 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XM_u3_M_u2 z net6 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XM_u2_M_u2 net6 i vss vss sg13_lv_nmos l=1.300e-07 w=2.450e-07
+XM_u3_M_u3 z net6 vdd vdd sg13_lv_pmos l=1.300e-07 w=5.850e-07
+XM_u2_M_u3 net6 i vdd vdd sg13_lv_pmos l=1.300e-07 w=3.600e-07
+.ENDS
+
+** Created by: circuit_gen.BUFFD1
+** Cell name: BUFFD1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD1 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XM_u3_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_M_u2 net8 i vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u3_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_M_u3 net8 i vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.BUFFD2
+** Cell name: BUFFD2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD2 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XM_u2_M_u2 net8 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_0_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_1_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_M_u3 net8 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_0_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_1_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.BUFFD4
+** Cell name: BUFFD4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD4 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XM_u3_0_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_1_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_2_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_3_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_0_M_u2 p0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2_1_M_u2 p0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3_0_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_1_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_2_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u3_3_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_0_M_u3 p0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2_1_M_u3 p0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.BUFFD6
+** Cell name: BUFFD6
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD6 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XM_u2_M_u2_0 net8 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=1
+XM_u2_M_u2_1 net8 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=0
+XM_u3_0_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=1
+XM_u3_1_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=0
+XM_u3_2_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=1
+XM_u3_3_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=0
+XM_u3_4_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=1
+XM_u3_5_M_u2 z net8 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=0
+XM_u2_M_u3_0 net8 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=1
+XM_u2_M_u3_1 net8 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=0
+XM_u3_0_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=1
+XM_u3_1_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=0
+XM_u3_2_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=1
+XM_u3_3_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=0
+XM_u3_4_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=1
+XM_u3_5_M_u3 z net8 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=0
+.ENDS
+
+** Created by: circuit_gen.BUFFD8
+** Cell name: BUFFD8
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD8 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI1_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMI2_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=4.850e-07 $pos=1 $flip=1
+XM_u2_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XM_u7_0_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XM_u7_1_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XM_u7_2_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XM_u7_3_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XM_u7_4_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XM_u7_5_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=8 $flip=0
+XM_u7_6_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XM_u7_7_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XMI1_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMI2_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=8.050e-07 $pos=1 $flip=1
+XM_u2_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XM_u7_0_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XM_u7_1_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XM_u7_2_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XM_u7_3_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XM_u7_4_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XM_u7_5_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=0
+XM_u7_6_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XM_u7_7_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+.ENDS
+
+** Created by: circuit_gen.BUFFD12
+** Cell name: BUFFD12
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD12 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XM_u2_0_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=4.300e-07 $pos=0 $flip=0
+XM_u2_1_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=4.300e-07 $pos=1 $flip=1
+XM_u2_2_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=4.300e-07 $pos=2 $flip=0
+XM_u2_3_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=4.300e-07 $pos=3 $flip=1
+XM_u2_4_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=4.300e-07 $pos=4 $flip=0
+XMU8_0_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMU8_1_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XMU8_2_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XMU8_3_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=8 $flip=0
+XMU8_4_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XMU8_5_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XMU8_6_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=11 $flip=1
+XMU8_7_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=12 $flip=0
+XMU8_8_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=13 $flip=1
+XMU8_9_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=14 $flip=0
+XMU8_10_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=15 $flip=1
+XMU8_11_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=16 $flip=0
+XM_u2_0_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XM_u2_1_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XM_u2_2_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XM_u2_3_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XM_u2_4_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMU8_0_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMU8_1_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMU8_2_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XMU8_3_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=0
+XMU8_4_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XMU8_5_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+XMU8_6_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=1
+XMU8_7_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=12 $flip=0
+XMU8_8_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=13 $flip=1
+XMU8_9_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=14 $flip=0
+XMU8_10_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=15 $flip=1
+XMU8_11_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=16 $flip=0
+.ENDS
+
+** Created by: circuit_gen.BUFFD16
+** Cell name: BUFFD16
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_BUFFD16 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI6_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07 $pos=0 $flip=1
+XM_u2_0_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=0
+XM_u2_1_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=1
+XM_u2_2_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=0
+XM_u2_3_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=1
+XM_u2_4_M_u2 n0 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=0
+XMU8_0_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=1
+XMU8_1_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=0
+XMU8_2_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=8 $flip=1
+XMU8_3_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=0
+XMU8_4_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=1
+XMU8_5_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=11 $flip=0
+XMU8_6_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=12 $flip=1
+XMU8_7_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=13 $flip=0
+XMU8_8_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=14 $flip=1
+XMU8_9_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=15 $flip=0
+XMU8_10_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=16 $flip=1
+XMU8_11_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=17 $flip=0
+XMU8_12_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=18 $flip=1
+XMU8_13_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=19 $flip=0
+XMU8_14_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=20 $flip=1
+XMU8_15_M_u2 z n0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=21 $flip=0
+XMI6_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=3.950e-07 $pos=0 $flip=1
+XM_u2_0_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=0
+XM_u2_1_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=1
+XM_u2_2_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=0
+XM_u2_3_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=1
+XM_u2_4_M_u3 n0 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=0
+XMU8_0_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=1
+XMU8_1_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=0
+XMU8_2_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=1
+XMU8_3_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=0
+XMU8_4_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=1
+XMU8_5_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=0
+XMU8_6_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=12 $flip=1
+XMU8_7_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=13 $flip=0
+XMU8_8_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=14 $flip=1
+XMU8_9_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=15 $flip=0
+XMU8_10_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=16 $flip=1
+XMU8_11_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=17 $flip=0
+XMU8_12_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=18 $flip=1
+XMU8_13_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=19 $flip=0
+XMU8_14_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=20 $flip=1
+XMU8_15_M_u3 z n0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=21 $flip=0
+.ENDS
+
+** Created by: circuit_gen.DEL0
+** Cell name: DEL0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DEL0 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI2_M_u2 z net3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU7_M_u2 net3 net5 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU5_M_u2 net5 net9 vss vss sg13_lv_nmos l=1.300e-07 w=4.800e-07
+XMI1_M_u2 net9 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI2_M_u3 z net3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU7_M_u3 net3 net5 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.040e-06
+XMU5_M_u3 net5 net9 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u3 net9 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.DEL2
+** Cell name: DEL2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DEL2 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI2_M_u2 z net3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU7_M_u2 net3 net5 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU5_M_u2 net5 net9 vss vss sg13_lv_nmos l=1.300e-07 w=4.800e-07
+XMI1_M_u2 net9 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI2_M_u3 z net3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU7_M_u3 net3 net5 vdd vdd sg13_lv_pmos l=1.300e-07 w=9.000e-07
+XMU5_M_u3 net5 net9 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u3 net9 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.DEL02
+** Cell name: DEL02
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DEL02 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI17 net3 net21 net27 vss sg13_lv_nmos l=1.300e-07 w=3.350e-07
+XMI18 net27 net21 vss vss sg13_lv_nmos l=1.300e-07 w=3.350e-07
+XMI5 net21 net9 net24 vss sg13_lv_nmos l=1.300e-07 w=3.350e-07
+XMI16 net24 net9 vss vss sg13_lv_nmos l=1.300e-07 w=3.350e-07
+XMI2_M_u2 z net3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u2 net9 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI15 net27 net21 net3 vdd sg13_lv_pmos l=1.300e-07 w=5.650e-07
+XMI13 net24 net9 net21 vdd sg13_lv_pmos l=1.300e-07 w=5.650e-07
+XMI3 vdd net9 net24 vdd sg13_lv_pmos l=1.300e-07 w=5.650e-07
+XMI14 vdd net21 net27 vdd sg13_lv_pmos l=1.300e-07 w=5.650e-07
+XMI2_M_u3 z net3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u3 net9 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.DEL4
+** Cell name: DEL4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DEL4 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI2_M_u2 z net13 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU7_M_u2 net13 net11 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU5_M_u2 net11 net9 vss vss sg13_lv_nmos l=1.300e-07 w=4.800e-07
+XMI1_M_u2 net9 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI2_M_u3 z net13 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU7_M_u3 net13 net11 vdd vdd sg13_lv_pmos l=1.300e-07 w=8.500e-07
+XMU5_M_u3 net11 net9 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u3 net9 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.DEL005
+** Cell name: DEL005
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DEL005 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI12 net3 i net22 vss sg13_lv_nmos l=1.300e-07 w=4.250e-07
+XMI13 net22 i vss vss sg13_lv_nmos l=1.300e-07 w=4.250e-07
+XMI2_M_u2 z net3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI10 net3 i net21 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI3 net21 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI2_M_u3 z net3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.DEL015
+** Cell name: DEL015
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DEL015 i vdd vss z
+*.PININFO i:I z:O vdd:B vss:B 
+XMI11 net27 net21 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI10 net3 net21 net27 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI5 net21 net9 net24 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI111 net24 net9 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI2_M_u2 z net3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u2 net9 i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8 net27 net21 net3 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI9 vdd net21 net27 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI4 net24 net9 net21 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI3 vdd net9 net24 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI2_M_u3 z net3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u3 net9 i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.DFCNQD1
+** Cell name: DFCNQD1
+** Lib name: sg13g2
+.SUBCKT sg13g2f_DFCNQD1 cdn cp d q vdd vss
+*.PININFO cdn:I cp:I d:I q:O vdd:B vss:B 
+XMcpbn incpb cp vss vss sg13_lv_nmos l=1.300e-07 w=3.500e-07 $pos=0 $flip=0
+XMcpbp incpb cp vdd vdd sg13_lv_pmos l=1.300e-07 w=5.500e-07 $pos=0 $flip=0
+XMcpn incp incpb vss vss sg13_lv_nmos l=1.300e-07 w=3.500e-07 $pos=1 $flip=1
+XMcpp incp incpb vdd vdd sg13_lv_pmos l=1.300e-07 w=5.500e-07 $pos=1 $flip=1
+XMI4 net52 incpb vss vss sg13_lv_nmos l=1.300e-07 w=3.500e-07 $pos=3 $flip=1
+XMI7 net85 incp vdd vdd sg13_lv_pmos l=1.300e-07 w=8.100e-07 $pos=3 $flip=1
+XMdd0n d0 d net52 vss sg13_lv_nmos l=1.300e-07 w=3.500e-07 $pos=4 $flip=1
+XMdd0p d0 d net85 vdd sg13_lv_pmos l=1.300e-07 w=8.100e-07 $pos=4 $flip=1
+XMI47 d0 incp net59 vss sg13_lv_nmos l=1.300e-07 w=2.450e-07 $pos=5 $flip=0
+XMI45 d0 incpb net98 vdd sg13_lv_pmos l=1.300e-07 w=3.300e-07 $pos=5 $flip=0
+XMI48 net59 d1 net62 vss sg13_lv_nmos l=1.300e-07 w=2.450e-07 $pos=6 $flip=0
+XMI43 net98 d1 vdd vdd sg13_lv_pmos l=1.300e-07 w=3.050e-07 $pos=6 $flip=0
+XMcdn0n net62 cdn vss vss sg13_lv_nmos l=1.300e-07 w=2.450e-07 $pos=7 $flip=0
+XMd0d1n d1 d0 vss vss sg13_lv_nmos l=1.300e-07 w=4.300e-07 $pos=8 $flip=1
+XMcdn0p net98 cdn vdd vdd sg13_lv_pmos l=1.300e-07 w=2.750e-07 $pos=8 $flip=0
+XMswd1d2n d1 incp d2 vss sg13_lv_nmos l=1.300e-07 w=4.900e-07 $pos=9 $flip=0
+XMdod1p d1 d0 vdd vdd sg13_lv_pmos l=1.300e-07 w=7.150e-07 $pos=9 $flip=1
+XMI23 d2 incpb net57 vss sg13_lv_nmos l=1.300e-07 w=2.450e-07 $pos=10 $flip=0
+XMswd1d2p d1 incpb d2 vdd sg13_lv_pmos l=1.300e-07 w=1.030e-06 $pos=10 $flip=0
+XMI26 d2 incp net88 vdd sg13_lv_pmos l=1.300e-07 w=2.750e-07 $pos=11 $flip=0
+XMI24 net57 d3 vss vss sg13_lv_nmos l=1.300e-07 w=2.450e-07 $pos=12 $flip=0
+XMI28 net88 d3 vdd vdd sg13_lv_pmos l=1.300e-07 w=2.750e-07 $pos=12 $flip=0
+XMcdn1n net37 cdn vss vss sg13_lv_nmos l=1.300e-07 w=7.000e-07 $pos=13 $flip=1
+XMcdn1p d3 cdn vdd vdd sg13_lv_pmos l=1.300e-07 w=9.900e-07 $pos=13 $flip=1
+XMd2d3n d3 d2 net37 vss sg13_lv_nmos l=1.300e-07 w=7.000e-07 $pos=14 $flip=1
+XMd2d3p d3 d2 vdd vdd sg13_lv_pmos l=1.300e-07 w=9.900e-07 $pos=14 $flip=0
+XMobp q d3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.100e-06 $pos=15 $flip=1
+XMobn q d3 vss vss sg13_lv_nmos l=1.300e-07 w=7.000e-07 $pos=16 $flip=1
+.ENDS
+
+** Created by: circuit_gen.DFQD1
+** Cell name: DFQD1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_DFQD1 cp d q vdd vss
+*.PININFO cp:I d:I q:O vdd:B vss:B 
+XMI4 net43 incpb vss vss sg13_lv_nmos l=1.300e-07 w=4.200e-07
+XMI23 d2 incpb net42 vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI5 d0 d net43 vss sg13_lv_nmos l=1.300e-07 w=4.200e-07
+XMI47 d0 incp net50 vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI48 net50 d1 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI24 net42 d3 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI50 d1 incp d2 vss sg13_lv_nmos l=1.300e-07 w=3.850e-07
+XMI32_M_u2 incp incpb vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI31_M_u2 incpb cp vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI27_M_u2 q d3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI53_M_u2 d3 d2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI13_M_u2 d1 d0 vss vss sg13_lv_nmos l=1.300e-07 w=4.700e-07
+XMI6 d0 d net66 vdd sg13_lv_pmos l=1.300e-07 w=7.500e-07
+XMI32_M_u3 incp incpb vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI31_M_u3 incpb cp vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI27_M_u3 q d3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI53_M_u3 d3 d2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI13_M_u3 d1 d0 vdd vdd sg13_lv_pmos l=1.300e-07 w=7.500e-07
+XMI7 net66 incp vdd vdd sg13_lv_pmos l=1.300e-07 w=8.850e-07
+XMI52 d1 incpb d2 vdd sg13_lv_pmos l=1.300e-07 w=1.065e-06
+XMI28 net74 d3 vdd vdd sg13_lv_pmos l=1.300e-07 w=3.000e-07
+XMI26 d2 incp net74 vdd sg13_lv_pmos l=1.300e-07 w=3.000e-07
+XMI45 d0 incpb net84 vdd sg13_lv_pmos l=1.300e-07 w=3.000e-07
+XMI43 net84 d1 vdd vdd sg13_lv_pmos l=1.300e-07 w=3.000e-07
+.ENDS
+
+** Created by: circuit_gen.FILL1
+** Cell name: FILL1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_FILL1 vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS
+
+** Created by: circuit_gen.FILL2
+** Cell name: FILL2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_FILL2 vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS
+
+** Created by: circuit_gen.FILL4
+** Cell name: FILL4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_FILL4 vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS
+
+** Created by: circuit_gen.FILL8
+** Cell name: FILL8
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_FILL8 vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS
+
+** Created by: circuit_gen.INVD0
+** Cell name: INVD0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD0 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2 zn i vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU1_M_u3 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.INVD1
+** Cell name: INVD1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD1 i z vss vdd
+*.PININFO i:I z:O vss:B vdd:B
+XM0 z i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM1 z i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.INVD2
+** Cell name: INVD2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD2 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_M_u2_1 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_M_u3_0 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_M_u3_1 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.INVD4
+** Cell name: INVD4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD4 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_M_u2_1 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_M_u2_2 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_M_u2_3 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_M_u3_0 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_M_u3_1 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_M_u3_2 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_M_u3_3 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.INVD6
+** Cell name: INVD6
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD6 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMU1_M_u2_1 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XMU1_M_u2_2 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XMU1_M_u2_3 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XMU1_M_u2_4 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMU1_M_u2_5 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMU1_M_u3_0 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMU1_M_u3_1 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMU1_M_u3_2 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMU1_M_u3_3 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMU1_M_u3_4 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XMU1_M_u3_5 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+.ENDS
+
+** Created by: circuit_gen.INVD8
+** Cell name: INVD8
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD8 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMU1_M_u2_1 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XMU1_M_u2_2 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XMU1_M_u2_3 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XMU1_M_u2_4 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMU1_M_u2_5 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMU1_M_u2_6 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XMU1_M_u2_7 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XMU1_M_u3_0 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMU1_M_u3_1 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMU1_M_u3_2 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMU1_M_u3_3 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMU1_M_u3_4 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XMU1_M_u3_5 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMU1_M_u3_6 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMU1_M_u3_7 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+.ENDS
+
+** Created by: circuit_gen.INVD12
+** Cell name: INVD12
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD12 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMU1_M_u2_1 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XMU1_M_u2_2 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XMU1_M_u2_3 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XMU1_M_u2_4 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMU1_M_u2_5 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMU1_M_u2_6 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XMU1_M_u2_7 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XMU1_M_u2_8 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=8 $flip=0
+XMU1_M_u2_9 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XMU1_M_u2_10 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XMU1_M_u2_11 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=11 $flip=1
+XMU1_M_u3_0 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMU1_M_u3_1 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMU1_M_u3_2 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMU1_M_u3_3 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMU1_M_u3_4 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XMU1_M_u3_5 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMU1_M_u3_6 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMU1_M_u3_7 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XMU1_M_u3_8 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=0
+XMU1_M_u3_9 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XMU1_M_u3_10 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+XMU1_M_u3_11 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=1
+.ENDS
+
+** Created by: circuit_gen.INVD16
+** Cell name: INVD16
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_INVD16 i vdd vss zn
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMU1_M_u2_1 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XMU1_M_u2_2 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XMU1_M_u2_3 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XMU1_M_u2_4 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMU1_M_u2_5 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMU1_M_u2_6 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XMU1_M_u2_7 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XMU1_M_u2_8 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=8 $flip=0
+XMU1_M_u2_9 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XMU1_M_u2_10 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XMU1_M_u2_11 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=11 $flip=1
+XMU1_M_u2_12 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=12 $flip=0
+XMU1_M_u2_13 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=13 $flip=1
+XMU1_M_u2_14 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=14 $flip=0
+XMU1_M_u2_15 zn i vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=15 $flip=1
+XMU1_M_u3_0 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMU1_M_u3_1 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMU1_M_u3_2 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMU1_M_u3_3 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMU1_M_u3_4 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XMU1_M_u3_5 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMU1_M_u3_6 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMU1_M_u3_7 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XMU1_M_u3_8 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=0
+XMU1_M_u3_9 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XMU1_M_u3_10 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+XMU1_M_u3_11 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=1
+XMU1_M_u3_12 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=12 $flip=0
+XMU1_M_u3_13 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=13 $flip=1
+XMU1_M_u3_14 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=14 $flip=0
+XMU1_M_u3_15 zn i vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=15 $flip=1
+.ENDS
+
+** Created by: circuit_gen.MUX2D0
+** Cell name: MUX2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_MUX2D0 i0 i1 s vdd vss z
+*.PININFO i0:I i1:I s:I z:O vdd:B vss:B 
+XMI15_M_u3 net46 s net28 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU7_M_u3 net48 net42 net28 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI16_M_u2 net48 i0 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI17_M_u2 net46 i1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI18_M_u2 net42 s vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU29_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI15_M_u2 net46 net42 net28 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU7_M_u2 net48 s net28 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI16_M_u3 net48 i0 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI17_M_u3 net46 i1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI18_M_u3 net42 s vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU29_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.MUX2D1
+** Cell name: MUX2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_MUX2D1 i0 i1 s vdd vss z
+*.PININFO i0:I i1:I s:I z:O vdd:B vss:B 
+XMI15_M_u3 net46 s net28 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU7_M_u3 net48 net42 net28 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI20_M_u2 net46 i1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI19_M_u2 net48 i0 vss vss sg13_lv_nmos l=1.300e-07 w=5.200e-07
+XMI18_M_u2 net42 s vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU29_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI15_M_u2 net46 net42 net28 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU7_M_u2 net48 s net28 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI20_M_u3 net46 i1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI19_M_u3 net48 i0 vdd vdd sg13_lv_pmos l=1.300e-07 w=9.900e-07
+XMI18_M_u3 net42 s vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU29_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=8.400e-07
+.ENDS
+
+** Created by: circuit_gen.MUX2D2
+** Cell name: MUX2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_MUX2D2 i0 i1 s vdd vss z
+*.PININFO i0:I i1:I s:I z:O vdd:B vss:B 
+XMI15_M_u3 net46 s net28 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU7_M_u3 net48 net42 net28 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI20_M_u2 net46 i1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI19_M_u2 net48 i0 vss vss sg13_lv_nmos l=1.300e-07 w=5.200e-07
+XMI18_M_u2 net42 s vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU29_0_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU29_1_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI15_M_u2 net46 net42 net28 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU7_M_u2 net48 s net28 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI20_M_u3 net46 i1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI19_M_u3 net48 i0 vdd vdd sg13_lv_pmos l=1.300e-07 w=9.900e-07
+XMI18_M_u3 net42 s vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU29_0_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU29_1_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.MUX2D4
+** Cell name: MUX2D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_MUX2D4 i0 i1 s vdd vss z
+*.PININFO i0:I i1:I s:I z:O vdd:B vss:B 
+XMI21_M_u3 net24 s net28 vss sg13_lv_nmos l=1.300e-07 w=6.200e-07
+XMU7_M_u3 net16 net42 net28 vss sg13_lv_nmos l=1.300e-07 w=5.350e-07
+XMI20_0_M_u2 net24 i1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI20_1_M_u2 net24 i1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI19_0_M_u2 net16 i0 vss vss sg13_lv_nmos l=1.300e-07 w=5.200e-07
+XMI19_1_M_u2 net16 i0 vss vss sg13_lv_nmos l=1.300e-07 w=5.200e-07
+XMI18_M_u2 net42 s vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMU29_0_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU29_1_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU29_2_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU29_3_M_u2 z net28 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI21_M_u2 net24 net42 net28 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU7_M_u2 net16 s net28 vdd sg13_lv_pmos l=1.300e-07 w=1.095e-06
+XMI20_0_M_u3 net24 i1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI20_1_M_u3 net24 i1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI19_0_M_u3 net16 i0 vdd vdd sg13_lv_pmos l=1.300e-07 w=9.750e-07
+XMI19_1_M_u3 net16 i0 vdd vdd sg13_lv_pmos l=1.300e-07 w=9.750e-07
+XMI18_M_u3 net42 s vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU29_0_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU29_1_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU29_2_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU29_3_M_u3 z net28 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.ND2D0
+** Cell name: ND2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND2D0 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI0_M_u3 zn a1 xi0_net6 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI0_M_u4 xi0_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI0_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI0_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.ND2D1
+** Cell name: ND2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND2D1 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI1_M_u3 zn a1 xi1_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u4 xi1_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.ND2D2
+** Cell name: ND2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND2D2 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMU3_0_M_u3 zn a1 xu3_0_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU3_0_M_u4 xu3_0_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU3_1_M_u4 xu3_1_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU3_1_M_u3 zn a1 xu3_1_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU3_0_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU3_0_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU3_1_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU3_1_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.ND2D4
+** Cell name: ND2D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND2D4 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI1_0_M_u3 zn a1 xi1_0_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_0_M_u4 xi1_0_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_1_M_u4 xi1_1_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_1_M_u3 zn a1 xi1_1_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_2_M_u4 xi1_2_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_2_M_u3 zn a1 xi1_2_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_3_M_u4 xi1_3_net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_3_M_u3 zn a1 xi1_3_net6 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_0_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_0_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_1_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_1_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_2_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_2_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_3_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_3_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.ND3D0
+** Cell name: ND3D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND3D0 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XMI2_M_u4 zn a1 xi2_net10 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2_M_u5 xi2_net10 a2 xi2_net13 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2_M_u6 xi2_net13 a3 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2_M_u3 zn a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI2_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI2_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.ND3D1
+** Cell name: ND3D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND3D1 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XMI1_M_u4 zn a1 xi1_net10 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u5 xi1_net10 a2 xi1_net13 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u6 xi1_net13 a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u3 zn a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.ND3D2
+** Cell name: ND3D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_ND3D2 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XMI0_0_M_u4 zn a1 xi0_0_net10 vss sg13_lv_nmos l=1.300e-07 w=6.700e-07
+XMI0_0_M_u5 xi0_0_net10 a2 xi0_0_net13 vss sg13_lv_nmos l=1.300e-07 w=6.700e-07
+XMI0_0_M_u6 xi0_0_net13 a3 vss vss sg13_lv_nmos l=1.300e-07 w=6.700e-07
+XMI0_1_M_u4 zn a1 xi0_1_net10 vss sg13_lv_nmos l=1.300e-07 w=6.700e-07
+XMI0_1_M_u5 xi0_1_net10 a2 xi0_1_net13 vss sg13_lv_nmos l=1.300e-07 w=6.700e-07
+XMI0_1_M_u6 xi0_1_net13 a3 vss vss sg13_lv_nmos l=1.300e-07 w=6.700e-07
+XMI0_0_M_u3 zn a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI0_0_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI0_0_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI0_1_M_u3 zn a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI0_1_M_u1 zn a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI0_1_M_u2 zn a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.NR2D0
+** Cell name: NR2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR2D0 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI1_M_u4 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI1_M_u3 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI1_M_u2 zn a1 xi1_net8 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI1_M_u1 xi1_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.NR2D1
+** Cell name: NR2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR2D1 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI1_M_u4 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u3 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1_M_u2 zn a1 xi1_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1_M_u1 xi1_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.NR2D2
+** Cell name: NR2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR2D2 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI1_0_M_u3 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=1
+XMI1_0_M_u4 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=0
+XMI1_1_M_u4 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=1
+XMI1_1_M_u3 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=0
+XMI1_0_M_u1 xi1_0_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=1
+XMI1_0_M_u2 zn a1 xi1_0_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMI1_1_M_u2 zn a1 xi1_1_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMI1_1_M_u1 xi1_1_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=0
+.ENDS
+
+** Created by: circuit_gen.NR2D4
+** Cell name: NR2D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR2D4 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI6_0 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=1
+XMI15_0 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=0
+XMI15_1 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=1
+XMI6_2 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=0
+XMI6_3 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=1
+XMI15_2 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=0
+XMI15_3 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=1
+XMI6_1 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=0
+XMI27_0 net26_0_ a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=1
+XMI28_0 zn a1 net26_0_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMI28_1 zn a1 net26_1_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMI27_1 net26_1_ a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=0
+XMI27_2 net26_2_ a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=1
+XMI28_2 zn a1 net26_2_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMI28_3 zn a1 net26_3_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMI27_3 net26_3_ a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=0
+.ENDS
+
+** Created by: circuit_gen.NR3D0
+** Cell name: NR3D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR3D0 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XM_u4 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI3 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI0 net28 a2 net25 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u1 net25 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI1 zn a1 net28 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.NR3D1
+** Cell name: NR3D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR3D1 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XM_u4 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=1
+XMI2 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=0
+XMI3 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=1
+XM_u1_0 net34_0_ a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=1
+XMI4_0 net37_0_ a2 net34_0_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMI5_0 zn a1 net37_0_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=1
+XMI5_1 zn a1 net37_1_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=0
+XMI4_1 net37_1_ a2 net34_1_ vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XM_u1_1 net34_1_ a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=0
+.ENDS
+
+** Created by: circuit_gen.NR3D2
+** Cell name: NR3D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR3D2 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XM_u4_0 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=1
+XM_u4_1 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=0
+XMI6_0 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=1
+XMI6_1 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=0
+XMI7_0 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XMI7_1 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XM_u1_0 net34 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XM_u1_1 net34 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XM_u1_2 net34 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XM_u1_3 net34 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMI22_0 net31 a2 net34 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=1
+XMI22_1 net31 a2 net34 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=0
+XMI22_2 net31 a2 net34 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=1
+XMI22_3 net31 a2 net34 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=0
+XMI23_0 zn a1 net31 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XMI23_1 zn a1 net31 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+XMI23_2 zn a1 net31 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=1
+XMI23_3 zn a1 net31 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=12 $flip=0
+.ENDS
+
+** Created by: circuit_gen.NR3D4
+** Cell name: NR3D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_NR3D4 a1 a2 a3 vdd vss zn
+*.PININFO a1:I a2:I a3:I zn:O vdd:B vss:B 
+XMI0_M_u4_0 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=1
+XMI0_M_u4_1 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=0
+XMI0_M_u4_2 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=1
+XMI0_M_u4_3 zn a3 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=0
+XMI0_M_u5_0 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=12 $flip=1
+XMI0_M_u5_1 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=13 $flip=0
+XMI0_M_u5_2 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=14 $flip=1
+XMI0_M_u5_3 zn a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=15 $flip=0
+XMI0_M_u6_0 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=17 $flip=1
+XMI0_M_u6_1 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=18 $flip=0
+XMI0_M_u6_2 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=19 $flip=1
+XMI0_M_u6_3 zn a1 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=20 $flip=0
+XMI0_M_u1_0 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMI0_M_u1_1 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMI0_M_u1_2 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMI0_M_u1_3 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMI0_M_u1_4 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XMI0_M_u1_5 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMI0_M_u1_6 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMI0_M_u1_7 xi0_net9 a3 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XMI0_M_u2_0 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=1
+XMI0_M_u2_1 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=0
+XMI0_M_u2_2 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=1
+XMI0_M_u2_3 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=0
+XMI0_M_u2_4 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=12 $flip=1
+XMI0_M_u2_5 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=13 $flip=0
+XMI0_M_u2_6 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=14 $flip=1
+XMI0_M_u2_7 xi0_net12 a2 xi0_net9 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=15 $flip=0
+XMI0_M_u3_0 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=17 $flip=1
+XMI0_M_u3_1 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=18 $flip=0
+XMI0_M_u3_2 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=19 $flip=1
+XMI0_M_u3_3 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=20 $flip=0
+XMI0_M_u3_4 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=21 $flip=1
+XMI0_M_u3_5 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=22 $flip=0
+XMI0_M_u3_6 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=23 $flip=1
+XMI0_M_u3_7 zn a1 xi0_net12 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=24 $flip=0
+.ENDS
+
+** Created by: circuit_gen.OA21D1
+** Cell name: OA21D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OA21D1 a1 a2 b vdd vss z
+*.PININFO a1:I a2:I b:I z:O vdd:B vss:B 
+XMI12 net14 a2 net20 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI11 net14 a1 net20 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI6 net20 b vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8_M_u2 z net14 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI9 net14 a1 net24 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI8_M_u3 z net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2 net14 b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI7 net24 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.OA21D2
+** Cell name: OA21D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OA21D2 a1 a2 b vdd vss z
+*.PININFO a1:I a2:I b:I z:O vdd:B vss:B 
+XMI12 net14 a2 net20 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI11 net14 a1 net20 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI6 net20 b vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8_0_M_u2 z net14 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI8_1_M_u2 z net14 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI9 net14 a1 net24 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI8_0_M_u3 z net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI8_1_M_u3 z net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u2 net14 b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI7 net24 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.OAI21D0
+** Cell name: OAI21D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OAI21D0 a1 a2 b vdd vss zn
+*.PININFO a1:I a2:I b:I zn:O vdd:B vss:B 
+XM_u2 zn a1 net15 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u3 zn a2 net15 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u4 net15 b vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI16_MI12 zn a1 xi16_net11 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u9 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI16_MI13 xi16_net11 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.OAI21D1
+** Cell name: OAI21D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OAI21D1 a1 a2 b vdd vss zn
+*.PININFO a1:I a2:I b:I zn:O vdd:B vss:B 
+XM_u2 zn a1 net15 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3 zn a2 net15 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u4 net15 b vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI16_MI12 zn a1 xi16_net11 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u9 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI16_MI13 xi16_net11 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.OAI211D0
+** Cell name: OAI211D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OAI211D0 a1 a2 b c vdd vss zn
+*.PININFO a1:I a2:I b:I c:I zn:O vdd:B vss:B 
+XMI8 net36 b net24 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI9 net24 c vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u2 zn a1 net36 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI7 zn a2 net36 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI6 zn a2 net35 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI5 net35 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI4 zn c vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u12 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.OAI211D1
+** Cell name: OAI211D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OAI211D1 a1 a2 b c vdd vss zn
+*.PININFO a1:I a2:I b:I c:I zn:O vdd:B vss:B 
+XMI2 net36 b net24 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI3 net24 c vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u2 zn a1 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u3 zn a2 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI1 zn a2 net35 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI0 net35 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u11 zn c vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u12 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.OAI211D4
+** Cell name: OAI211D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OAI211D4 a1 a2 b c vdd vss zn
+*.PININFO a1:I a2:I b:I c:I zn:O vdd:B vss:B 
+XMI13_0 zn a2 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMI13_1 zn a2 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XMI13_2 zn a2 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XMI13_3 zn a2 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XMI14_0 zn a1 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMI14_1 zn a1 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMI14_2 zn a1 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XMI14_3 zn a1 net36 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XMI2_0 net36 b net24 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XMI2_1 net36 b net24 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XMI2_2 net36 b net24 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=11 $flip=1
+XMI2_3 net36 b net24 vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=12 $flip=0
+XMI12_0 net24 c vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=13 $flip=0
+XMI12_1 net24 c vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=14 $flip=1
+XMI12_2 net24 c vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=15 $flip=0
+XMI12_3 net24 c vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=16 $flip=1
+XMI11_0 zn a2 net35 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=1
+XMI11_1 zn a2 net35 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=0
+XMI11_2 zn a2 net35 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=1
+XMI11_3 zn a2 net35 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=0
+XMI9_0 net35 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMI9_1 net35 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMI9_2 net35 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XMI9_3 net35 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=0
+XM_u12_0 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XM_u12_1 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+XM_u12_2 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=1
+XM_u12_3 zn b vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=12 $flip=0
+XMI8_0 zn c vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=13 $flip=1
+XMI8_1 zn c vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=14 $flip=0
+XMI8_2 zn c vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=15 $flip=1
+XMI8_3 zn c vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=16 $flip=0
+.ENDS
+
+** Created by: circuit_gen.OR2D0
+** Cell name: OR2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OR2D0 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMU1_M_u2 z net7 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u4 net7 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u3 net7 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u2 net7 a1 x_u7_net8 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMU1_M_u3 z net7 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u7_M_u1 x_u7_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.OR2D1
+** Cell name: OR2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OR2D1 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMU1_M_u2 z net7 vss vss sg13_lv_nmos l=1.300e-07 w=6.550e-07
+XM_u7_M_u4 net7 a1 vss vss sg13_lv_nmos l=1.300e-07 w=6.550e-07
+XM_u7_M_u3 net7 a2 vss vss sg13_lv_nmos l=1.300e-07 w=6.550e-07
+XM_u7_M_u2 net7 a1 x_u7_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_M_u3 z net7 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u7_M_u1 x_u7_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.OR2D2
+** Cell name: OR2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OR2D2 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMU1_0_M_u2 z net9 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_1_M_u2 z net9 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u7_M_u4 net9 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u3 net9 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u2 net9 a1 x_u7_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_0_M_u3 z net9 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_1_M_u3 z net9 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u7_M_u1 x_u7_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.OR2D4
+** Cell name: OR2D4
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_OR2D4 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMU1_0_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_1_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_2_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMU1_3_M_u2 z p0 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u7_0_M_u4 p0 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_0_M_u3 p0 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_1_M_u4 p0 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_1_M_u3 p0 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_0_M_u2 p0 a1 x_u7_0_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_0_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_1_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_2_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMU1_3_M_u3 z p0 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u7_0_M_u1 x_u7_0_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u7_1_M_u1 x_u7_1_net8 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u7_1_M_u2 p0 a1 x_u7_1_net8 vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.TAPCELL
+** Cell name: TAPCELL
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_TAPCELL vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS
+
+** Created by: circuit_gen.TIEH
+** Cell name: TIEH
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_TIEH vdd vss z
+*.PININFO z:O vdd:B vss:B 
+XM_u2 net6 net6 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u1 z net6 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.TIEL
+** Cell name: TIEL
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_TIEL vdd vss zn
+*.PININFO zn:O vdd:B vss:B 
+XM_u2 zn net6 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u1 net6 net6 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+.ENDS
+
+** Created by: circuit_gen.XNR2D0
+** Cell name: XNR2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_XNR2D0 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XMI2_M_u3 net28 net10 net14 vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI0_M_u3 net6 a1 net14 vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI1_M_u2 net28 net6 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XM_u2_M_u2 net6 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u4_M_u2 zn net14 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u8_M_u2 net10 a1 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI2_M_u2 net28 a1 net14 vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+XMI0_M_u2 net6 net10 net14 vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+XMI1_M_u3 net28 net6 vdd vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+XM_u2_M_u3 net6 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u4_M_u3 zn net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u8_M_u3 net10 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+.ENDS
+
+** Created by: circuit_gen.XNR2D1
+** Cell name: XNR2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_XNR2D1 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XM_u2_M_u2 net4 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u5_M_u2 net6 net4 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u4_M_u2 zn net14 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u8_M_u2 net10 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u6_M_u3 net4 a1 net14 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u3 net6 net10 net14 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u6_M_u2 net4 net10 net14 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u2_M_u3 net4 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u5_M_u3 net6 net4 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u4_M_u3 zn net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u8_M_u3 net10 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u7_M_u2 net6 a1 net14 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.XNR2D2
+** Cell name: XNR2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_XNR2D2 a1 a2 vdd vss zn
+*.PININFO a1:I a2:I zn:O vdd:B vss:B 
+XM_u6_M_u3 net4 a1 net14 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u7_M_u3 net6 net10 net14 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u2_M_u2 net4 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u5_M_u2 net6 net4 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u4_0_M_u2 zn net14 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u4_1_M_u2 zn net14 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XM_u8_M_u2 net10 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u6_M_u2 net4 net10 net14 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u7_M_u2 net6 a1 net14 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u2_M_u3 net4 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u5_M_u3 net6 net4 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u4_0_M_u3 zn net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u4_1_M_u3 zn net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XM_u8_M_u3 net10 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.XOR2D0
+** Cell name: XOR2D0
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_XOR2D0 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMI5_M_u3 net25 a1 net14 vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XM_u6_M_u3 net4 net10 net14 vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI6_M_u2 net25 net4 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI1_M_u2 net4 a2 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XM_u4_M_u2 z net14 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2_M_u2 net10 a1 vss vss sg13_lv_nmos l=1.300e-07 w=2.500e-07
+XMI5_M_u2 net25 net10 net14 vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+XM_u6_M_u2 net4 a1 net14 vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+XMI6_M_u3 net25 net4 vdd vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+XMI1_M_u3 net4 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XM_u4_M_u3 z net14 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI2_M_u3 net10 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=4.050e-07
+.ENDS
+
+** Created by: circuit_gen.XOR2D1
+** Cell name: XOR2D1
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_XOR2D1 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMI6_M_u3 net41 a1 net21 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2_M_u3 net27 net23 net21 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI7_M_u2 net41 net27 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI3_M_u2 net27 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI4_M_u2 z net21 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI5_M_u2 net23 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI6_M_u2 net41 net23 net21 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI2_M_u2 net27 a1 net21 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI7_M_u3 net41 net27 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI3_M_u3 net27 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI4_M_u3 z net21 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI5_M_u3 net23 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS
+
+** Created by: circuit_gen.XOR2D2
+** Cell name: XOR2D2
+** Lib name: sg13g2f
+.SUBCKT sg13g2f_XOR2D2 a1 a2 vdd vss z
+*.PININFO a1:I a2:I z:O vdd:B vss:B 
+XMI6_M_u3 net41 a1 net21 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI2_M_u3 net27 net23 net21 vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI7_M_u2 net41 net27 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI3_M_u2 net27 a2 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI4_0_M_u2 z net21 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI4_1_M_u2 z net21 vss vss sg13_lv_nmos l=1.300e-07 w=7.200e-07
+XMI5_M_u2 net23 a1 vss vss sg13_lv_nmos l=1.300e-07 w=3.600e-07
+XMI6_M_u2 net41 net23 net21 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI2_M_u2 net27 a1 net21 vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI7_M_u3 net41 net27 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+XMI3_M_u3 net27 a2 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI4_0_M_u3 z net21 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI4_1_M_u3 z net21 vdd vdd sg13_lv_pmos l=1.300e-07 w=1.200e-06
+XMI5_M_u3 net23 a1 vdd vdd sg13_lv_pmos l=1.300e-07 w=6.000e-07
+.ENDS

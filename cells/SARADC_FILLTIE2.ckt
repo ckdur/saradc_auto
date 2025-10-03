@@ -1,0 +1,5 @@
+** Cell name: SARADC_FILLTIE2
+** Lib name: sg13g2f
+.SUBCKT SARADC_FILLTIE2 vdd vss
+*.PININFO vdd:B vss:B 
+.ENDS

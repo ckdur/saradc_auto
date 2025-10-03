@@ -1,0 +1,34 @@
+** Cell name: SARADC_CELL_INVX16_ASCAP
+** Lib name: sg13g2f
+.SUBCKT SARADC_CELL_INVX16_ASCAP i vdd vss zn vnw vpw
+*.PININFO i:I zn:O vdd:B vss:B 
+XMU1_M_u2_0 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=0 $flip=0
+XMU1_M_u2_1 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=1 $flip=1
+XMU1_M_u2_2 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=2 $flip=0
+XMU1_M_u2_3 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=3 $flip=1
+XMU1_M_u2_4 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=4 $flip=0
+XMU1_M_u2_5 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=5 $flip=1
+XMU1_M_u2_6 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=6 $flip=0
+XMU1_M_u2_7 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=7 $flip=1
+XMU1_M_u2_8 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=8 $flip=0
+XMU1_M_u2_9 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=9 $flip=1
+XMU1_M_u2_10 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=10 $flip=0
+XMU1_M_u2_11 zn i vss vpw sg13_lv_nmos l=1.300e-07 w=7.200e-07 $pos=11 $flip=1
+XMU1_M_u3_0 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=0 $flip=0
+XMU1_M_u3_1 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=1 $flip=1
+XMU1_M_u3_2 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=2 $flip=0
+XMU1_M_u3_3 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=3 $flip=1
+XMU1_M_u3_4 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=4 $flip=0
+XMU1_M_u3_5 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=5 $flip=1
+XMU1_M_u3_6 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=6 $flip=0
+XMU1_M_u3_7 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=7 $flip=1
+XMU1_M_u3_8 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=8 $flip=0
+XMU1_M_u3_9 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=9 $flip=1
+XMU1_M_u3_10 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=10 $flip=0
+XMU1_M_u3_11 zn i vdd vnw sg13_lv_pmos l=1.300e-07 w=1.200e-06 $pos=11 $flip=1
+
+*********************************************************
+** WARNING: SAVE YOUR CHILDREN! THIS IS DANGEROUS
+*********************************************************
+*Csaveme i zn 10.6f
+.ENDS

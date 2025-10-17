@@ -1,4 +1,3 @@
-
 ROOT_DIR=$(abspath ../)
 include $(ROOT_DIR)/settings.mk
 SIM_DIR=$(abspath .)
@@ -85,6 +84,11 @@ test_sw_charge_injection: $(ROOT_DIR)/src/sw_charge_injection.xyce.sp $(CDL_XYCE
 	cp $(ROOT_DIR)/src/sw_classic.sp $(SIM_DIR)/outputs
 	cp $(ROOT_DIR)/src/sw_load.sp $(SIM_DIR)/outputs
 	python3 $(ROOT_DIR)/src/sw_charge_injection.py $(SIM_DIR)/outputs $(ROOT_DIR)/src/sw_charge_injection.xyce.sp "$(XYCE_RUN_COMMAND)"
+
+test_fft: $(ROOT_DIR)/src/saradc_tb.xyce.sp $(CDL_XYCE_SRC) $(DEPS) $(CHARGE_INJECTION_DEPS)
+	cp $(ROOT_DIR)/src/saradc_tb_body.sp $(SIM_DIR)/outputs
+	cp $(ROOT_DIR)/src/dac_r2r_ideal.sp $(SIM_DIR)/outputs
+	python3 $(ROOT_DIR)/src/out_fft.py $(SIM_DIR)/outputs $(ROOT_DIR)/src/saradc_tb.xyce.sp "$(XYCE_RUN_COMMAND)"
 
 $(SIM_DIR)/outputs/saradc_tb_rcx.csv: $(TB_RCX_SRC) $(RCX_SRC)
 	mkdir -p $(SIM_DIR)/outputs

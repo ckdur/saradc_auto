@@ -34,19 +34,20 @@ if __name__ == "__main__":
         new_content = new_content.replace("{PDK}", os.environ['PDK'])
 
         netlist_path = "{}/cap_linearity.xyce.{}.sp".format(run_dir, volt_str)
+        data_path = "{}/cap_linearity.xyce.{}.csv".format(run_dir, volt_str)
 
         # Overwrite with modified content
         with open(netlist_path, "w") as f:
             f.write(new_content)
 
         # Do the simulation
-        cmd = "cd {} && {} {}".format(run_dir, sim_cmd, netlist_path)
-        print("Running: ", cmd)
-        os.system(cmd)
+        if not os.path.isfile(data_path):
+            cmd = "cd {} && {} {}".format(run_dir, sim_cmd, netlist_path)
+            print("Running: ", cmd)
+            os.system(cmd)
 
         # Load simulation data
-        #data = np.loadtxt("outputs/cap_linearity.xyce.csv", skiprows=1)
-        df = pd.read_csv("{}/cap_linearity.xyce.{}.csv".format(run_dir, volt_str))
+        df = pd.read_csv(data_path)
 
         freq = df["FREQ"].to_numpy()
         V = df["Re(V(VPLUS))"].to_numpy() + 1j*df["Im(V(VPLUS))"].to_numpy()

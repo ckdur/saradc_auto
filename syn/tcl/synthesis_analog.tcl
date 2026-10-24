@@ -7,6 +7,10 @@ set SYN_SRC $env(SYN_SRC)
 set LOGS $env(SYN_DIR)/logs
 set REPORTS $env(SYN_DIR)/reports
 set OUTPUTS $env(SYN_DIR)/outputs
+# The hierarchical flow (pnr/) writes its netlists to another directory
+if {[info exists env(SYN_OUT_DIR)]} {
+  set OUTPUTS $env(SYN_OUT_DIR)
+}
 set ROOT_DIR $env(ROOT_DIR)
 
 set SYN_EFF high
@@ -52,6 +56,12 @@ foreach src $SYN_SRC {
 }
 
 read_verilog $env(ROOT_DIR)/cells/sg13g2f_blackboxes.v
+# Macros of the hierarchical flow, read as blackboxes
+if {[info exists env(SYN_LIB_SRC)]} {
+  foreach src $env(SYN_LIB_SRC) {
+    read_verilog -lib $src
+  }
+}
 
 hierarchy -check -top $::env(TOP)
 

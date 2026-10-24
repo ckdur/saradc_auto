@@ -4,7 +4,7 @@ SIM_DIR=$(abspath .)
 SYN_DIR=$(abspath ../syn)
 
 TB_ANA_SRC=$(ROOT_DIR)/src/saradc_tb.sp
-CDL_SRC=$(ROOT_DIR)/pnr/outputs/$(TOP).cdl
+CDL_SRC=$(ROOT_DIR)/pnr_legacy/outputs/$(TOP).cdl
 
 TB_ANA_XYCE_SRC=$(ROOT_DIR)/src/saradc_tb.xyce.sp
 CDL_XYCE_SRC=$(SIM_DIR)/outputs/$(TOP).xyce.ckt
@@ -118,7 +118,7 @@ question:
 	mkdir -p $(SIM_DIR)/question/pnr/outputs/
 	mkdir -p $(SIM_DIR)/question/sim
 	mkdir -p $(SIM_DIR)/question/cells
-	cp -r $(ROOT_DIR)/pnr/outputs/$(TOP).cdl $(SIM_DIR)/question/pnr/outputs/
+	cp -r $(ROOT_DIR)/pnr_legacy/outputs/$(TOP).cdl $(SIM_DIR)/question/pnr/outputs/
 	cp -r $(ROOT_DIR)/sim/Makefile $(SIM_DIR)/question/sim
 	cp -r $(ROOT_DIR)/sim/scripts $(SIM_DIR)/question/sim
 	cp -r $(ROOT_DIR)/src $(SIM_DIR)/question

@@ -18,6 +18,18 @@ export SYN_ANA_NET
 
 all: $(SYN_ANA_NET) $(SYN_NET)
 
+# Hierarchical flow (pnr/): the CDAC macro and the top that instantiates it
+HIER_DIR=$(SYN_DIR)/outputs/hier
+hier: $(HIER_DIR)/$(CDAC_TOP)_net.v $(HIER_DIR)/$(TOP)_net.v $(SYN_NET)
+
+$(HIER_DIR)/$(CDAC_TOP)_net.v: $(SYN_DIR)/tcl/synthesis_analog.tcl $(CDAC_SRC)
+	TOP=$(CDAC_TOP) SYN_SRC="$(CDAC_SRC)" SYN_OUT_DIR=$(HIER_DIR) \
+	  yosys -h tcl $(SYN_DIR)/tcl/synthesis_analog.tcl | tee yosys_$(CDAC_TOP).log
+
+$(HIER_DIR)/$(TOP)_net.v: $(SYN_DIR)/tcl/synthesis_analog.tcl $(HIER_SRC) $(HIER_LIB_SRC)
+	SYN_SRC="$(HIER_SRC)" SYN_LIB_SRC="$(HIER_LIB_SRC)" SYN_OUT_DIR=$(HIER_DIR) \
+	  yosys -h tcl $(SYN_DIR)/tcl/synthesis_analog.tcl | tee yosys_hier.log
+
 $(SYN_ANA_NET): $(SYN_DIR)/tcl/synthesis_analog.tcl $(SYN_SRC)
 	yosys -h tcl $(SYN_DIR)/tcl/synthesis_analog.tcl | tee -a yosys_analog.log
 
@@ -34,5 +46,5 @@ manual: $(SYN_DIR)/tcl/synthesis.tcl $(SYN_SRC)
 clean:
 	rm -rfv *.log* *.cmd* *_intermediate.v *_net.v *.sdf fv reports outputs *.tstamp
 
-.PHONY: clean
+.PHONY: clean hier
 

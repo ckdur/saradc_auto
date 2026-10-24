@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Build the simulation characterization report of the SARADC from the results of src/adc_char.py.
 
-  make_sim_report.py <char_dir> [build_dir]
+  make_sim_report.py <char_dir> [build_dir] [--ref <static.json>] [--pex NAME=<char_dir>]...
 
 <char_dir> is a directory made by adc_char.py (static.json and sine_*.json). Writes the figures
 (vector PDF), results.tex (LaTeX macros and tables) and sim_summary.json into build_dir (default:
 <char_dir>/report), then compiles report.tex there with latexmk. sim_summary.json is the file the
 measurement report of the chip (RISCVConsole software/mso/report) compares against.
+--pex adds the static result of a post-layout netlist (a char dir of adc_char.py --netlist); if the
+char dir holds plate_par.json (sim/pex/dacpar.py) its plate parasitics are tabulated as well. NAME is
+tapeout (the fabricated layout) or hier (the hierarchical re-layout).
 """
 import glob
 import json
@@ -25,8 +28,13 @@ REPORT_DIR = os.path.dirname(os.path.abspath(__file__))
 SIMOUT = os.path.join(REPORT_DIR, "..", "outputs")
 
 
-def pdk_version():
-    """Git state of the PDK in $PDK_ROOT/$PDK (environment of init_openlane.sh)."""
+def pdk_version(char):
+    """PDK version of the simulation: <char>/pdk.json written by adc_char.py, else the current git
+    state of $PDK_ROOT/$PDK (environment of init_openlane.sh)."""
+    rec = os.path.join(char, "pdk.json")
+    if os.path.exists(rec):
+        with open(rec) as f:
+            return json.load(f)
     pdk = os.path.join(os.environ.get("PDK_ROOT", "/opt/ext/OpenPDKs"), os.environ.get("PDK", "ihp-sg13g2"))
     git = lambda *a: subprocess.run(["git", "-C", pdk] + list(a), capture_output=True, text=True).stdout.strip()
     commit = git("log", "-1", "--format=%h")
@@ -267,6 +275,87 @@ def bit_weights(r):
     return np.linalg.lstsq(X, k + r["inl"], rcond=None)[0][:NBITS]
 
 
+def static_enob(r, amp_lsb=27.0, n=4093, cycles=1021):
+    """ENOB of a coherent sine of amp_lsb (peak to peak, in the converter's own end-point LSB)
+    centred on its range, quantized with the transition levels alone."""
+    k = np.arange(n)
+    mid = (r["t"][0] + r["t"][-1]) / 2
+    vin = mid + amp_lsb / 2 * r["lsb"] * np.sin(2 * np.pi * cycles * k / n + 0.3)
+    xs = np.searchsorted(r["t"], vin).astype(float)
+    a2, _, _, y2 = sine_fit(xs, 1.0, cycles / n)
+    sinad = 20 * np.log10(a2 / np.sqrt(2) / np.sqrt(np.mean((xs - y2) ** 2)))
+    return sinad, (sinad - 1.76) / 6.02
+
+
+PEX_LABEL = {"tapeout": "post-layout, taped-out layout", "hier": "post-layout, hierarchical re-layout"}
+
+
+def fig_pex(r, pex, build):
+    """DNL/INL of the schematic and of the post-layout netlists."""
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(FIG_W, 3.6), sharex=True)
+    runs = [("schematic", r)] + [(PEX_LABEL.get(k, k), p["r"]) for k, p in pex.items()]
+    wd = 0.8 / len(runs)
+    for i, (lbl, q) in enumerate(runs):
+        a1.bar(np.arange(1, NCODES - 1) + (i - (len(runs) - 1) / 2) * wd, q["dnl"], width=wd, color=SERIES[i], label=lbl)
+        a2.plot(np.arange(1, NCODES), q["inl"], color=SERIES[i], marker="o", ms=3, label=lbl)
+    for ax in (a1, a2):
+        ax.axhline(0, color=INK2, lw=0.6)
+    a1.set_ylabel("DNL (LSB)")
+    a1.legend(loc="lower left", bbox_to_anchor=(0, 1.0), ncol=3)
+    a2.set_ylabel("INL (LSB)")
+    a2.set_xlabel("Code (transition k-1 to k for INL)")
+    a2.set_xticks(range(0, NCODES, 4))
+    save(fig, build, "pex_dnl_inl")
+
+
+def write_pex(build, r, pex):
+    """Macros and tables of the post-layout section (pex.tex)."""
+    L = []
+    m = lambda k, v: L.append("\\newcommand{\\%s}{%s}" % (k, v))
+    m("SchStEnob", "%.2f" % static_enob(r)[1])
+    with open(os.path.join(build, "table_pex.tex"), "w") as fo:
+        fo.write("\\begin{tabular}{lcccccccc}\n\\toprule\n & \\multicolumn{5}{c}{Bit weight error (\\si{\\percent})} & "
+                 "LSB & INL & ENOB$_{st}$ \\\\\n Netlist & 0 & 1 & 2 & 3 & 4 & (\\si{mV}) & (LSB rms) & (bits) \\\\\n\\midrule\n")
+        for lbl, q in [("Schematic", r)] + [(PEX_LABEL.get(k, k).capitalize(), p["r"]) for k, p in pex.items()]:
+            w = bit_weights(q)
+            fo.write("%s & %s & %.2f & %.2f & %.2f \\\\\n" % (
+                lbl, " & ".join("%+.1f" % ((w[b] / 2 ** b - 1) * 100) for b in range(NBITS)), q["lsb"] * 1e3,
+                np.sqrt(np.mean(q["inl"] ** 2)), static_enob(q)[1]))
+        fo.write("\\bottomrule\n\\end{tabular}\n")
+    for k, p in pex.items():
+        tag = {"tapeout": "Tp", "hier": "Hi"}.get(k, k.capitalize())
+        q = p["r"]
+        w = bit_weights(q)
+        for b in range(NBITS):
+            m("%sBitE%s" % (tag, "ABCDEFGH"[b]), "%+.1f" % ((w[b] / 2 ** b - 1) * 100))
+        m(tag + "Lsb", "%.2f" % (q["lsb"] * 1e3))
+        m(tag + "GainErr", "%.1f" % (q["gain_err"] * 100))
+        m(tag + "DnlMin", "%.2f" % q["dnl"].min())
+        m(tag + "DnlMax", "%.2f" % q["dnl"].max())
+        m(tag + "InlRms", "%.2f" % np.sqrt(np.mean(q["inl"] ** 2)))
+        m(tag + "StEnob", "%.2f" % static_enob(q)[1])
+        par = p.get("par")
+        if not par:
+            continue
+        cols = ["VOUTH", "VOUTL", "supply", "vref/vin", "controls", "other plates", "own"]
+        with open(os.path.join(build, "table_par_%s.tex" % k), "w") as fo:
+            fo.write("\\begin{tabular}{ll S[table-format=3.1] *{7}{S[table-format=2.1]}}\n\\toprule\n"
+                     "Half & Plate & {Total} & {VOUTH} & {VOUTL} & {Supplies} & {VREF/VIN/VIP} & {Controls} & "
+                     "{Other plates} & {VSH--FL} \\\\\n\\midrule\n")
+            for half in ("H", "L"):
+                for b in range(NBITS):
+                    for kind in ("VSH", "FL"):
+                        e = par["%s%d_%s" % (half, b, kind)]
+                        n = e["units"]
+                        fo.write("%s & bit %d %s & %.1f & %s \\\\\n" % (
+                            half, b, kind, e["total_f"] / n * 1e15, " & ".join("%.1f" % (e[c] / n * 1e15) for c in cols)))
+                if half == "H":
+                    fo.write("\\midrule\n")
+            fo.write("\\bottomrule\n\\end{tabular}\n")
+    with open(os.path.join(build, "results_pex.tex"), "w") as fo:
+        fo.write("\n".join(L) + "\n")
+
+
 def write_fe(build, sines, fes):
     """Ideal differential input against the input through the linear front-end model."""
     by = {round(s["freq"]): s for s in sines}
@@ -397,6 +486,12 @@ def main():
         i = args.index("--ref")
         ref = os.path.abspath(args[i + 1])
         del args[i:i + 2]
+    pex = {}
+    while "--pex" in args:
+        i = args.index("--pex")
+        name, d = args[i + 1].split("=", 1)
+        pex[name] = {"dir": os.path.abspath(d)}
+        del args[i:i + 2]
     char = os.path.abspath(args[0])
     build = os.path.abspath(args[1]) if len(args) > 1 else os.path.join(char, "report")
     os.makedirs(os.path.join(build, "fig"), exist_ok=True)
@@ -423,7 +518,7 @@ def main():
         with open(ref) as f:
             q = json.load(f)
         meta["ref"] = analyze_static(q) | {"vdd": q.get("vdd", 1.8)}
-    meta["pdk"] = pdk_version()
+    meta["pdk"] = pdk_version(char)
     cap = unit_cap_cv()
 
     fig_cap(*cap, build)
@@ -438,6 +533,20 @@ def main():
         fig_spectrum(sines[-1], build, "spectrum_high")
         fig_sweep(sines, build)
     write_tex(build, meta, r, sines, cap)
+    for f in glob.glob(os.path.join(build, "table_par_*.tex")) + [os.path.join(build, f) for f in
+                                                                  ("results_pex.tex", "table_pex.tex")]:
+        if os.path.exists(f):
+            os.remove(f)
+    for k, p in pex.items():
+        with open(os.path.join(p["dir"], "static.json")) as f:
+            p["r"] = analyze_static(json.load(f))
+        par = os.path.join(p["dir"], "plate_par.json")
+        if os.path.exists(par):
+            with open(par) as f:
+                p["par"] = json.load(f)
+    if pex:
+        fig_pex(r, pex, build)
+        write_pex(build, r, pex)
     if fes:
         write_fe(build, sines, fes)
 
@@ -454,6 +563,10 @@ def main():
         "sines_frontend": [{k: s[k] for k in ("freq", "amp", "sinad", "enob", "thd")} |
                            {"harm": {str(k): v for k, v in s["harm"].items()}} for s in fes],
         "unit_cap": {"v": cap[0].tolist(), "c_f": cap[1].tolist()},
+        "pex": {k: {"source": os.path.basename(p["dir"]), "weights": bit_weights(p["r"]).tolist(),
+                    "lsb_v": p["r"]["lsb"], "gain_err": p["r"]["gain_err"], "t": p["r"]["t"].tolist(),
+                    "dnl": p["r"]["dnl"].tolist(), "inl": p["r"]["inl"].tolist(),
+                    "plate_par": p.get("par")} for k, p in pex.items()},
     }
     with open(os.path.join(build, "sim_summary.json"), "w") as fo:
         json.dump(summary, fo, indent=1, default=float)

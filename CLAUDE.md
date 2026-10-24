@@ -13,15 +13,32 @@ gates (`SARADC_CELL_INVX16_ASCAP`, 720 instances), switches `SARADC_CELL_INVX0_A
   plugins under the PDK were rebuilt locally from that commit (git-ignored there).
 - Simulators: ngspice-47 (preferred; PSP103 via OSDI, KLU) and Xyce (about 3x slower with KLU,
   about 10x with its default iterative solver; same results). The machine has 32 cores and 60 GB.
-- Flow: `make -C syn all`, `make -C pnr all`, `make -C signoff all` (see README.md).
-  `settings.mk` holds the die size (X, Y) and the source list.
+- Flow: `make -C syn all hier`, `make -C pnr all`, `make -C signoff all` (see README.md).
+  `settings.mk` holds the die size (X, Y; Y is the legacy one) and the source lists.
+
+## Two PnR flows
+- `pnr/` (hierarchical, the current one): `pnr/tcl/cdac.tcl` builds one CDAC half as the macro
+  `SARADC_CDAC` (429.48 x 144.48: array, switches, column stripes, bit 1/3 bridges, plus a Metal3 bus
+  that joins the columns and a row of tie cells over the array); `pnr/tcl/top.tcl` places it twice
+  (H R0 at y 20.16, L MX at 241.92, so L is a true mirror of H), with the channel (switches, comparator,
+  bands), the digital part and the PDN. Die 566.44 x 410.04 (taller than the legacy 361.08).
+  RTL: `rtl/hier/` (`cdac_half.v`, `saradc_analog_hier.v`, `saradc_hier.v`); netlists from
+  `make -C syn hier` (`syn/outputs/hier/`). Helpers in `pnr/tcl/hier_utils.tcl`; the other procedures
+  are sourced from `pnr_legacy/tcl`. `make -C pnr cdac top`: about 45 s + a few min, DRT 0 violations.
+- `pnr_legacy/` (the flat flow of the tapeout): `make -C pnr_legacy all`, signoff with
+  `make -C signoff PNR_DIR=../pnr_legacy OUT_DIR=outputs_legacy REP_DIR=reports_legacy`.
+- Signoff: `make -C signoff TOP=SARADC_CDAC gds drc lvs` (macro), `make -C signoff all` (top, with
+  the macro GDS/CDL merged in). Both DRC clean, LVS match.
+- The parent chip (`asicone_sg13g2`) uses `saradc_auto/pnr/outputs/SARADC.{lef,cdl}` and
+  `signoff/outputs/SARADC.gds`: these now hold the hierarchical layout (taller), not the tapeout.
 
 ## Taped-out layout (moved to `*.tapeout`)
 The taped-out results (2025-10-17, OpenROAD v2.0-23297-g59ef9a9457) were moved (2026-10-24) to
-`syn/outputs.tapeout`, `pnr/outputs.tapeout`, `pnr/DesignLib.tapeout`, `signoff/outputs.tapeout`, plus
-`*.tapeout.log` and `reports.tapeout`. All git-ignored; never delete them. `pnr/outputs` and
-`signoff/outputs` now hold a re-run with OpenROAD 26Q4-1108-g6f3f28cc85 / Yosys 0.69+75.
-- `pnr/tcl/compat.tcl` holds the fixes for newer OpenROAD (`place_inst -name` quoting, core area =
+`syn/outputs.tapeout`, `pnr_legacy/outputs.tapeout`, `pnr_legacy/DesignLib.tapeout`,
+`signoff/outputs.tapeout`, plus `*.tapeout.log` and `reports.tapeout`. All git-ignored; never delete
+them. `pnr_legacy/outputs` and `signoff/outputs_legacy` hold a re-run of the flat flow with OpenROAD
+26Q4-1108-g6f3f28cc85 / Yosys 0.69+75.
+- `pnr_legacy/tcl/compat.tcl` holds the fixes for newer OpenROAD (`place_inst -name` quoting, core area =
   rows bbox, diamond legalizer); `pnr.tcl` also re-creates tracks after re-init, disables the empty
   digital Metal5 strap (PDN-0185), catches `repair_design/timing` (RSZ-0074), seeds the CDAC tie cells in
   the analog rows and restores positions when `global_placement` diverges (it always does).
@@ -29,18 +46,18 @@ The taped-out results (2025-10-17, OpenROAD v2.0-23297-g59ef9a9457) were moved (
   comparator placements are identical; XOR of Activ/GatPoly/Cont is zero inside both arrays. Different:
   ring corners (0.2 um), std-cell placement in the channel/digital part, CTS, and the regular nets
   routed by the detailed router, which include the switch control nets (CRH/CRL/CRHB/CRLB, CPRE,
-  CHOLD; ~45 mm inside the arrays). So for post-layout of the *fabricated* chip, extract the clipped
-  `signoff/outputs.tapeout/SARADC.gds`, not a new PnR.
+  CHOLD; ~45 mm inside the arrays). So for post-layout of the *fabricated* chip, extract `signoff/outputs.tapeout/SARADC.gds`
+  (`pex/split.py --gds ... --def pnr_legacy/outputs.tapeout/SARADC.def`), not a new PnR.
 - LVS: `make -C signoff lvs` runs `sg13g2.lvs` flat with std cells flattened in the schematic
   (`signoff/tcl/flatstd.py`) and `ignore_top_ports_mismatch` (the flattened std-cell pin labels show up
   as ~256 extra top ports in strict mode). Matches for both the re-run and the tapeout GDS.
 
 ## Simulation (schematic level, done)
-- `src/adc_char.py` (Makefile targets `char_static`, `char_sine`, `char_report` in `sim/`): static
+- `src/adc_char.py` (`sim/char.sh`, or the Makefile targets `char_static`, `char_sine`, `char_report` in `sim/`): static
   transfer (staircase + bisection) and coherent sine records, run as many short ngspice jobs in parallel.
-  It flattens `pnr/outputs/SARADC.cdl` and merges parallel MOS (24198 -> 2902 devices). ngspice needs
+  It flattens `pnr_legacy/outputs/SARADC.cdl` and merges parallel MOS (24198 -> 2902 devices). ngspice needs
   `--trtol 7` (default for ngspice). `--netlist` accepts another netlist, which is how a post-layout
-  netlist should be fed in.
+  netlist is fed in (`--netlist sim/outputs/pex/SARADC_hier.pex.ckt`).
 - Board conditions used for the measurement comparison: `--vdd 1.2 --vrefl 0.4 --vrefh 0.8 --vcm 0.6`,
   fclk 10 MHz (7 clocks per conversion), `--frontend <GBW>` for the board front-end model.
   Results: `sim/outputs/char/ngspice_SARADC.flat_mos_tt_10MHz_vdd1.2_ref0.4-0.8_cm0.6/` (git-ignored).
@@ -54,29 +71,69 @@ The taped-out results (2025-10-17, OpenROAD v2.0-23297-g59ef9a9457) were moved (
   the top plates), the undecoupled board references, unit-capacitor mismatch. **The post-layout
   simulation is the open task.**
 
-## Layout extraction: what failed
-- Magic 8.3.623 (`signoff/pex/`): device counts match the schematic (12093 nMOS, 12105 pMOS), but
-  capacitances are about 100x too large (AVDD 4.27 nF, about 415 pF on one switch output, against about
-  10 pF for the whole DAC), and net names are generic. Netgen 1.5.287 cannot compare it: the extracted
-  transistors are calls to undefined `sg13_lv_nmos`/`sg13_lv_pmos` subcircuits, so their pins become 1-4.
-- KLayout-PEX 0.3.12 / KLayout 0.30.10 (`signoff/kpex/`): LVS only matches with the standard cells
-  flattened in the schematic (`SARADC.flatstd.spice`) because the `sg13g2f` cell layouts have no pin
-  labels. The 2.5D engine (`--2.5D --mode CC`) is single-threaded on the flat layout and never finished:
-  4 h, 12 h, 10 h (`--halo 1`) runs timed out, and a run on `SARADC.nofill.gds` (6530
-  `SARADC_FILL1_NOPOWER` fillers removed, halo 1, no limit, started 2026-10-24 01:00) was still in the
-  engine after 16 h with no progress output and was stopped.
+## Repository layout for simulation and extraction
+- `sim/`: simulations only (`sim/README.md`): `char.sh` (characterization steps), `report/`,
+  `tools/` (PDK model rebuild, Trilinos/Xyce cmake configs), and `sim/pex/` for helpers that use
+  extracted netlists in simulation (`capsum.py` per-net C totals, `unitcap.py` unit-cap AC C,
+  `stitch.py` the stitcher).
+- `pex/`: everything that produces an extracted netlist (`pex/README.md`): `split.py` + `clip.py`
+  (split kpex extraction, the method that works), `relabel.py`, `magic/` and `kpex_full/` (the
+  whole-layout attempts). All results in `pex/outputs/` (git-ignored): `arrH/`, `arrL/` (legacy
+  arrays), `cdac/` (the macro), `top/` (the hierarchical top without the macros), `hier/` (tests on
+  the hierarchical layout), `tests/`, `magic/`, `kpex_full/` (formerly `signoff/pex`, `signoff/kpex`).
 
-## Next task: extract the layout in parts
-Re-do the PnR so the analog core can be extracted on its own, then simulate post-layout:
-1. Back up the taped-out outputs (above).
-2. Produce a layout of just the DAC (cap array + switches + top-plate routing) and the comparator,
-   with the SAR logic and fillers removed, either as a separate hierarchy level in PnR or by clipping
-   the taped-out GDS to that region with its pins labeled. Labeled pins at the cut are what make LVS
-   and the extracted netlist usable.
-3. Extract it with kpex 2.5D (CC mode) and check that the totals are plausible (whole DAC about 10 pF),
-   then simulate with `adc_char.py --netlist` (static first; it shows the weight errors directly) and
-   compare the bit weights with the measured ones.
-4. Add the post-layout results to `sim/report` and to the measurement report in RISCVConsole.
+## Layout extraction: what failed (whole layout, details in pex/README.md)
+- Magic 8.3.623: device counts match, capacitances about 100x too large, netgen cannot compare
+  (transistors as calls to undefined `sg13_lv_nmos`/`pmos`).
+- kpex 2.5D on the whole flat layout: single-threaded, never finished (4 h, 12 h, 10 h, 16 h runs).
+  Its LVS only matches with the std cells flattened in the schematic.
+
+## Split extraction (works, `pex/split.py`)
+- Clips the GDS into a grid of pieces between tiles, labels every DEF wire segment (`clip.py`), runs
+  the kpex IHP LVS deck with the unconditional `purge` in `rfmos_model_mapping.lvs` patched out
+  (it drops device-less nets, which kpex then never extracts), then `kpex --lvsdb ... --2.5D --mode CC`.
+  28 jobs: ~2.5 min per array (30 pieces), 0 um2 of wire missing. Done on the current flow (new PnR;
+  the VSH/FL plate wiring is identical to the tapeout).
+- VSH totals per bit (bit0..bit4; 1, 2, 4, 8, 16 units): H 99.3/218.6/399.9/864.4/1583.8 fF,
+  L 100.9/219.7/399.6/874.0/1580.6 fF. Bits 1 and 3 (the ones with the extra M5/TopMetal1 "ring"
+  bridges in pnr.tcl) have ~9 % more wiring C per unit. Unit device C (6 cap cells): 67.8 fF with FL
+  floating, 158.5 fF with FL AC-grounded.
+- First-order weight estimate (N*67.8 fF + wiring) gives -2/+4/-1/+4/-2 %, while the chip measures
+  -7.8/-5.7/+6.7/-8.4/+3.5 %: wiring C alone does not explain the measurement.
+
+## Post-layout netlist of the hierarchical layout (done)
+- Macro: `split.py pex/outputs/cdac` (30 pieces, 2.3 min). VSH per bit within ~1 % of the legacy
+  arrH; VOUTL/VREF/VIP/VIN get ~+100 fF from the bus.
+- Top: `pex/outputs/top/SARADC_nomacro.gds` (written by `pex/outputs/top/nomacro.py`: the macro
+  instances deleted with `prune_cell`, never `delete_cell_rec`, which also deletes the vias and cells
+  shared with the top), split on xs 0 109.18 233.54 320.32 452.0 566.44 and ys at row boundaries
+  (0 48.96 79.56 110.16 140.76 171.36 189.72 214.2 232.56 263.16 293.76 324.36 410.04): 60 pieces,
+  2.4 min. The cuts may only cross fillers and taps (y 164.64/241.92 cut digital rows on the right).
+  Couplings between top-level wires and the macro content are not extracted (only the pin stubs and
+  one M1 followpin rail at y 244.8 overlap the L macro).
+- `sim/pex/stitch.py sim/outputs/pex/SARADC_hier.pex.ckt --cdl pnr/outputs/SARADC.cdl --top
+  pex/outputs/top/split/pieces.txt --macro SARADC_CDAC=pex/outputs/cdac/pieces.txt:pnr/outputs/SARADC_CDAC.cdl
+  --check sim/outputs/pex/SARADC_hier.flat.ckt`: 24208 MOS, ~58k C; MOS W per role on all 569 named
+  nets equal to the flattened schematic.
+- Single-piece kpex scaling on the macro (`pex/outputs/hier/b*`): 895 um2 25 s / 1.2 GB, 3582 um2
+  141 s / 4.4 GB, 10746 um2 742 s / 13 GB, 30919 um2 (half macro) 3691 s / 30 GB: time ~ area^1.5,
+  so small pieces in parallel are the only practical way. kpex on the whole macro hit its 4 h
+  timeout (single-threaded in the 2.5D engine despite `--threads 4`).
+
+## Post-layout static result (hierarchical layout, board conditions)
+- `sim/outputs/char/ngspice_SARADC_hier.pex_mos_tt_10MHz_vdd1.2_ref0.4-0.8_cm0.6/static.json`
+  (3.3 h with 26 workers, 32 CPU-hours; one 3-conversion job 18.5 min). LSB 27.6 mV (schematic 25.1 mV: the top-plate parasitics attenuate
+  the DAC), so transition 1 lies below the start of the staircase (-0.425 V) and is not in the file;
+  `make_sim_report.analyze_static` needs all transitions, so the staircase range must be widened.
+- Bit weights (least-squares fit on transitions 2..31, residual 0.07 LSB): -13.3/-4.3/+1.2/-1.7/+1.9 %
+  (bit0..bit4); the chip measures -7.8/-5.7/+6.7/-8.4/+3.5 %: same sign on all five bits, magnitudes
+  differ. DNL -0.48 ... +0.57 LSB. Schematic: all within 0.1 %.
+
+## Next task
+1. Widen the static staircase (gain error) and make the report handle the post-layout run.
+2. The same extraction and simulation for the tapeout layout (split of `signoff/outputs.tapeout`,
+   stitch with only `--top`), which is what was measured.
+3. Add the post-layout results to `sim/report` and to the measurement report in RISCVConsole.
 
 ## Conventions
 - Commit only when the user asks; end commit messages with

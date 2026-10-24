@@ -24,6 +24,25 @@ $(ROOT_DIR)/rtl/sw.v \
 $(ROOT_DIR)/rtl/sar_logic_buf.v \
 $(ROOT_DIR)/rtl/saradc.v
 
+#######################################################
+# Hierarchical flow (pnr/): the CDAC half is a macro, placed twice
+CDAC_TOP=SARADC_CDAC
+CDAC_SRC?=$(ROOT_DIR)/rtl/cap.v \
+$(ROOT_DIR)/rtl/cdac_dummy.v \
+$(ROOT_DIR)/rtl/cdac_unit.v \
+$(ROOT_DIR)/rtl/cdac.v \
+$(ROOT_DIR)/rtl/cell_def.v \
+$(ROOT_DIR)/rtl/sw.v \
+$(ROOT_DIR)/rtl/hier/cdac_half.v
+HIER_SRC?=$(ROOT_DIR)/rtl/cell_def.v \
+$(ROOT_DIR)/rtl/comp.v \
+$(ROOT_DIR)/rtl/sw.v \
+$(ROOT_DIR)/rtl/sar_logic_buf.v \
+$(ROOT_DIR)/rtl/hier/saradc_analog_hier.v \
+$(ROOT_DIR)/rtl/hier/saradc_hier.v
+# Read as blackboxes by the top synthesis
+HIER_LIB_SRC?=$(ROOT_DIR)/rtl/hier/cdac_half.v
+
 DIGTOP=sar_logic_wreset
 SYN_DIG_SRC=$(ROOT_DIR)/rtl/sar_logic_wreset.v
 

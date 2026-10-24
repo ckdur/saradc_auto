@@ -27,7 +27,7 @@
 \toprule
 Resolution & 5 bits \\
 Clock / sample rate & \SI{\Fclk}{MHz} / \SI{\Fs}{MS/s} (7 clocks per conversion) \\
-Simulator, corner & \Simulator, \texttt{\Corner}, \SI{25}{\celsius}, schematic netlist \\
+Simulator, corner & \Simulator, \texttt{\Corner}, \SI{25}{\celsius}, schematic netlist (post-layout: Section~\ref{sec:postlayout}) \\
 PDK & \PdkName, git \texttt{\PdkCommit} (\PdkBranch, \PdkDate) \\
 Supply, references, input CM & \SI{\Vdd}{V}; \SI{\Vrefl}{V} / \SI{\Vrefh}{V}; \SI{\Vcm}{V} (as on the test board) \\
 LSB (end point) & \SI{\Lsb}{mV} differential (ideal \SI{\LsbIdeal}{mV}, gain error \SI{\GainErr}{\percent}) \\
@@ -102,15 +102,16 @@ comparator compares the two DAC outputs, and the digital part (\texttt{sar\_logi
         level. Its linear model (single-pole op-amps, GBW \SI{1.4}{MHz}, fitted to the measured
         amplitude response; \texttt{--frontend}) gives the amplitude and phase of each input,
         which the \texttt{sinefe} records apply to the ADC \IfFileExists{table_fe.tex}{(Section~\ref{sec:fe})}{(Section~\ref{sec:dynamic})}.
-  \item \textbf{Not included}: thermal and flicker noise (transient simulation), layout parasitics,
+  \item \textbf{Not included}: thermal and flicker noise (transient simulation), wire resistance,
         mismatch, the reference drivers of the board, and the nonlinearity and slew rate of
         the op-amps of the front end.
   \item \textbf{PDK}: IHP-Open-PDK~\cite{ihppdk}, branch \texttt{\PdkBranch}, commit \texttt{\PdkCommit}
         of \PdkDate{} (\texttt{git describe} gives \PdkDescribe). The compiled device models (PSP103
         and r3\_cmc as OSDI for ngspice, as plugins for Xyce) were rebuilt from the Verilog-A sources of
         this commit.
-  \item \textbf{Layout parasitics}: not included; neither extraction tool gave a usable netlist
-        (Section~\ref{sec:pex}).
+  \item \textbf{Layout parasitics}: not in the schematic simulation. The capacitances of the routed
+        layout, obtained by a split extraction (Section~\ref{sec:split}), are simulated separately
+        (static transfer only, Section~\ref{sec:postlayout}).
 \end{itemize}
 
 \section{Unit capacitor}
@@ -190,7 +191,7 @@ tried with the PDK above; neither gave a netlist that can be simulated.
 
 \subsection{Magic and Netgen}
 Magic~\cite{magic} 8.3.623 with the technology file of the PDK (\texttt{libs.tech/magic}) extracts the
-layout (\texttt{signoff/pex}) and finds the same devices as the schematic (12\,093 nMOS and 12\,105
+layout (\texttt{pex/outputs/magic}) and finds the same devices as the schematic (12\,093 nMOS and 12\,105
 pMOS). The result is not usable:
 \begin{itemize}
   \item \textbf{Capacitances.} The 71\,863 extracted capacitors add up to \SI{4.27}{nF} on AVDD,
@@ -212,13 +213,13 @@ pMOS). The result is not usable:
 \end{itemize}
 
 \subsection{KLayout-PEX}
-KLayout-PEX~\cite{kpex} 0.3.12 on KLayout~\cite{klayout} 0.30.10 (\texttt{signoff/kpex}) first runs the
+KLayout-PEX~\cite{kpex} 0.3.12 on KLayout~\cite{klayout} 0.30.10 (\texttt{pex/outputs/kpex\_full}) first runs the
 LVS of the PDK:
 \begin{itemize}
   \item \textbf{LVS.} It fails with the original schematic because the layouts of the
         \texttt{sg13g2f} standard cells have no pin labels. The analog cells (\texttt{INVX0\_ASSW},
         \texttt{INVX16\_ASCAP}) match as they are. With the standard cells flattened in a copy of the
-        schematic (\texttt{signoff/kpex/SARADC.flatstd.spice}) the netlists match.
+        schematic (\texttt{pex/outputs/kpex\_full/SARADC.flatstd.spice}) the netlists match.
   \item \textbf{2.5D capacitance extraction} (\texttt{--2.5D --mode CC}). The engine works on the
         flat layout on a single thread and wrote nothing within the time limits:
         \begin{center}\small
@@ -229,17 +230,58 @@ LVS of the PDK:
         1 & default & stopped at the \SI{4}{h} limit \\
         2 & default, from the clean LVS database & stopped at the \SI{12}{h} limit \\
         3 & \texttt{--halo 1} (\SI{1}{\micro m}) & stopped at the \SI{10}{h} limit \\
-        4 & \texttt{--halo 1}, filler cells without metal removed & running, no time limit \\
+        4 & \texttt{--halo 1}, filler cells without metal removed & stopped by hand after \SI{16}{h}, still in the 2.5D engine \\
         \bottomrule
         \end{tabular}
         \end{center}
         In run 4 the 6\,530 \texttt{SARADC\_FILL1\_NOPOWER} cells, which contain only well and implant
-        shapes, are removed from a copy of the layout (\texttt{signoff/kpex/SARADC.nofill.gds}).
+        shapes, are removed from a copy of the layout (\texttt{pex/outputs/kpex\_full/SARADC.nofill.gds}).
   \item The field-solver engines (FasterCap, FastCap2) were not tried: they are much slower than the
         2.5D engine at this size.
 \end{itemize}
-If run 4 does not finish, the next step is to extract only the DAC and the comparator, where the
-parasitics that change the bit weights are, and to add the result to the schematic netlist.
+The commands of all the runs above (magic, netgen and kpex) are in \texttt{pex/} of
+\texttt{saradc\_auto} (\texttt{pex/README.md}); the simulation scripts are in \texttt{sim/}
+(\texttt{sim/README.md}).
+
+\subsection{Split extraction}
+\label{sec:split}
+KLayout-PEX does extract small layouts: a window of one tile of the DAC takes \SI{25}{s}. Its time
+grows faster than the area (a single window of \SI{895}{\micro m^2}: \SI{25}{s}, \SI{1.2}{GB};
+\SI{3582}{\micro m^2}: \SI{141}{s}; \SI{10746}{\micro m^2}: \SI{742}{s}; \SI{30919}{\micro m^2}, half
+of a DAC array: \SI{3691}{s} and \SI{30}{GB}, about area$^{1.5}$), so the layout is extracted as many
+small windows in parallel and the window netlists are joined again (\texttt{pex/split.py},
+\texttt{sim/pex/stitch.py}):
+\begin{enumerate}
+  \item The GDS is clipped into a grid of windows. The cut lines only cross fillers and taps: between the
+        tiles of the DAC (pitch \SI{42.16}{\micro m} $\times$ \SI{21.24}{\micro m}, so no unit capacitor is
+        cut) and on row boundaries in the channel and in the digital part.
+  \item Every wire segment of the DEF inside a window, and every via landing on a cell pin, gets a text
+        label with its net name, so that the part of a net inside a window keeps its name even when it
+        only connects outside the window.
+  \item The KLayout LVS deck of kpex is run on each window with its unconditional \texttt{purge}
+        removed (it drops nets without devices, e.g.\ a stripe crossing a window, which kpex then never
+        extracts), then \texttt{kpex --lvsdb --2.5D --mode CC} extracts the coupling and ground
+        capacitances (no resistance).
+  \item The window netlists are joined by net name: a net cut by a window border is the same net,
+        the internal nets of a cell stay local to its window, the substrate is VSS. The joined netlist is
+        checked against the flattened schematic: the same transistors, and on every named net the same
+        total width on gates, sources/drains and bulks.
+\end{enumerate}
+Two layouts are extracted:
+\begin{itemize}
+  \item \textbf{Tapeout} (\texttt{signoff/outputs.tapeout/SARADC.gds}, the fabricated layout): 81
+        windows, \SI{6.6}{min} with 16 jobs. 24\,198 transistors and 68\,519 capacitors; the check against
+        the schematic passes on all 572 named nets.
+  \item \textbf{Hierarchical re-layout} (\texttt{pnr/}): the same circuit placed again with one half of
+        the DAC as a macro, used twice (the second half a mirror of the first). The macro (30 windows,
+        \SI{2.3}{min}) and the top level without the macros (60 windows, \SI{2.4}{min}) are extracted
+        separately and joined; 24\,208 transistors (10 more tie cells) and 57\,911 capacitors, check passed on
+        all 569 named nets. Not extracted: the coupling between top-level wires and the inside of the
+        macros (only the pin stubs and one supply rail overlap them).
+\end{itemize}
+In both, kpex on the whole layout does not finish (the whole macro alone: stopped after \SI{4}{h}).
+
+\IfFileExists{results_pex.tex}{\input{pex.tex}}{}
 
 \input{discussion.tex}
 

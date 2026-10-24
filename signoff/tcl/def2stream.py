@@ -20,7 +20,7 @@ if len(layer_map) > 0:
 
 if len(lef_files) > 0:
     layoutOptions.lefdef_config.read_lef_with_def = False
-    layoutOptions.lefdef_config.lef_files = lef_files.split(" ")
+    layoutOptions.lefdef_config.lef_files = lef_files.split()
 
 # Load def file
 main_layout = pya.Layout()

@@ -286,6 +286,17 @@ def body():
     return "".join(out)
 
 
+def pdk_version(pdk):
+    """Git state of the PDK checkout, recorded with the results (the checkout may move later)."""
+    git = lambda *a: subprocess.run(["git", "-C", pdk] + list(a), capture_output=True, text=True).stdout.strip()
+    commit = git("log", "-1", "--format=%h")
+    if not commit:
+        return None
+    return {"name": os.path.basename(pdk), "commit": commit, "describe": git("describe", "--tags", "--always"),
+            "branch": git("rev-parse", "--abbrev-ref", "HEAD"), "date": git("log", "-1", "--format=%cd", "--date=short"),
+            "remote": git("remote", "get-url", "origin")}
+
+
 class Bench:
     def __init__(self, fclk, netlist, corner, temp, outdir, trtol=1, merge=True, sim="xyce"):
         self.fclk = fclk
@@ -300,6 +311,8 @@ class Bench:
         self.trtol = trtol
         self.sim = sim
         os.makedirs(outdir, exist_ok=True)
+        with open(os.path.join(outdir, "pdk.json"), "w") as f:
+            json.dump(pdk_version(self.pdk), f, indent=1)
         self.capcell = os.path.join(SIMOUT if sim == "xyce" else CELLS, "SARADC_CELL_INVX16_ASCAP.ckt")
         if merge:
             # The unit capacitors are 12+12 fingers in parallel: one instance each is exact
@@ -322,6 +335,7 @@ class Bench:
     def write(self, name, sources, nconv):
         path = os.path.join(self.outdir, name + ".sp")
         csv = os.path.join(self.outdir, name + ".csv")
+        old = open(path).read() if os.path.exists(path) else None
         with open(path, "w") as f:
             if self.sim == "xyce":
                 f.write(HEADER.format(temp=self.temp, pdk=self.pdk, corner=self.corner, simout=SIMOUT,
@@ -336,6 +350,9 @@ class Bench:
                 f.write(self.body)
                 f.write(FOOTER_NG.format(sources=sources, raw=csv[:-4] + ".dat",
                                          tstop="%.6e" % self.tstop(nconv)))
+        # A cached result is only reused for the same job
+        if old != open(path).read() and os.path.exists(csv):
+            os.remove(csv)
         return path, csv
 
     def staircase_job(self, name, levels):
@@ -467,6 +484,18 @@ def cmd_static(b, a):
     lo, hi = -VFS / 2 - LSB, VFS / 2 + LSB
     coarse = np.arange(lo, hi + 1e-9, a.step_lsb * LSB)
     codes = run_levels(b, a, "static_coarse", coarse)
+    # With a gain error the ends of the staircase may not reach codes 0 and NCODES-1:
+    # extend it by one job of a.k levels at a time on that side
+    step = a.step_lsb * LSB
+    for i in range(8):
+        if codes[0] > 0:
+            ext = coarse[0] - step * np.arange(a.k, 0, -1)
+            coarse, codes = np.concatenate([ext, coarse]), np.concatenate([run_levels(b, a, "static_lo%d" % i, ext), codes])
+        if codes[-1] < NCODES - 1:
+            ext = coarse[-1] + step * np.arange(1, a.k + 1)
+            coarse, codes = np.concatenate([coarse, ext]), np.concatenate([codes, run_levels(b, a, "static_hi%d" % i, ext)])
+        if codes[0] == 0 and codes[-1] == NCODES - 1:
+            break
     # Bracket every transition k (code >= k) between two coarse points
     br = {}
     for k in range(1, NCODES):
@@ -474,8 +503,11 @@ def cmd_static(b, a):
         if not len(above) or above[0] == 0:
             continue
         br[k] = [coarse[above[0] - 1], coarse[above[0]]]
+    # The transitions found in the extensions go last, so the jobs of the other ones stay the
+    # same as without extension (and their cached results stay valid)
+    lo, hi = -VFS / 2 - LSB - 1e-9, VFS / 2 + LSB + 1e-9
+    ks = sorted(br, key=lambda k: (not (lo <= br[k][0] and br[k][1] <= hi), k))
     for r in range(a.refine):
-        ks = sorted(br)
         mids = np.array([(br[k][0] + br[k][1]) / 2 for k in ks])
         c = run_levels(b, a, "static_refine%d" % r, mids)
         for k, m, cd in zip(ks, mids, c):
@@ -550,7 +582,7 @@ def main():
     ap.add_argument("--fclk", type=float, default=10e6)
     ap.add_argument("--sim", choices=["xyce", "ngspice"], default="ngspice")
     ap.add_argument("--netlist", default=None,
-                    help="default: sim/outputs/SARADC.xyce.ckt (xyce), pnr/outputs/SARADC.cdl flattened (ngspice)")
+                    help="default: sim/outputs/SARADC.xyce.ckt (xyce), pnr_legacy/outputs/SARADC.cdl flattened (ngspice)")
     ap.add_argument("--tag", default=None, help="results subdirectory (default: netlist name)")
     ap.add_argument("--corner", default="mos_tt")
     ap.add_argument("--temp", type=float, default=25)
@@ -583,7 +615,7 @@ def main():
         cells = [os.path.join(CELLS, c) for c in ("sg13g2f.ckt", "SARADC_CELL_INVX0_ASSW.ckt",
                  "SARADC_CELL_INVX16_ASCAP.ckt", "SARADC_FILL1_NOPOWER.cdl", "SARADC_FILL1.cdl",
                  "SARADC_FILLTIE2.cdl")]
-        flatten(cells + [os.path.join(ROOT, "pnr", "outputs", "SARADC.cdl")], "SARADC", a.netlist)
+        flatten(cells + [os.path.join(ROOT, "pnr_legacy", "outputs", "SARADC.cdl")], "SARADC", a.netlist)
     tag = a.tag or os.path.splitext(os.path.basename(a.netlist))[0]
     outdir = os.path.join(SIMOUT, "char", "%s_%s_%s_%gMHz" % (a.sim, tag, a.corner, a.fclk / 1e6))
     if (a.vdd, a.vrefh, a.vrefl, a.vcm) != (1.8, None, None, None):

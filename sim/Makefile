@@ -128,3 +128,18 @@ question:
 
 .PHONY: clean
 
+
+# Transistor-level characterization under the conditions of the chip measurement (ngspice by
+# default, many short jobs in parallel; see src/adc_char.py) and its PDF report.
+CHAR_ARGS ?=
+CHAR_DIR ?= $(SIM_DIR)/outputs/char/ngspice_SARADC.flat_mos_tt_10MHz
+char_static:
+	python3 $(ROOT_DIR)/src/adc_char.py static --k 4 $(CHAR_ARGS)
+
+char_sine:
+	python3 $(ROOT_DIR)/src/adc_char.py sine --k 8 $(CHAR_ARGS)
+
+char: char_static char_sine
+
+char_report:
+	python3 $(SIM_DIR)/report/make_sim_report.py $(CHAR_DIR)

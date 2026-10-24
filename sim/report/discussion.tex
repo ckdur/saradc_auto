@@ -1,0 +1,80 @@
+% Discussion of the simulation results. Macros from results.tex.
+\section{Discussion}
+
+\subsection{Static transfer}
+At the conditions of the test board the schematic converter is ideal within the resolution of the
+bisection: DNL and INL stay within \numrange{\DnlMin}{\DnlMax} LSB and \numrange{\InlMin}{\InlMax}
+LSB, while the transition levels are known to \SI{\Resolution}{mV}, about \num{0.016} LSB. There are
+no missing codes, the offset is \num{\OffsetLsb} LSB and the end-point LSB is \SI{\Lsb}{mV} instead of
+\SI{\LsbIdeal}{mV} (gain error \SI{\GainErr}{\percent}). A least-squares fit of the transition levels to
+binary weights gives
+\begin{center}\small
+\begin{tabular}{lccccc}
+\toprule
+Bit & 0 & 1 & 2 & 3 & 4 \\
+\midrule
+$V_{DD} = \SI{\Vdd}{V}$ (board) & \BitWA & \BitWB & \BitWC & \BitWD & \BitWE \\
+\ifdefined\RefVdd
+$V_{DD} = \SI{\RefVdd}{V}$ (design testbench) & \RefBitWA & \RefBitWB & \RefBitWC & \RefBitWD & \RefBitWE \\
+\fi
+Ideal & 1 & 2 & 4 & 8 & 16 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\ifdefined\RefVdd
+The testbench conditions of the design (\SI{\RefVdd}{V}, LSB \SI{\RefLsb}{mV} against
+\SI{\RefLsbIdeal}{mV}) give the same picture: gain error \SI{\RefGainErr}{\percent}, $|$DNL$|$ and
+$|$INL$|$ below \RefDnlMax{} and \RefInlMax{} LSB. The supply and the reference levels therefore do not
+change the static linearity of the circuit, and the lower supply of the board does not starve the
+switches at these reference levels.
+\fi
+
+The unit capacitor is a MOS gate capacitance that changes by about
+\SI{10}{\percent} over the bias range (\SI{\CapMin}{fF} to \SI{\CapMax}{fF}), yet it does not show up in
+the static transfer. All units are the same device with the same bias history, and the comparator
+always decides with the two top plates close to each other, so the ratios of the DAC capacitances, which
+set the weights, do not depend on the input. The small gain error, the same at both operating points, is
+a ratio effect as well (the capacitance of the switches and of the dummy units on the top plates).
+
+\subsection{Consequences for the chip measurement}
+The measured chip (report of the MSO measurement in \texttt{RISCVConsole/software/mso}) has bit
+weights that differ from binary by \SIrange{-8}{7}{\percent}, an INL of about \num{0.5} LSB rms and a
+gain error of about \SI{6}{\percent}. None of this is present in the schematic simulation at the same
+supply, references and clock. The cause is outside of what is simulated here:
+\begin{itemize}
+  \item the layout parasitics of the DAC: routing capacitance from the switched plates of each bit to
+        the top plates adds to the weight of that bit and can be different for every bit (the extraction
+        is pending, Section~\ref{sec:pex});
+  \item the references of the board, which have no decoupling at the chip and are driven by
+        \SI{1}{MHz} op-amps: how far they recover within one bit time depends on the bits already decided;
+  \item random mismatch of the unit capacitors (not simulated; errors of several percent in units made
+        of tens of MOS capacitors are large for random mismatch).
+\end{itemize}
+The post-layout simulation and a measurement with decoupled references will separate these causes.
+
+\subsection{Dynamic performance}
+\IfFileExists{table_sweep.tex}{%
+With the ideal differential input the transient simulation gives \SineLowEnob{} bits at
+\SI{\SineLowFreq}{kHz} and \SineHighEnob{} bits at \SI{\SineHighFreq}{kHz}, practically the
+\SineLowSinadSt~dB that the static transfer alone predicts (SINAD$_{st}$). The sampling network adds
+almost no error up to the Nyquist frequency: at \SI{\SineHighFreq}{kHz} the SINAD is
+\SineHighSinad~dB and H3 rises from \SI{\SineHtreeLow}{dBc} to about \SI{\SineHtreeHigh}{dBc}, still far
+below the quantization error. H2 is a numerical zero: the two halves of the converter are identical and
+the inputs exactly opposite, so the even orders cancel. The records at \SI{16.7}{kHz} and \SI{94.9}{kHz}
+give identical results, as they must for a converter without dynamic errors: with a coherent record and
+a number of cycles prime to the number of samples, both sample the same set of phases of the sine.
+\IfFileExists{results_fe.tex}{\input{results_fe.tex}%
+
+With the inputs of the board front-end model (Section~\ref{sec:fe}) the ENOB falls to \FeEnobHigh{} bits
+at \SI{\FeFreqHigh}{kHz}. Most of this is the smaller amplitude (\FeAmpHigh{} LSB instead of
+\FeAmpLow{}). The common mode that moves with the signal produces H2, but at most
+\SI{\FeHtwoMax}{dBc} (at \SI{\FeHtwoMaxFreq}{kHz}): the converter rejects the common-mode ripple well.
+The chip measurement shows H2 between \SI{-39}{dBc} and \SI{-24}{dBc} from \SI{300}{kHz} to
+\SI{650}{kHz}, much more than this, so the measured H2 is not the response of the ADC to the
+common-mode ripple of a linear front end; it is distortion of the front end itself (the op-amps near
+their slew rate limit).}{}}{%
+The sine records are still running; this subsection is completed with them.}
+
+\subsection{Limits of this simulation}
+Schematic netlist only (no layout parasitics), typical corner at \SI{25}{\celsius}, no mismatch and no
+noise; the board front end enters only through a linear model of its amplitude and phase.

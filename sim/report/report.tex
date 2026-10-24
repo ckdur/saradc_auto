@@ -1,0 +1,248 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+\sisetup{detect-all, table-number-alignment=center}
+\DeclareSIUnit{\dBc}{dBc}
+\DeclareSIUnit{\dBFS}{dBFS}
+\setlength{\emergencystretch}{2em}
+
+\input{results.tex}
+
+\title{SARADC (IHP SG13G2): transistor-level characterization by simulation}
+\author{saradc\_auto}
+\date{\today\\[2pt]\small Data set: \texttt{\CharDir}}
+
+\begin{document}
+\maketitle
+
+\section*{Summary}
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Resolution & 5 bits \\
+Clock / sample rate & \SI{\Fclk}{MHz} / \SI{\Fs}{MS/s} (7 clocks per conversion) \\
+Simulator, corner & \Simulator, \texttt{\Corner}, \SI{25}{\celsius}, schematic netlist \\
+PDK & \PdkName, git \texttt{\PdkCommit} (\PdkBranch, \PdkDate) \\
+Supply, references, input CM & \SI{\Vdd}{V}; \SI{\Vrefl}{V} / \SI{\Vrefh}{V}; \SI{\Vcm}{V} (as on the test board) \\
+LSB (end point) & \SI{\Lsb}{mV} differential (ideal \SI{\LsbIdeal}{mV}, gain error \SI{\GainErr}{\percent}) \\
+Offset & \num{\OffsetLsb} LSB \\
+DNL & \numrange{\DnlMin}{\DnlMax} LSB \\
+INL (end point) & \numrange{\InlMin}{\InlMax} LSB \\
+Missing codes & \MissingCodes \\
+\IfFileExists{table_sweep.tex}{ENOB at \SI{\SineLowFreq}{kHz} / \SI{\SineHighFreq}{kHz} & \SineLowEnob{} / \SineHighEnob{} bits \\}%
+{ENOB & sine records still running (see Section~\ref{sec:dynamic}) \\}
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Circuit}
+The converter is a fully differential, charge-redistribution SAR of 5 bits assembled from standard cells
+(\texttt{rtl/saradc\_analog.v}). Each side has an MSB capacitive DAC that samples the input
+(\texttt{SARADC\_MSB\_CDAC}, 16 units, connected backwards so that the input is sampled on the
+plates that later move) and a binary LSB DAC of 1, 2, 4 and 8 units (plus one dummy unit) that switches
+between $V_{REFH}$ and $V_{REFL}$. A unit is six \texttt{SARADC\_CELL\_INVX16\_ASCAP} capacitors: an
+inverter whose drain and both source terminals are tied together (terminal FL) and whose gate is the
+switched plate (terminal VSH), so the capacitance is a MOS gate capacitance in series with the junctions of
+FL to the wells. The switches are transmission gates of \texttt{SARADC\_CELL\_INVX0\_ASSW}. The dynamic
+comparator compares the two DAC outputs, and the digital part (\texttt{sar\_logic\_wreset}) takes
+7 clocks per conversion: one sampling clock (SAMPLE high), five bit decisions and one clock with VALID high.
+
+\section{Method}
+\begin{itemize}
+  \item \textbf{Conditions}: those of the chip measurement (adapter board
+        \texttt{IHP130\_ASICONE\_ADP\_\allowbreak QFN48\_0p5Q\_Adapter}): every supply pin of the macro at
+        $V_{DD} = \SI{\Vdd}{V}$, $V_{REFH} = \SI{\Vrefh}{V}$, $V_{REFL} = \SI{\Vrefl}{V}$, input common mode
+        \SI{\Vcm}{V}; differential full scale $2(V_{REFH}-V_{REFL})$ peak-to-peak, so the ideal LSB is
+        \SI{\LsbIdeal}{mV}. Clock \SI{\Fclk}{MHz} as on the chip measurement, the inputs are driven
+        through \SI{50}{\ohm}. The testbench of the design (\texttt{src/saradc\_tb\_body.sp}) uses
+        \SI{1.8}{V}, \SI{0.45}{V}/\SI{1.35}{V} and \SI{0.9}{V}; the static transfer was also simulated there
+        (Section~\ref{sec:static}). The options \texttt{--vdd}, \texttt{--vrefh}, \texttt{--vrefl} and
+        \texttt{--vcm} of \texttt{adc\_char.py} select the conditions.
+  \item \textbf{Simulator}: ngspice-47~\cite{ngspice} with the PSP103 OSDI model of the PDK~\cite{ihppdk} (compiled with
+        OpenVAF), KLU, Gear integration, \texttt{reltol=1e-4}, \texttt{trtol=7}. With the default
+        \texttt{reltol} the timestep collapses at some clock edges; the tighter tolerance runs through
+        and is retried at \texttt{1e-5} if needed. Xyce (same PSP103 model through its ADMS plugin, KLU,
+        one process per job) converts the same inputs of a 3-conversion test job to the same codes,
+        except exactly at $v_d = 0$, which lies within \SI{0.5}{mV} of the transition $T_{16}$, but
+        takes about three times longer per conversion (about ten times with its default iterative
+        solver), so the campaign uses ngspice.
+  \item \textbf{Netlist}: the post-route schematic netlist \texttt{pnr/outputs/SARADC.cdl}
+        (no layout parasitics), flattened. Transistors that are exactly in parallel (the 12+12 fingers
+        of each unit capacitor and the switches of one DAC unit, which have the same nodes, model and
+        size) are merged into one instance with the summed multiplier (\texttt{merge\_parallel} in
+        \texttt{src/adc\_char.py}). This is exact for the PSP model and reduces the circuit from
+        24\,198 to 2\,902 transistors; the KLayout netlist comparer confirms that the merged netlist
+        is the same circuit as the schematic.
+  \item \textbf{Testbench}: the capture registers and the ideal reconstruction DAC of the original
+        testbench only observe RESULT; they are replaced by their load (\SI{4}{fF} per line) and the
+        codes are read directly on RESULT in the middle of each VALID pulse.
+  \item \textbf{Jobs}: the records are split into short independent transient runs (one process each,
+        about 30 in parallel). Each job simulates the reset, one warm-up conversion and $K$ conversions.
+        For the static transfer the input is a DC staircase (one level per conversion, changed in the
+        middle of the previous conversion); for the dynamic tests it is a slice of a coherent sine whose
+        phase is shifted so that the job converts the right samples of the record.
+  \item \textbf{Static transfer}: a staircase of \SI{0.5}{LSB} steps over the full scale, then five
+        bisection rounds per transition: the transition levels $T_k$ are known to
+        \SI{\Resolution}{mV}. DNL and INL use the end-point line through $T_1$ and $T_{31}$ (IEEE~1241~\cite{ieee1241}), as the
+        measurement.
+  \item \textbf{Dynamic}: records of \IfFileExists{table_sweep.tex}{\NSine{}}{256} samples with an odd prime number of cycles, amplitude
+        \IfFileExists{table_sweep.tex}{\SineAmpLsb{}}{13.5} LSB (peak) around mid scale, close to the amplitude of the chip measurement.
+        SINAD from a sine fit, harmonics from the FFT (coherent, rectangular window).
+        SINAD$_{st}$ / ENOB$_{st}$ is what the simulated static transfer alone predicts for the same
+        input samples.
+  \item \textbf{Board front end}: the single-ended to differential converter of the test board
+        (TI SBOA216~\cite{sboa216} with LMV358 op-amps~\cite{lmv358}, \SI{47.5}{\ohm} per side,
+        \SI{1.2}{nF} across the pair and \SI{120}{pF} to ground) is not simulated at transistor
+        level. Its linear model (single-pole op-amps, GBW \SI{1.4}{MHz}, fitted to the measured
+        amplitude response; \texttt{--frontend}) gives the amplitude and phase of each input,
+        which the \texttt{sinefe} records apply to the ADC \IfFileExists{table_fe.tex}{(Section~\ref{sec:fe})}{(Section~\ref{sec:dynamic})}.
+  \item \textbf{Not included}: thermal and flicker noise (transient simulation), layout parasitics,
+        mismatch, the reference drivers of the board, and the nonlinearity and slew rate of
+        the op-amps of the front end.
+  \item \textbf{PDK}: IHP-Open-PDK~\cite{ihppdk}, branch \texttt{\PdkBranch}, commit \texttt{\PdkCommit}
+        of \PdkDate{} (\texttt{git describe} gives \PdkDescribe). The compiled device models (PSP103
+        and r3\_cmc as OSDI for ngspice, as plugins for Xyce) were rebuilt from the Verilog-A sources of
+        this commit.
+  \item \textbf{Layout parasitics}: not included; neither extraction tool gave a usable netlist
+        (Section~\ref{sec:pex}).
+\end{itemize}
+
+\section{Unit capacitor}
+The unit capacitance seen from the gate (from the AC runs of \texttt{make test\_cap\_linearity}) changes with
+the bias between \SI{\CapMin}{fF} (at \SI{\CapVmin}{V}) and \SI{\CapMax}{fF}. Because the MSB DAC
+samples the input on these capacitors, the charge sampled is a nonlinear function of the input.
+\begin{figure}[H]\centering
+\includegraphics{fig/cap_cv.pdf}
+\caption{Capacitance of \texttt{SARADC\_CELL\_INVX16\_ASCAP} versus the bias of the gate, at \SI{100}{MHz}.}
+\end{figure}
+
+\section{Static linearity}
+\label{sec:static}
+\begin{figure}[H]\centering
+\includegraphics{fig/transfer.pdf}
+\caption{Simulated transfer characteristic (transition levels from the bisection).}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics{fig/dnl_inl.pdf}
+\caption{DNL and INL (end point).}
+\end{figure}
+\begin{table}[H]\centering\small
+\input{table_codes.tex}
+\caption{Transition levels (differential input) and linearity per code.}
+\end{table}
+
+\section{Dynamic performance}
+\label{sec:dynamic}
+\IfFileExists{table_sweep.tex}{%
+\begin{figure}[H]\centering
+\includegraphics{fig/sine_time.pdf}
+\caption{Output for the \SI{\SineLowFreq}{kHz} sine (first three periods).}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics{fig/spectrum_low.pdf}
+\caption{Spectrum at \SI{\SineLowFreq}{kHz}.}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics{fig/spectrum_high.pdf}
+\caption{Spectrum at \SI{\SineHighFreq}{kHz}.}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics{fig/sweep_enob.pdf}
+\caption{ENOB versus input frequency.}
+\end{figure}
+\begin{figure}[H]\centering
+\includegraphics{fig/sweep_harmonics.pdf}
+\caption{THD and harmonics versus input frequency. H2 is below \SI{-100}{dBc} (a numerical zero) at all
+frequencies and is not drawn.}
+\end{figure}
+\begin{table}[H]\centering\scriptsize
+\input{table_sweep.tex}
+\caption{Dynamic results. $A$ is the fitted output amplitude.}
+\end{table}}{%
+The sine records (six frequencies with the ideal differential input and four through the model of the
+board front end, 256 samples each) are still running at the time of this version of the report;
+this section is filled in when they finish.}
+
+\IfFileExists{table_fe.tex}{%
+\section{Input through the board front end}
+\label{sec:fe}
+The same sines, with each input given the amplitude and phase of the linear model of the board front
+end. The model keeps the differential signal a pure sine but makes the two inputs no longer
+opposite: the input common mode moves at the signal frequency (a few \si{\percent} of the
+differential amplitude at \SI{17}{kHz}, about half at \SI{630}{kHz}).
+\begin{table}[H]\centering\small
+\input{table_fe.tex}
+\caption{Ideal differential input against the input through the front-end model.}
+\end{table}}{}
+
+\section{Layout parasitic extraction}
+\label{sec:pex}
+The post-layout simulation needs a netlist of the routed layout (\texttt{signoff/outputs/SARADC.gds},
+\SI{566}{\micro m} $\times$ \SI{361}{\micro m}, placed flat: 24\,198 transistors in standard cells and
+in the 720 unit-capacitor and 1\,452 switch cells, plus about 30\,000 via instances). Two extractors were
+tried with the PDK above; neither gave a netlist that can be simulated.
+
+\subsection{Magic and Netgen}
+Magic~\cite{magic} 8.3.623 with the technology file of the PDK (\texttt{libs.tech/magic}) extracts the
+layout (\texttt{signoff/pex}) and finds the same devices as the schematic (12\,093 nMOS and 12\,105
+pMOS). The result is not usable:
+\begin{itemize}
+  \item \textbf{Capacitances.} The 71\,863 extracted capacitors add up to \SI{4.27}{nF} on AVDD,
+        \SI{1.04}{nF} on VSS, \SI{516}{pF} and \SI{423}{pF} on the inputs VIN and VIP and about
+        \SI{415}{pF} on the output of a single switch cell (\texttt{SARADC\_CELL\_INVX0\_ASSW}). The
+        whole capacitive DAC is of the order of \SI{10}{pF} (720 units of about \SI{11}{fF}), so these
+        values are two orders of magnitude too large. This points to the capacitance rules of the
+        magic technology file for the current layer set of the PDK; it was not investigated further.
+  \item \textbf{LVS with Netgen.} Netgen~\cite{netgen} 1.5.287 cannot compare the extracted netlist with
+        the schematic: magic writes the transistors as calls to the subcircuits
+        \texttt{sg13\_lv\_nmos}/\texttt{sg13\_lv\_pmos}, which are not defined in the extracted netlist,
+        so Netgen gives them generic pins 1 to 4 while the schematic has drain, gate, source and bulk.
+        This is a naming mismatch between the two netlist formats, not a connectivity error; the KLayout
+        LVS of the same GDS passes.
+  \item \textbf{Net names.} Internal nets are named after cell pins (e.g.\
+        \texttt{SARADC\_CELL\_INVX0\_ASSW\_99/zn}); the nets of the DAC (the top plates VOUTH and
+        VOUTL, the plates of each bit) cannot be identified, so not even the coupling capacitances of the
+        DAC can be read from it.
+\end{itemize}
+
+\subsection{KLayout-PEX}
+KLayout-PEX~\cite{kpex} 0.3.12 on KLayout~\cite{klayout} 0.30.10 (\texttt{signoff/kpex}) first runs the
+LVS of the PDK:
+\begin{itemize}
+  \item \textbf{LVS.} It fails with the original schematic because the layouts of the
+        \texttt{sg13g2f} standard cells have no pin labels. The analog cells (\texttt{INVX0\_ASSW},
+        \texttt{INVX16\_ASCAP}) match as they are. With the standard cells flattened in a copy of the
+        schematic (\texttt{signoff/kpex/SARADC.flatstd.spice}) the netlists match.
+  \item \textbf{2.5D capacitance extraction} (\texttt{--2.5D --mode CC}). The engine works on the
+        flat layout on a single thread and wrote nothing within the time limits:
+        \begin{center}\small
+        \begin{tabular}{lll}
+        \toprule
+        Run & Options & Result \\
+        \midrule
+        1 & default & stopped at the \SI{4}{h} limit \\
+        2 & default, from the clean LVS database & stopped at the \SI{12}{h} limit \\
+        3 & \texttt{--halo 1} (\SI{1}{\micro m}) & stopped at the \SI{10}{h} limit \\
+        4 & \texttt{--halo 1}, filler cells without metal removed & running, no time limit \\
+        \bottomrule
+        \end{tabular}
+        \end{center}
+        In run 4 the 6\,530 \texttt{SARADC\_FILL1\_NOPOWER} cells, which contain only well and implant
+        shapes, are removed from a copy of the layout (\texttt{signoff/kpex/SARADC.nofill.gds}).
+  \item The field-solver engines (FasterCap, FastCap2) were not tried: they are much slower than the
+        2.5D engine at this size.
+\end{itemize}
+If run 4 does not finish, the next step is to extract only the DAC and the comparator, where the
+parasitics that change the bit weights are, and to add the result to the schematic netlist.
+
+\input{discussion.tex}
+
+\input{references.tex}
+
+\end{document}

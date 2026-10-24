@@ -23,6 +23,8 @@ PDK_KNFILE ?= $(TECH_PDK)/libs.tech/klayout/tech/sg13g2.lyt
 export PDK_ROOT
 export PDK
 
+all: gds drc lvs
+
 gdspre: $(GDSPRE)
 
 gds: $(GDS)
@@ -63,9 +65,23 @@ ADC_CDLS = $(ADC_CELLS:%=$(ROOT_DIR)/cells/%.cdl)
 $(SPICE): $(ROOT_DIR)/cells/$(TECH).cdl $(ADC_CDLS) $(NET)
 	cat $(ROOT_DIR)/cells/$(TECH).cdl $(ADC_CDLS) $(NET) > $(SPICE)
 
-lvs: $(GDS) $(SPICE)
-	python3 $(PDK_ROOT)/$(PDK)/libs.tech/klayout/tech/lvs/run_lvs.py --layout=$(GDS) --netlist=$(SPICE) --run_dir=$(SIGN_DIR)/reports/ --topcell=$(TOP) --run_mode=flat --verbose
-#	klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/tech/lvs/sg13g2.lvs -rd in_gds=$(GDS) -rd report_file=$(SIGN_DIR)/reports/lvs_report.lvsdb -rd cdl_file=$(SPICE) -rd target_netlist=$(SIGN_DIR)/reports/$(TOP).lay.cdl
+SPICE_FLATSTD=$(SIGN_DIR)/outputs/$(TOP).flatstd.spice
+
+$(SPICE_FLATSTD): $(SPICE) $(SIGN_DIR)/tcl/flatstd.py
+	klayout -b -r $(SIGN_DIR)/tcl/flatstd.py -rd src=$(SPICE) -rd dst=$@
+
+# Flat LVS, run directly with the KLayout runset. The standard cells are
+# flattened in the schematic, and the top port check is relaxed because the
+# pin labels of the flattened standard cells appear as extra top-level ports.
+lvs: $(GDS) $(SPICE_FLATSTD)
+	mkdir -p $(SIGN_DIR)/reports
+	cd $(SIGN_DIR)/reports && klayout -b -r $(PDK_ROOT)/$(PDK)/libs.tech/klayout/tech/lvs/sg13g2.lvs \
+	        -rd input=$(GDS) -rd schematic=$(SPICE_FLATSTD) -rd topcell=$(TOP) \
+	        -rd run_mode=flat -rd top_lvl_pins=true -rd ignore_top_ports_mismatch=true \
+	        -rd report=$(SIGN_DIR)/reports/$(TOP).lvsdb \
+	        -rd target_netlist=$(SIGN_DIR)/reports/$(TOP)_extracted.cir \
+	        -rd log=$(SIGN_DIR)/reports/$(TOP).lvs.log
+	grep -q "Netlists match" $(SIGN_DIR)/reports/$(TOP).lvs.log
 
 clean:
 	rm -vrf  outputs reports

@@ -1,4 +1,6 @@
 ROOT_DIR=$(abspath ..)
+SHELL=/bin/bash
+.SHELLFLAGS=-o pipefail -c
 include $(ROOT_DIR)/settings.mk
 SYN_DIR=$(abspath .)
 

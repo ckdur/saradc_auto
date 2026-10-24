@@ -138,13 +138,18 @@ puts $fo "Floorplan size: \{X Y\} = ${FPsize}"
 close $fo
 
 # Copied from flow/platforms/ihp-sg13g2/make_tracks.tcl inside OpenROAD-flow-scripts
-make_tracks Metal1 -x_offset 0.0  -x_pitch 0.48 -y_offset 0.0 -y_pitch  0.48
-make_tracks Metal2 -x_offset 0.0  -x_pitch 0.42 -y_offset 0.0 -y_pitch  0.42
-make_tracks Metal3 -x_offset 0.0  -x_pitch 0.48 -y_offset 0.0 -y_pitch  0.48
-make_tracks Metal4 -x_offset 0.0  -x_pitch 0.42 -y_offset 0.0 -y_pitch  0.42
-make_tracks Metal5 -x_offset 0.0  -x_pitch 3.48 -y_offset 0.0 -y_pitch  0.48
-make_tracks TopMetal1 -x_offset 1.46 -x_pitch 2.28 -y_offset 1.46 -y_pitch 2.28
-make_tracks TopMetal2 -x_offset 2.0  -x_pitch 4.0  -y_offset 2.0 -y_pitch 4.0
+# NOTE: Newer OpenROAD removes the tracks on every initialize_floorplan, so
+# this has to be called again after re-initializing the floorplan
+proc saradc_make_tracks {} {
+  make_tracks Metal1 -x_offset 0.0  -x_pitch 0.48 -y_offset 0.0 -y_pitch  0.48
+  make_tracks Metal2 -x_offset 0.0  -x_pitch 0.42 -y_offset 0.0 -y_pitch  0.42
+  make_tracks Metal3 -x_offset 0.0  -x_pitch 0.48 -y_offset 0.0 -y_pitch  0.48
+  make_tracks Metal4 -x_offset 0.0  -x_pitch 0.42 -y_offset 0.0 -y_pitch  0.42
+  make_tracks Metal5 -x_offset 0.0  -x_pitch 3.48 -y_offset 0.0 -y_pitch  0.48
+  make_tracks TopMetal1 -x_offset 1.46 -x_pitch 2.28 -y_offset 1.46 -y_pitch 2.28
+  make_tracks TopMetal2 -x_offset 2.0  -x_pitch 4.0  -y_offset 2.0 -y_pitch 4.0
+}
+saradc_make_tracks
 
 ####################################
 ## ADC Macro placement
@@ -207,6 +212,7 @@ set tie_master [$tie_lib findMaster $saradc_tap]
 set sizetap [::ord::dbu_to_microns [$tie_master getWidth]]
 # setObjFPlanBox Group {Analog} [expr $corex-$sizetap] $corey $coreux $coreuy
 
+source tcl/compat.tcl
 source tcl/stripe.tcl
 source tcl/saradc_pos.tcl
 source tcl/saradc_conn.tcl
@@ -302,6 +308,8 @@ set fPlan_height [expr $Y-2*$margin]
 set_domain_area CORE -area $digcorearea
 set_domain_area ANALOG -area $anacorearea
 initialize_floorplan -site obssite -die_area "0 0 $X $Y" -core_area $digcorearea
+saradc_make_tracks
+saradc_core_from_rows
 
 # connect the fillers
 add_global_connection -net AVDD -inst_pattern analog/buflogic.* -pin_pattern {^vdd$} -power
@@ -333,14 +341,17 @@ define_pdn_grid \
     -voltage_domain ANALOG \
     -pins "TopMetal1 Metal5"
 
-add_pdn_stripe \
-    -grid stdcell_core_grid \
-    -layer Metal5 \
-    -width 3.2 \
-    -pitch $pitch \
-    -offset [expr $dig_to_ana-2*$margin+$row] \
-    -spacing 1.6 \
-    -starts_with POWER -extend_to_boundary
+# NOTE: This offset is beyond the width of the digital core, so the OpenROAD
+# used at tapeout (v2.0-23297-g59ef9a9457) silently added no straps here.
+# Newer versions stop with PDN-0185. Disabled to keep the taped-out layout.
+#add_pdn_stripe \
+#    -grid stdcell_core_grid \
+#    -layer Metal5 \
+#    -width 3.2 \
+#    -pitch $pitch \
+#    -offset [expr $dig_to_ana-2*$margin+$row] \
+#    -spacing 1.6 \
+#    -starts_with POWER -extend_to_boundary
 
 add_pdn_connect \
     -grid stdcell_core_grid \
@@ -602,7 +613,7 @@ if {[file exists $PNR_DIR/tcl/$TOP.pins.tcl]} {
 }
 
 # Put the main clock buffer near the digital domain
-place_inst -name [list "analog/buflogic.conv.smpcs.clkbuf.impl"] -location "[expr $dig_to_ana-$sizetap-21.76] $posy_sw" -orientation R0 -status LOCKED
+saradc_place_inst -name "analog/buflogic.conv.smpcs.clkbuf.impl" -location "[expr $dig_to_ana-$sizetap-21.76] $posy_sw" -orientation R0 -status LOCKED
 
 ## Tapcell insertion
 tapcell \
@@ -622,6 +633,11 @@ global_connect
 # source tcl/comp_pos.tcl
 pos_stdcell_box [expr $cmp_x+$compx+$row] [expr $posy_sw-2*$row] [expr $dig_to_ana-($cmp_x+$compx+$row)-3*$margin] analog/buflogic
 pos_stdcell_box [expr $dig_to_ana+$row+2*$margin] [expr $posy_sw-10*$row] [expr ($X-$dig_to_ana)-3*$margin-$row] digital
+# The tie cells of the CDACs go in the analog rows, left of the comparator.
+# The only rows of the analog domain are between the two CDACs, so anything
+# left inside the capacitor arrays cannot be legalized.
+pos_stdcell_objs $posx_cdach [expr $posy_sw+2*$row] [expr $cmp_x-$posx_cdach] \
+  [filter_by_regex {^analog/[^.]*\.tie[hl]\.impl$} [$::block getInsts]]
 
 write_def $PNR_DIR/outputs/${TOP}.pre.def
 
@@ -655,9 +671,24 @@ write_abstract_lef $PNR_DIR/outputs/${TOP}.lef
 #catch
 
 # We actually do not care
+# NOTE: It diverges (GPL-0305) in every OpenROAD version tried, and leaves the
+# cells wherever it stopped. Go back to the positions above if it fails, so
+# the result does not depend on how the placer diverges.
+set gpl_saved {}
+foreach inst [$::block getInsts] {
+  if {[$inst getPlacementStatus] == "PLACED"} {
+    lappend gpl_saved [list $inst [$inst getOrient] {*}[$inst getLocation]]
+  }
+}
 if { [catch {global_placement -skip_initial_place -density 0.82} errmsg] } {
     puts stderr $errmsg
     puts "Global placement failed, but is ignored on purpose"
+    foreach saved $gpl_saved {
+      lassign $saved inst orient x y
+      $inst setOrient $orient
+      $inst setLocation $x $y
+      $inst setPlacementStatus PLACED
+    }
 }
 
 # TODO: Check resize.tcl, as it checks the size of the buffering
@@ -671,7 +702,7 @@ set_placement_padding -global -right $cell_pad_side -left $cell_pad_side
 # set_placement_padding -masters $::env(CELL_PAD_EXCLUDE) -right 0 -left 0
 set_placement_padding -masters $DIODECells -left $diode_pad_value
 
-detailed_placement -max_displacement [subst { "500" "100" }]
+detailed_placement -max_displacement [subst { "500" "100" }] {*}[saradc_dpl_args]
 optimize_mirroring
 if { [catch {check_placement -verbose} errmsg] } {
     puts stderr $errmsg
@@ -719,7 +750,7 @@ repair_clock_nets -max_wire_length 0
 
 estimate_parasitics -placement
 
-detailed_placement
+detailed_placement {*}[saradc_dpl_args]
 optimize_mirroring
 if { [catch {check_placement -verbose} errmsg] } {
     puts stderr $errmsg
@@ -748,15 +779,24 @@ set_propagated_clock [all_clocks]
 estimate_parasitics -global_routing
 
 # Incremental repair blob
-repair_design -verbose
+# NOTE: Newer OpenROAD builds the repair trees from the global routes, and
+# fails (RSZ-0074) on the comparator nets that are partially routed with
+# special wires. At tapeout this repaired nothing anyway.
+if { [catch {repair_design -verbose} errmsg] } {
+    puts stderr $errmsg
+    puts "Repair design failed, but is ignored on purpose"
+}
 global_route -start_incremental -allow_congestion
-detailed_placement
+detailed_placement {*}[saradc_dpl_args]
 global_route -end_incremental -allow_congestion -congestion_report_file $PNR_DIR/reports/${TOP}_congestion_post_repair_design.rpt
 
-repair_timing -verbose -setup_margin 0 -repair_tns 100
+if { [catch {repair_timing -verbose -setup_margin 0 -repair_tns 100} errmsg] } {
+    puts stderr $errmsg
+    puts "Repair timing failed, but is ignored on purpose"
+}
 
 global_route -start_incremental -allow_congestion
-detailed_placement
+detailed_placement {*}[saradc_dpl_args]
 global_route -end_incremental -allow_congestion -congestion_report_file $PNR_DIR/reports/${TOP}_congestion_post_repair_timing.rpt
 
 # Repair power blob

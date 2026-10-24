@@ -9,19 +9,31 @@ gates (`SARADC_CELL_INVX16_ASCAP`, 720 instances), switches `SARADC_CELL_INVX0_A
 ## Environment
 - Always `source ~/init_openlane.sh` first (OpenLane tools in /opt/ext/OpenLane, the venv
   `~/Documents/SymbioticEDA/venv` with kpex, `PDK_ROOT=/opt/ext/OpenPDKs`, `PDK=ihp-sg13g2`).
-- PDK: IHP-Open-PDK, branch dev, commit 7c783c7c (2026-10-21). The ngspice OSDI models and the Xyce
+- PDK: IHP-Open-PDK, branch dev, commit cb743f75 (2026-10-23; models built at 7c783c7c, 2026-10-21). The ngspice OSDI models and the Xyce
   plugins under the PDK were rebuilt locally from that commit (git-ignored there).
 - Simulators: ngspice-47 (preferred; PSP103 via OSDI, KLU) and Xyce (about 3x slower with KLU,
   about 10x with its default iterative solver; same results). The machine has 32 cores and 60 GB.
 - Flow: `make -C syn all`, `make -C pnr all`, `make -C signoff all` (see README.md).
   `settings.mk` holds the die size (X, Y) and the source list.
 
-## Taped-out layout: back it up before re-running anything
-`pnr/outputs/` and `signoff/outputs/` (SARADC.def/.cdl/.v/.lef, SARADC.gds/.spice, all dated
-2025-10-17) are the taped-out version and are **git-ignored**. Copy them somewhere safe (e.g.
-`pnr/outputs.tapeout/`, `signoff/outputs.tapeout/`) before re-running syn/pnr/signoff. A new PnR is only
-useful if it reproduces this layout: compare the new GDS with the old one (KLayout XOR) and confirm
-there are no differences in the DAC/comparator region before trusting extractions of it.
+## Taped-out layout (moved to `*.tapeout`)
+The taped-out results (2025-10-17, OpenROAD v2.0-23297-g59ef9a9457) were moved (2026-10-24) to
+`syn/outputs.tapeout`, `pnr/outputs.tapeout`, `pnr/DesignLib.tapeout`, `signoff/outputs.tapeout`, plus
+`*.tapeout.log` and `reports.tapeout`. All git-ignored; never delete them. `pnr/outputs` and
+`signoff/outputs` now hold a re-run with OpenROAD 26Q4-1108-g6f3f28cc85 / Yosys 0.69+75.
+- `pnr/tcl/compat.tcl` holds the fixes for newer OpenROAD (`place_inst -name` quoting, core area =
+  rows bbox, diamond legalizer); `pnr.tcl` also re-creates tracks after re-init, disables the empty
+  digital Metal5 strap (PDN-0185), catches `repair_design/timing` (RSZ-0074), seeds the CDAC tie cells in
+  the analog rows and restores positions when `global_placement` diverges (it always does).
+- Re-run vs tapeout: all special nets (cap/switch/top-plate/reference routing) and all cap, switch and
+  comparator placements are identical; XOR of Activ/GatPoly/Cont is zero inside both arrays. Different:
+  ring corners (0.2 um), std-cell placement in the channel/digital part, CTS, and the regular nets
+  routed by the detailed router, which include the switch control nets (CRH/CRL/CRHB/CRLB, CPRE,
+  CHOLD; ~45 mm inside the arrays). So for post-layout of the *fabricated* chip, extract the clipped
+  `signoff/outputs.tapeout/SARADC.gds`, not a new PnR.
+- LVS: `make -C signoff lvs` runs `sg13g2.lvs` flat with std cells flattened in the schematic
+  (`signoff/tcl/flatstd.py`) and `ignore_top_ports_mismatch` (the flattened std-cell pin labels show up
+  as ~256 extra top ports in strict mode). Matches for both the re-run and the tapeout GDS.
 
 ## Simulation (schematic level, done)
 - `src/adc_char.py` (Makefile targets `char_static`, `char_sine`, `char_report` in `sim/`): static

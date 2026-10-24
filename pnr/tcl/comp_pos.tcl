@@ -42,24 +42,24 @@ proc pos_stdcell_comp {x y path} {
     # TODO: The R0 and MX maybe needs to be deduced from the site
     if {[[$::block findInst $up_inst] isPlaced] == 0} {
       # puts "place_inst -name \[list $up_inst\] -location \"$upx $upy\" -orientation MX -status LOCKED"
-      place_inst -name [list $up_inst] -location "$upx $upy" -orientation MX -status LOCKED
+      saradc_place_inst -name $up_inst -location "$upx $upy" -orientation MX -status LOCKED
     }
     if {[[$::block findInst $dw_inst] isPlaced] == 0} {
       # puts "place_inst -name \[list $dw_inst\] -location \"$dwx $dwy\" -orientation R0 -status LOCKED"
-      place_inst -name [list $dw_inst] -location "$dwx $dwy" -orientation R0 -status LOCKED
+      saradc_place_inst -name $dw_inst -location "$dwx $dwy" -orientation R0 -status LOCKED
     }
     set upx [expr $upx + $up_sizex]
     set dwx [expr $dwx + $dw_sizex]
     if {[expr $upx+$up_sizex-$tapx] > 40 } {
-      place_inst -name [list tapcell_up_inst_$i] -cell sg13g2f_TAPCELL -location "$upx $upy" -orientation MX -status LOCKED
-      place_inst -name [list tapcell_dw_inst_$i] -cell sg13g2f_TAPCELL -location "$dwx $dwy" -orientation R0 -status LOCKED
+      saradc_place_inst -name tapcell_up_inst_$i -cell sg13g2f_TAPCELL -location "$upx $upy" -orientation MX -status LOCKED
+      saradc_place_inst -name tapcell_dw_inst_$i -cell sg13g2f_TAPCELL -location "$dwx $dwy" -orientation R0 -status LOCKED
       set upx [expr $upx + [::ord::dbu_to_microns [[[$::block findInst tapcell_up_inst_$i] getBBox] getDX]]]
       set dwx [expr $dwx + [::ord::dbu_to_microns [[[$::block findInst tapcell_dw_inst_$i] getBBox] getDX]]]
       set tapx $upx
     }
   }
-  place_inst -name [list tapcell_up_inst_$n] -cell sg13g2f_TAPCELL -location "$upx $upy" -orientation MX -status LOCKED
-  place_inst -name [list tapcell_dw_inst_$n] -cell sg13g2f_TAPCELL -location "$dwx $dwy" -orientation R0 -status LOCKED
+  saradc_place_inst -name tapcell_up_inst_$n -cell sg13g2f_TAPCELL -location "$upx $upy" -orientation MX -status LOCKED
+  saradc_place_inst -name tapcell_dw_inst_$n -cell sg13g2f_TAPCELL -location "$dwx $dwy" -orientation R0 -status LOCKED
   
   set compx [expr $upx - $x]
   set compy [expr 2*$row]
@@ -67,9 +67,12 @@ proc pos_stdcell_comp {x y path} {
 }
 
 proc pos_stdcell_box {x y width path} {
+  pos_stdcell_objs $x $y $width [filter_by_regex [list ${path}\..*] [$::block getInsts]]
+}
+
+proc pos_stdcell_objs {x y width stdcell_objs} {
   global row
   # A very simple and dummy stdcell placement
-  set stdcell_objs [filter_by_regex [list ${path}\..*] [$::block getInsts]]
   set curx 0.0
   set cury 0.0
   set currot "R0"
@@ -88,7 +91,7 @@ proc pos_stdcell_box {x y width path} {
       set nextx [expr $sizex]
     }
     if {[[$::block findInst $inst] isPlaced] == 0} {
-      place_inst -name [list $inst] -location "[expr $x+$curx] [expr $y+$cury]" -orientation $currot -status PLACED
+      saradc_place_inst -name $inst -location "[expr $x+$curx] [expr $y+$cury]" -orientation $currot -status PLACED
     }
     set curx $nextx
   }

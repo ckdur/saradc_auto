@@ -435,9 +435,9 @@ proc insert_fill {x y mir repsx repsy master name} {
       set pmir [expr {$j % 2? $mired : $mirst}]
       if {[inst_exist ${name}_${i}_${j}] == 1} {
         [$::block findInst ${name}_${i}_${j}] setPlacementStatus UNPLACED
-        place_inst -name [list ${name}_${i}_${j}] -location "$px $py" -orientation $pmir -status LOCKED
+        saradc_place_inst -name ${name}_${i}_${j} -location "$px $py" -orientation $pmir -status LOCKED
       } else {
-        place_inst -name [list ${name}_${i}_${j}] -cell $master -location "$px $py" -orientation $pmir  -status LOCKED
+        saradc_place_inst -name ${name}_${i}_${j} -cell $master -location "$px $py" -orientation $pmir  -status LOCKED
       }
     }
   }
@@ -479,7 +479,7 @@ proc pos_sw {x y path spc spcb spca infill} {
     if {[[$::block findInst $inst] isPlaced] == 1} {
       [$::block findInst $inst] setPlacementStatus UNPLACED
     }
-    place_inst -name [list $inst] -location "$px $py" -orientation $mir -status LOCKED
+    saradc_place_inst -name $inst -location "$px $py" -orientation $mir -status LOCKED
     
     # Place the intermediate fillers
     if {$i != [expr $all_inst_l - 1]} {
@@ -529,7 +529,7 @@ proc pos_caps {x y path ind pw ph} {
       if {[[$::block findInst $cap_inst] isPlaced] == 1} {
         [$::block findInst $cap_inst] setPlacementStatus UNPLACED
       }
-      place_inst -name [list $cap_inst] -location "$px $py" -orientation $mir -status LOCKED
+      saradc_place_inst -name $cap_inst -location "$px $py" -orientation $mir -status LOCKED
     }
   }
   

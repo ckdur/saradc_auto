@@ -74,7 +74,8 @@ them. `pnr_legacy/outputs` and `signoff/outputs_legacy` hold a re-run of the fla
   `tools/` (PDK model rebuild, Trilinos/Xyce cmake configs), and `sim/pex/` for helpers that use
   extracted netlists in simulation (`capsum.py` per-net C totals, `unitcap.py` unit-cap AC C,
   `stitch.py` the stitcher).
-- `pex/`: everything that produces an extracted netlist (`pex/README.md`): `split.py` + `clip.py`
+- `pex/`: everything that produces an extracted netlist (`pex/README.md`): `split.py` + `clip.py`,
+  `platewires.py` (DEF geometry of the plate couplings)
   (split kpex extraction, the method that works), `relabel.py`, `magic/` and `kpex_full/` (the
   whole-layout attempts). All results in `pex/outputs/` (git-ignored): `arrH/`, `arrL/` (legacy
   arrays), `cdac/` (the macro), `top/` (the hierarchical top without the macros), `hier/` (tests on
@@ -140,9 +141,32 @@ reached (`adc_char.py cmd_static`), so the attenuated post-layout DAC gets all 3
   sim_summary.json to RISCVConsole/software/mso/results/sweep_20261022/ and `make -C
   RISCVConsole/software/mso/report` (comparison.tex, Section "Post-layout simulation").
 
-## Open
-- Remaining difference to the chip (bit 0 less reduced, bit 2 larger, bit 3 smaller): unit-cap
-  mismatch, wiring resistance (not extracted), undecoupled board references.
+## Next task: a better DAC wiring (see `docs/dac_wiring.md`)
+The bad linearity of the chip is the DAC wiring. `docs/dac_wiring.md` traces each coupling to the code;
+`pex/platewires.py <def> [--style legacy|macro]` measures them geometrically from the DEF (`--style macro`
+on `pnr/outputs/SARADC_CDAC.def`: today identical to the H half of the tapeout, the baseline).
+Causes (taped-out layout, per unit):
+- switch-row Metal3 rails of every tile (`create_sw_cap_conn`, `pnr_legacy/tcl/saradc_conn.tcl:459-481`):
+  FL rail at minimum spacing (0.28 um, 41 um long) next to the opposite top plate rail -> 7.2 fF; in
+  the MSB tiles (no VOUTL switch) VSH sits next to its own VOUT -> 11.3 fF;
+- per-tile Metal4 VSH/FL stripes in the slots next to the VOUTH column stripe (`saradc_conn.tcl:563-580`)
+  -> FL to VOUTH 3 fF at 0.42 um;
+- flat flow: `strip_h`/`strip_l` use the same global order, the L switches are inverted, so the
+  halves are not mirrors (L FL to VOUTH ~10 fF); the hierarchical flow (`pnr/`) fixes that;
+- bit 1/3 bridges (Metal5/TopMetal1 VSH+FL pairs) add ~9 fF per unit, 3.5 fF of it VSH-FL.
+To do, in `pnr/` (hierarchical flow; `pnr/tcl/cdac.tcl`, procedures in `pnr_legacy/tcl/saradc_conn.tcl`):
+1. Reorder/shield the Metal3 switch rails and the Metal4 tile slots so that VSH/FL never run next to
+   VOUTH/VOUTL (VSS or VI in between, or VOUT only as vias from the column stripes).
+2. The same rail list in the MSB tiles as in the LSB tiles; equal coupling per unit for every bit.
+3. Remove the bit 1/3 bridges (placement without them) or give every bit identical dummy bridges.
+4. Check each change with `platewires.py --style macro` (seconds), then split extraction + stitch +
+   `dacpar.py --style hier` +
+   `platewires.py` (target: plate-to-VOUT C per unit equal for all bits and halves within a few
+   0.1 fF), then the post-layout static (~7 h, 26 workers).
+5. Localize the rest of bit 0 (-10.6 % even without the plate C): decompose with `cfilter.py`
+   (control nets CRH/CRL/CRI only; VOUTH/VOUTL only).
+Still open: the remaining difference to the chip (bit 0 less reduced, bit 2 larger, bit 3 smaller):
+unit-cap mismatch, wiring resistance (not extracted), undecoupled board references.
 
 ## Conventions
 - Commit only when the user asks; end commit messages with

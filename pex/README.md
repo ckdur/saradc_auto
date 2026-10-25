@@ -8,6 +8,7 @@ simulation are in `sim/pex/`. All commands run from the root of `saradc_auto` af
 |---|---|---|
 | `split.py` | split extraction: clips the layout into a grid of pieces and extracts each with kpex 2.5D (CC) in parallel. **This is the method that works.** | `pex/outputs/<run>/` |
 | `clip.py` | (used by `split.py`) clips one window of the GDS and labels every DEF net segment inside it | `<piece>.gds`, `<piece>.gds.nets` |
+| `platewires.py` | geometric attribution of the DAC plate couplings to VOUTH/VOUTL from the DEF (layer, facing length per gap, overlaps); see `docs/dac_wiring.md` | stdout, `--json` |
 | `relabel.py` | copies the cell pin texts (L/2) to the text datatype (L/25) that the IHP LVS reads | |
 | `magic/` | `magic_pex.sh`: magic extraction of the whole layout, netgen LVS, `pex2xyce.py` | `pex/outputs/magic/` |
 | `kpex_full/` | `kpex.sh`: the kpex 2.5D runs on the whole flat layout (never finished), `strip_fill.py` | `pex/outputs/kpex_full/` |

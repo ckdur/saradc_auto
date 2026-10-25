@@ -46,7 +46,9 @@ proc pos_sw_wtap {x y path capw tapcap nsw} {
   return "$capw $swy"
 }
 
-proc pos_cdac_circle {x y pathlsb pathmsb pathdummy nbits pw ph tapcap spctap inv} {
+# pattern: optional list of (i j) positions in the order of the units (bit 0, the termination
+# unit, bit 1 x2, ..., MSB x2^(nbits-1)), replacing the circle (e.g. saradc_nested_pattern)
+proc pos_cdac_circle {x y pathlsb pathmsb pathdummy nbits pw ph tapcap spctap inv {pattern {}}} {
   global metal1_py
   global ntrack_capsw
   # The total number starts with the first two bits
@@ -71,6 +73,12 @@ proc pos_cdac_circle {x y pathlsb pathmsb pathdummy nbits pw ph tapcap spctap in
   set pos [lindex $pos_ncircle 0]
   set ncircle [lindex $pos_ncircle 1]
   set filt_pos [lrange $pos 0 [expr $sum-1]]
+  if {[llength $pattern] > 0} {
+    if {[llength $pattern] != $sum} {
+      error "pos_cdac_circle: pattern has [llength $pattern] positions, $sum units"
+    }
+    set filt_pos $pattern
+  }
   
   # Check how many dummies are
   set ndummy 0

@@ -153,6 +153,9 @@ proc create_sw_conn {x y path sizex w s nsw} {
 #    (the rails of the capacitor rows connect it; its Metal2 rails stop at the capacitors);
 #  - the Metal4 stripes of VSH and FL take the last two of the column slots, next to VIN,
 #    instead of the first two next to VOUTH.
+# fix 2: as 1, and the Metal4 stripes are only drawn in the units whose upper or lower neighbour
+# is the same bit (they only join units vertically). Needs a pattern without bridges (the
+# bridges land on these stripes).
 proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip {fix 0} {tops {}}} {
   setAddStripeMode -ignore_nondefault_domains true
   global metal1
@@ -562,6 +565,11 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip {fix 0} {tops {}}} 
     set ku [lsearch -exact $pos $posu]
     set margind 0.0
     set marginu 0.0
+    if {$fix >= 2} {
+      # No unit above/below: nothing to join there either
+      if {$kd < 0} { set margind $metal4_px }
+      if {$ku < 0} { set marginu $metal4_px }
+    }
     if {$kd >= 0} {
       set ld [lindex $lst $kd]
       set pathd [lindex $ld 0]
@@ -604,6 +612,9 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip {fix 0} {tops {}}} 
     if {$fix} {
       # The last two slots, after the column stripes
       set offset [expr $offset + ($nnets-2)*($sthird+$wthird)]
+    }
+    if {$fix >= 2 && $margind > 0 && $marginu > 0} {
+      continue
     }
     set x1 [expr $x + ($pi)*$sizex]
     set x2 [expr $x + ($pi+1)*$sizex]

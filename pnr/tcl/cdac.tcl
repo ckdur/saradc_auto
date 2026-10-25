@@ -31,7 +31,15 @@ initialize_floorplan -site obssite -die_area "0 0 1000 1000" -core_area "10 10 9
 
 set posx_cdac [expr $mgn + $sizetap]
 set posy_cdac $mgn
-set ret [pos_cdac_circle $posx_cdac $posy_cdac lsb_cdac msb_cdac dummy $nbits $pw $ph $saradc_tap 1 1]
+# Unit pattern: nested (default, every bit connected, no bridges) or circle (the tapeout one,
+# bits 1 and 3 joined by bridges); CDAC_PATTERN=circle for the old one
+set cdac_pattern [expr {[info exists env(CDAC_PATTERN)] ? $env(CDAC_PATTERN) : "nested"}]
+puts "\[cdac\] pattern $cdac_pattern"
+set pattern {}
+if {$cdac_pattern == "nested"} {
+  set pattern [saradc_nested_pattern $nbits]
+}
+set ret [pos_cdac_circle $posx_cdac $posy_cdac lsb_cdac msb_cdac dummy $nbits $pw $ph $saradc_tap 1 1 $pattern]
 set cdacx [lindex [lindex $ret 0] 0]
 set cdacy [lindex [lindex $ret 0] 1]
 set nx [lindex [lindex $ret 1] 0]
@@ -100,7 +108,8 @@ create_stripes_vdd_vss $posx_cdac $posy_cdac $cdacx $nx $H $saradc_tap VDD VSS [
 
 puts "\[Routing\] Internal connections of the CDAC units"
 # Plates kept away from the top plates (docs/dac_wiring.md); ROUTE_FIX=0 gives the tapeout wiring
-set route_fix [expr {[info exists env(ROUTE_FIX)] ? $env(ROUTE_FIX) : 1}]
+# fix 2 (only Metal4 joins between units of the same bit) needs the nested pattern
+set route_fix [expr {[info exists env(ROUTE_FIX)] ? $env(ROUTE_FIX) : ($cdac_pattern == "nested" ? 2 : 1)}]
 puts "\[Routing\] route_fix $route_fix"
 create_sw_cap_conn $posx_cdac $posy_cdac $posa $lsta $pw $ph $cdacx $cdacy $strip $route_fix {VOUTH VOUTL}
 
@@ -113,40 +122,42 @@ add_stripe_over_area $strip $metal3 horizontal $busw $buss 100 $buss \
   [list [expr $posx_cdac - $sizetap] $busy [expr $posx_cdac + $cdacx*$nx + $sizetap] [expr $busy + $bush]]
 setAddStripeMode -reset
 
-puts "\[Routing\] Bridges of bits 1 and 3"
-set wforth [expr $metal6_w]
-set sforth [expr 2*$metal6_s]
-set nx_2 [expr int($nx / 2)]
-set offset [expr $cdacy/2 - (2*$wforth+$sforth)/2]
-set x1 [expr $posx_cdac + ($nx_2-2)*$cdacx]
-set x2 [expr $posx_cdac + ($nx_2+2)*$cdacx]
-set y1 [expr $posy_cdac + ($ny-2)*$cdacy]
-set y2 [expr $posy_cdac + ($ny-1)*$cdacy]
-set area "$x1 $y1 $x2 $y2"
-# VSH and FL of bit 1 (LSB_VSH[2], LSB_FL[2])
-set capobj [$::block findInst "lsb_cdac.cdac_bit\\\[1\\\].cdac_unit.cap\\\[0\\\].cap/impl"]
-set VSH_FL_2 [list [[[$capobj findITerm i] getNet] getName] [[[$capobj findITerm zn] getNet] getName]]
-setAddStripeMode -stacked_via_top_layer $metal5 -stacked_via_bottom_layer $metal4
-add_stripe_over_area $VSH_FL_2 $metal5 horizontal $wforth $sforth $cdacy $offset $area
-if {$nbits >= 5} {
-  # VSH and FL of bit 3 (LSB_VSH[4], LSB_FL[4])
-  set capobj [$::block findInst "lsb_cdac.cdac_bit\\\[3\\\].cdac_unit.cap\\\[0\\\].cap/impl"]
-  set VSH_FL_4 [list [[[$capobj findITerm i] getNet] getName] [[[$capobj findITerm zn] getNet] getName]]
-  set x1 [expr $posx_cdac + ($nx_2-3)*$cdacx]
-  set x2 [expr $posx_cdac + ($nx_2+3)*$cdacx]
-  set y1 [expr $posy_cdac + ($ny-4)*$cdacy]
-  set y2 [expr $posy_cdac + ($ny-2)*$cdacy]
+if {$cdac_pattern == "circle"} {
+  puts "\[Routing\] Bridges of bits 1 and 3"
+  set wforth [expr $metal6_w]
+  set sforth [expr 2*$metal6_s]
+  set nx_2 [expr int($nx / 2)]
+  set offset [expr $cdacy/2 - (2*$wforth+$sforth)/2]
+  set x1 [expr $posx_cdac + ($nx_2-2)*$cdacx]
+  set x2 [expr $posx_cdac + ($nx_2+2)*$cdacx]
+  set y1 [expr $posy_cdac + ($ny-2)*$cdacy]
+  set y2 [expr $posy_cdac + ($ny-1)*$cdacy]
   set area "$x1 $y1 $x2 $y2"
+  # VSH and FL of bit 1 (LSB_VSH[2], LSB_FL[2])
+  set capobj [$::block findInst "lsb_cdac.cdac_bit\\\[1\\\].cdac_unit.cap\\\[0\\\].cap/impl"]
+  set VSH_FL_2 [list [[[$capobj findITerm i] getNet] getName] [[[$capobj findITerm zn] getNet] getName]]
   setAddStripeMode -stacked_via_top_layer $metal5 -stacked_via_bottom_layer $metal4
-  add_stripe_over_area $VSH_FL_4 $metal5 horizontal $wforth $sforth $cdacy $offset $area
-  set x1 [expr $posx_cdac + ($nx_2-1)*$cdacx]
-  set x2 [expr $posx_cdac + ($nx_2+1)*$cdacx]
-  set offset [expr $cdacx/2 - (2*$wforth+$sforth)/2]
-  set area "$x1 $y1 $x2 $y2"
-  setAddStripeMode -stacked_via_top_layer TopMetal1 -stacked_via_bottom_layer $metal5
-  add_stripe_over_area $VSH_FL_4 TopMetal1 vertical $wforth $sforth $cdacx $offset $area
+  add_stripe_over_area $VSH_FL_2 $metal5 horizontal $wforth $sforth $cdacy $offset $area
+  if {$nbits >= 5} {
+    # VSH and FL of bit 3 (LSB_VSH[4], LSB_FL[4])
+    set capobj [$::block findInst "lsb_cdac.cdac_bit\\\[3\\\].cdac_unit.cap\\\[0\\\].cap/impl"]
+    set VSH_FL_4 [list [[[$capobj findITerm i] getNet] getName] [[[$capobj findITerm zn] getNet] getName]]
+    set x1 [expr $posx_cdac + ($nx_2-3)*$cdacx]
+    set x2 [expr $posx_cdac + ($nx_2+3)*$cdacx]
+    set y1 [expr $posy_cdac + ($ny-4)*$cdacy]
+    set y2 [expr $posy_cdac + ($ny-2)*$cdacy]
+    set area "$x1 $y1 $x2 $y2"
+    setAddStripeMode -stacked_via_top_layer $metal5 -stacked_via_bottom_layer $metal4
+    add_stripe_over_area $VSH_FL_4 $metal5 horizontal $wforth $sforth $cdacy $offset $area
+    set x1 [expr $posx_cdac + ($nx_2-1)*$cdacx]
+    set x2 [expr $posx_cdac + ($nx_2+1)*$cdacx]
+    set offset [expr $cdacx/2 - (2*$wforth+$sforth)/2]
+    set area "$x1 $y1 $x2 $y2"
+    setAddStripeMode -stacked_via_top_layer TopMetal1 -stacked_via_bottom_layer $metal5
+    add_stripe_over_area $VSH_FL_4 TopMetal1 vertical $wforth $sforth $cdacx $offset $area
+  }
+  setAddStripeMode -reset
 }
-setAddStripeMode -reset
 
 ####################################
 ## Pins

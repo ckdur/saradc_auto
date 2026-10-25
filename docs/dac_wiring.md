@@ -175,7 +175,58 @@ Macro and top: routing 0 violations, DRC 0, LVS match. `pex/hier_pex.sh fix1` st
 
 The halves stay exact mirrors.
 
-What is left of the bit-to-bit differences is the bridges of bits 1 and 3: about +9 fF per unit on
+What was left of the bit-to-bit differences after fix1 is the bridges of bits 1 and 3: about +9 fF per unit on
 each plate, VSH–FL +3 fF, and FL 1 fF closer to the comparator inputs. That is step 2.
 
-The post-layout static of fix1 has not been run yet (about 7 h).
+The post-layout static of fix1 was not run (superseded by step 2).
+
+**Step 2 (fix2, 2026-10-25): a bridgeless pattern.**
+
+The circle splits bit 1 (its two units sit on either side of bit 0 and the termination unit) and
+bit 3 (three islands). The bridges that joined them were the largest plate wires of the array: 138
+and 121 µm² per unit on Metal5/TopMetal1. `saradc_nested_pattern` (`pnr/tcl/hier_utils.tcl`) puts
+the same 8 × 4 units as nested U shapes, inside the same ring of dummies:
+
+```
+row 4: M M M M M M M M
+row 3: M 3 3 3 3 3 3 M
+row 2: M 3 2 2 2 2 3 M
+row 1: M M 0 1 1 T M M     (T: termination unit; row 1 is next to the bus after the flip)
+```
+
+- Every bit is one connected group, so no bridges are needed.
+- Bits 1 to 4 are mirror-symmetric about the vertical axis. A symmetric connected group must
+  contain a pair of units on the axis, and the 4 rows only have room for 4 such pairs, so bit 0
+  and the termination unit sit side by side.
+- The cost is the vertical centroid of the circle. Oxide gradients over about 100 µm are in the
+  order of 0.1 %, against the several-percent parasitic errors.
+
+`create_sw_cap_conn` gets `fix 2`: as `fix 1`, but the per-unit Metal4 VSH/FL stripes are only
+drawn where the unit above or below belongs to the same bit. That is the only thing they do, and it
+needs a bridgeless pattern. Bits 0 to 2 now need no Metal4 at all. Bits 3 and 4 need it in half
+their units (8.3 µm² per unit instead of 16.3).
+
+`pnr/tcl/cdac.tcl` uses the nested pattern by default. `CDAC_PATTERN=circle` gives the circle with
+its bridges, at `fix 1`. Macro and top: routing 0 violations, DRC 0, LVS match;
+`pex/hier_pex.sh fix2` stitches with 0 mismatches. The halves are exact mirrors.
+
+| Per unit (fF), H half | Bit 0 | Bit 1 | Bit 2 | Bit 3 | Bit 4 |
+|---|---|---|---|---|---|
+| VSH total: baseline | 98.6 | 108.4 | 101.1 | 109.0 | 97.9 |
+| VSH total: fix2 | 98.6 | 97.7 | 98.9 | 100.8 | 101.0 |
+| FL total: baseline | 65.0 | 74.6 | 66.4 | 75.5 | 64.1 |
+| FL total: fix2 | 46.0 | 46.1 | 46.4 | 47.9 | 48.0 |
+| VSH → VOUTH / VOUTL: baseline | 4.7 / 4.7 | 5.0 / 5.2 | 4.6 / 4.8 | 5.1 / 5.2 | 11.3 / 0.4 |
+| VSH → VOUTH / VOUTL: fix2 | 4.7 / 4.7 | 4.8 / 4.7 | 4.7 / 4.8 | 4.8 / 4.8 | 5.1 / 0.4 |
+| FL → VOUTH / VOUTL: baseline | 3.0 / 7.2 | 3.6 / 7.8 | 3.0 / 7.3 | 3.5 / 7.6 | 3.0 / 0.2 |
+| FL → VOUTH / VOUTL: fix2 | 0.4 / 0.3 | 0.5 / 0.3 | 0.4 / 0.3 | 0.5 / 0.3 | 0.5 / 0.2 |
+| VSH–FL wiring (parallel to the unit): baseline | 24.1 | 27.6 | 24.1 | 27.8 | 24.3 |
+| VSH–FL wiring: fix2 | 19.1 | 19.2 | 19.1 | 20.7 | 20.7 |
+
+What remains different between bits:
+- Bits 3 and 4 have VSH–FL +1.6 fF and FL +2 fF from their Metal4 joins.
+- The MSB VSH couples to VIP/VIN (24.2 fF, its shields) instead of VREF (19–20 fF).
+- The MSB VSH couples to its own comparator input only: it never connects to VOUTL. That is the
+  circuit, not the wiring.
+
+Next: the post-layout static of fix2 (about 7 h), to see what the weights become.

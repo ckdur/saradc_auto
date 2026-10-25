@@ -127,3 +127,26 @@ proc saradc_cut_rows {x1 y1 x2 y2} {
     }
   }
 }
+
+# Unit positions of a bridgeless pattern for pos_cdac_circle (nbits 5, the 8 x 4 units of the
+# circle, columns 1..8, rows 1..4): every bit is one connected group of units, so the plates
+# need no bridges, and bits 1..4 are symmetric about the vertical axis (nested U shapes):
+#   row 4: M M M M M M M M
+#   row 3: M 3 3 3 3 3 3 M
+#   row 2: M 3 2 2 2 2 3 M
+#   row 1: M M 0 1 1 T M M      (T: the termination unit)
+# Order: bit 0, the termination unit, bit 1 x2, bit 2 x4, bit 3 x8, MSB x16.
+proc saradc_nested_pattern {nbits} {
+  if {$nbits != 5} {
+    utl::error ORD 502 "saradc_nested_pattern is only defined for 5 bits"
+  }
+  set p {{3 1} {6 1}}
+  lappend p {4 1} {5 1}
+  lappend p {3 2} {4 2} {5 2} {6 2}
+  foreach i {2 3 4 5 6 7} { lappend p "$i 3" }
+  lappend p {2 2} {7 2}
+  foreach i {1 2 3 4 5 6 7 8} { lappend p "$i 4" }
+  foreach j {3 2 1} { lappend p "1 $j" "8 $j" }
+  lappend p {2 1} {7 1}
+  return $p
+}

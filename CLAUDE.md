@@ -162,12 +162,18 @@ Macro and top: DRT 0, DRC 0, LVS match; `pex/hier_pex.sh fix1` (stitch check 0 m
 Per unit, baseline -> fix1: FL to VOUTH/VOUTL 3.0/7.2 -> 0.6/0.4 fF (bits 1/3: 1.6/1.0, the bridges);
 MSB VSH to its VOUT 11.3 -> 5.2 (= the other bits per side); VSH to VREF/VIN 12 -> 21-22 (MSB 25.5, the
 shield rails, static nets). Left: the bit 1/3 bridges (+9 fF per unit on each plate, VSH-FL +3 fF).
-`pnr/outputs` and `signoff/outputs` now hold the fix1 layout (the parent chip reads them).
+Step 2 done (fix2, the default now): `saradc_nested_pattern` (`pnr/tcl/hier_utils.tcl`, nested U shapes,
+every bit connected, no bridges; `CDAC_PATTERN=circle` for the old one) + `fix 2` (Metal4 VSH/FL stripes only
+where the unit above/below is the same bit). DRC 0, LVS match, `pex/hier_pex.sh fix2` 0 mismatches.
+Per unit (H): VSH total 97.7-101.0 fF for all bits (baseline 97.9-109.0), FL 46.0-48.0 (64-76), VSH to
+VOUTH/VOUTL 4.7-5.1/0.4-4.8, FL to them <= 0.5, VSH-FL 19.1-20.7 (24-28); details in docs/dac_wiring.md s7.
+Next: post-layout static of `sim/outputs/pex/SARADC_fix2.pex.ckt` (~7 h, 26 workers), compare the weights.
+`pnr/outputs` and `signoff/outputs` now hold the fix2 layout (the parent chip reads them).
 The original plan, in `pnr/` (hierarchical flow; `pnr/tcl/cdac.tcl`, procedures in `pnr_legacy/tcl/saradc_conn.tcl`):
 1. (done, fix1) Reorder/shield the Metal3 switch rails and the Metal4 tile slots so that VSH/FL never run next to
    VOUTH/VOUTL (VSS or VI in between, or VOUT only as vias from the column stripes).
 2. (done, fix1) The same rail list in the MSB tiles as in the LSB tiles; equal coupling per unit for every bit.
-3. Remove the bit 1/3 bridges (placement without them) or give every bit identical dummy bridges.
+3. (done, fix2) Remove the bit 1/3 bridges (placement without them) or give every bit identical dummy bridges.
 4. (tools done: `pex/hier_pex.sh <tag>`) Check each change with `platewires.py --style macro` (seconds), then split extraction + stitch +
    `dacpar.py --style hier` +
    `platewires.py` (target: plate-to-VOUT C per unit equal for all bits and halves within a few

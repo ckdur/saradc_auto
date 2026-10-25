@@ -40,17 +40,21 @@ a ratio effect as well (the capacitance of the switches and of the dummy units o
 The measured chip (report of the MSO measurement in \texttt{RISCVConsole/software/mso}) has bit
 weights that differ from binary by \SIrange{-8}{7}{\percent}, an INL of about \num{0.5} LSB rms and a
 gain error of about \SI{6}{\percent}. None of this is present in the schematic simulation at the same
-supply, references and clock. The cause is outside of what is simulated here:
+supply, references and clock.
+\IfFileExists{results_pex.tex}{%
+The post-layout simulation of the taped-out layout (Section~\ref{sec:postlayout}) reproduces the sign
+of all five weight errors, about two thirds of the INL and half of the loss of ENOB: the main cause is
+the wiring capacitance of the DAC plates, which differs from bit to bit (the bridges of bits 1 and 3,
+the coupling of the MSB plate to its own top plate and of the other floating plates to the opposite top
+plate) and between the two halves of the taped-out layout. The rest can come from}{%
+Possible causes, outside of what is simulated here:}
 \begin{itemize}
-  \item the layout parasitics of the DAC: routing capacitance from the switched plates of each bit to
-        the top plates adds to the weight of that bit and can be different for every bit (the extraction
-        is pending, Section~\ref{sec:pex});
   \item the references of the board, which have no decoupling at the chip and are driven by
         \SI{1}{MHz} op-amps: how far they recover within one bit time depends on the bits already decided;
-  \item random mismatch of the unit capacitors (not simulated; errors of several percent in units made
-        of tens of MOS capacitors are large for random mismatch).
+  \item random mismatch of the unit capacitors (not simulated);
+  \item the wiring resistance, which the extraction leaves out.
 \end{itemize}
-The post-layout simulation and a measurement with decoupled references will separate these causes.
+A measurement with the references decoupled at the chip would separate the board from the chip.
 
 \subsection{Dynamic performance}
 \IfFileExists{table_sweep.tex}{%
@@ -76,5 +80,6 @@ their slew rate limit).}{}}{%
 The sine records are still running; this subsection is completed with them.}
 
 \subsection{Limits of this simulation}
-Schematic netlist only (no layout parasitics), typical corner at \SI{25}{\celsius}, no mismatch and no
+Schematic netlist for the dynamic part; the post-layout netlists (coupling capacitance, no
+resistance) for the static transfer only. Typical corner at \SI{25}{\celsius}, no mismatch and no
 noise; the board front end enters only through a linear model of its amplitude and phase.

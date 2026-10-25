@@ -1,0 +1,98 @@
+% Post-layout static results. Macros, tables and figure from make_sim_report.py --pex
+\input{results_pex.tex}
+\section{Post-layout simulation}
+\label{sec:postlayout}
+The joined netlists of Section~\ref{sec:split} (transistors and coupling capacitances, no resistance)
+replace the schematic netlist in the same static characterization: same conditions as in the
+summary, staircase and bisection of all 31 transition levels to
+\SI{0.39}{mV}. With 68\,519 capacitors on top of the transistors one conversion takes several minutes
+instead of a few seconds, so only the static transfer is simulated (taped-out netlist: \SI{7.2}{h}
+with 26 jobs). The
+sine records are not: at low frequency the dynamic part adds nothing (Section~\ref{sec:dynamic}), and the
+ENOB of a sine quantized with the post-layout transition levels (ENOB$_{st}$: a coherent sine of 27 LSB
+peak to peak, in the converter's own end-point LSB) is what a low-frequency record would give.
+
+\begin{table}[H]\centering\small
+\input{table_pex.tex}
+\caption{Static results of the schematic and of the post-layout netlists: the bit weights of a
+least-squares fit to the transition levels, in the end-point LSB, the end-point LSB, the INL and the
+ENOB of a sine quantized with the transition levels. The last two rows are the taped-out netlist with
+only the capacitors that touch a switched or floating plate of the DAC (VSH, FL of every bit), and with
+all the other capacitors.}
+\label{tab:pex}
+\end{table}
+
+\begin{figure}[H]\centering
+\includegraphics{fig/pex_dnl_inl.pdf}
+\caption{DNL and INL of the schematic and of the two post-layout netlists, each in its own end-point
+LSB.}
+\label{fig:pex_dnl_inl}
+\end{figure}
+
+\subsection{Result}
+\begin{itemize}
+  \item \textbf{The layout breaks the binary weights.} The taped-out netlist has bit weight errors of
+        \TpBitEA{}/\TpBitEB{}/\TpBitEC{}/\TpBitED{}/\TpBitEE{}\,\% (bit 0 to 4), DNL from
+        \num{\TpDnlMin} to \num{\TpDnlMax} LSB and \TpInlRms{} LSB rms of INL. The ENOB$_{st}$ falls from
+        \SchStEnob{} bits (schematic) to \TpStEnob{} bits. The hierarchical re-layout gives
+        \HiBitEA{}/\HiBitEB{}/\HiBitEC{}/\HiBitED{}/\HiBitEE{}\,\%, with the same signs; its INL is smaller
+        (\HiInlRms{} LSB rms, ENOB$_{st}$ \HiStEnob{} bits) because its two halves are exact mirrors.
+  \item \textbf{The DAC is attenuated.} The end-point LSB grows from \SI{\Lsb}{mV} to \SI{\TpLsb}{mV}
+        (taped-out, gain error \SI{\TpGainErr}{\percent}) and \SI{\HiLsb}{mV} (re-layout): the wiring
+        capacitance of the top plates (VOUTH/VOUTL to the supplies and to each other) does not take part in
+        the redistribution and divides the DAC step.
+  \item \textbf{Pattern.} Bit 0 is the most reduced, bits 1 and 3 are smaller and bits 2 and 4 larger
+        than binary. The pattern follows the plate wiring (Table~\ref{tab:par_tapeout}): bits 1 and 3 have
+        the extra bridges on Metal5/TopMetal1 and about \SI{10}{\percent} more wiring capacitance per unit
+        on both plates; the MSB has its switched plate (VSH) coupled \SI{11}{fF} per unit to the top plate
+        of its own half (VOUTH for H, VOUTL for L), against about \SI{5}{fF} to each top plate for the other bits; the floating plates
+        (FL) of bits 0 to 3 couple 7 to \SI{10}{fF} per unit to the top plate of the other half, the MSB
+        less than \SI{1}{fF}. These couplings are of the order of \SI{10}{\percent} of the unit
+        capacitance (\SI{67.8}{fF} with FL floating), so they change the effective charge of each bit by
+        several percent, differently for each bit.
+  \item \textbf{Decomposition.} Keeping only the capacitors on the plates (VSH, FL) gives
+        \PlBitEA{}/\PlBitEB{}/\PlBitEC{}/\PlBitED{}/\PlBitEE{}\,\% (INL \PlInlRms{} LSB rms);
+        \ifdefined\NpBitEA
+        keeping all the others gives \NpBitEA{}/\NpBitEB{}/\NpBitEC{}/\NpBitED{}/\NpBitEE{}\,\%
+        (INL \NpInlRms{} LSB rms).
+        \else
+        the run with all the other capacitors is not finished.
+        \fi
+        Each part alone already has the pattern of the full netlist; the effects do not simply add
+        (the sum of the two is larger than the errors of the full netlist). The attenuation of the DAC comes only from the
+        plates (LSB \SI{\PlLsb}{mV} with only the plate capacitors, \SI{\NpLsb}{mV} without them).
+        Without the plate capacitors the errors come from the other parasitics around the DAC: the
+        capacitance of the top plates and of the switch control nets, which couple the switching of
+        each bit into the comparator inputs.
+\end{itemize}
+
+\begin{table}[H]\centering\scriptsize
+\input{table_par_tapeout.tex}
+\caption{Wiring capacitance of the plates of the taped-out layout per unit capacitor (\si{fF}), split
+by the net on the other side (\texttt{sim/pex/dacpar.py}). VSH is the switched plate of a bit (to the
+input, VOUTH or VOUTL), FL the floating plate. VOUTH and VOUTL are the two comparator inputs (top
+plates); H is the lower half, whose MSB connects to VOUTH, L the upper half (MSB on VOUTL, the other bits
+with VOUTH and VOUTL exchanged). ``VSH--FL'' is the wiring coupling between the two plates of the same bit, in parallel with the
+unit capacitors.}
+\label{tab:par_tapeout}
+\end{table}
+\IfFileExists{table_par_hier.tex}{%
+In the hierarchical re-layout the L half is an exact mirror of H (the same numbers with VOUTH and VOUTL
+exchanged, Table~\ref{tab:par_hier}). In the taped-out layout it is not: the floating plates of the L
+half couple about \SI{10}{fF} to VOUTH and less than \SI{1}{fF} to VOUTL, the H half 3 and \SI{7}{fF}.
+This asymmetry between the halves is why the taped-out INL is larger.
+\begin{table}[H]\centering\scriptsize
+\input{table_par_hier.tex}
+\caption{As Table~\ref{tab:par_tapeout}, hierarchical re-layout.}
+\label{tab:par_hier}
+\end{table}}{}
+
+\subsection{Comparison with the chip}
+The chip measures bit weight errors of \num{-7.8}/\num{-5.7}/\num{+6.7}/\num{-8.4}/\num{+3.5}\,\%
+(report of the MSO measurement), an INL of about \num{0.5} LSB rms and an ENOB of \num{3.8} bits at low
+frequency. The taped-out post-layout netlist has the same sign on all five bits, errors within about
+\SI{1}{\percent} of the measured ones on bits 1 and 4 and within \SI{5}{\percent} on the others; it reaches about two thirds of the measured INL and half of the measured
+loss of ENOB (from \SchStEnob{} to \TpStEnob{} bits, against \num{3.8}). The layout parasitics of the
+DAC are therefore the main cause of the measured nonlinearity. What remains (in the measurement bit 0 is less
+reduced, bit 2 larger and bit 3 smaller) is of the size that random mismatch of the unit capacitors, the
+references of the board or the parasitic resistance (not extracted) can give.

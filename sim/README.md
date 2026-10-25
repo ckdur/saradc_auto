@@ -12,7 +12,7 @@ below `sim/outputs/` is git-ignored: the scripts here regenerate it.
 |---|---|---|
 | `char.sh` | static and sine characterization with ngspice, Xyce cross-check, report | `sim/outputs/char/`, `sim/outputs/SARADC.flat.ckt` |
 | `report/` | `make_sim_report.py`: the PDF report and `sim_summary.json` | `<char dir>/report/` |
-| `pex/` | helpers for simulations with extracted netlists: `capsum.py` (per-net capacitance totals of a set of kpex netlists, merges the `name$N` pieces), `unitcap.py` (device capacitance of one CDAC unit, ngspice AC) | `sim/pex/unitcap/` |
+| `pex/` | helpers for simulations with extracted netlists: `stitch.py` (joins the pieces of split extractions into one flat netlist and checks it against the schematic), `dacpar.py` (wiring C of the DAC plates per bit and unit), `cfilter.py` (keeps or drops capacitors by net, for decompositions), `capsum.py` (per-net capacitance totals, merges the `name$N` pieces), `unitcap.py` (device capacitance of one CDAC unit, ngspice AC) | `sim/outputs/pex/`, `sim/pex/unitcap/` |
 | `tools/build_models.sh` | rebuilds the PSP103/r3_cmc models of the PDK (OSDI for ngspice, plugins for Xyce) | `$PDK_ROOT/$PDK/libs.tech/{ngspice/osdi,xyce/plugins}` |
 | `tools/*-reconfigure.sh` | cmake configurations of Trilinos 14 and Xyce as built for these runs | |
 
@@ -87,3 +87,29 @@ hours and each sine frequency many CPU-hours; lower `--workers` in `char.sh` on 
 The `report` step builds `<board dir>/report/report.pdf` and `sim_summary.json`. For the measurement
 report, copy that JSON to `RISCVConsole/software/mso/results/sweep_20261022/` and rebuild there
 (`make -C software/mso/report`).
+
+## 4. Post-layout static transfer
+
+The extracted pieces come from `pex/split.py` (`pex/README.md`). Stitch, simulate, report:
+
+```bash
+O=sim/outputs/pex; B="--vdd 1.2 --vrefh 0.8 --vrefl 0.4 --vcm 0.6"
+# Taped-out layout (flat): only top-level pieces
+python3 sim/pex/stitch.py $O/SARADC_tapeout.pex.ckt --cdl pnr_legacy/outputs.tapeout/SARADC.cdl \
+  --top pex/outputs/tapeout/ana/pieces.txt pex/outputs/tapeout/dig/pieces.txt --check $O/SARADC_tapeout.flat.ckt
+# Hierarchical layout: the top without the macros, plus the macro pieces for each instance
+python3 sim/pex/stitch.py $O/SARADC_hier.pex.ckt --cdl pnr/outputs/SARADC.cdl --top pex/outputs/top/split/pieces.txt \
+  --macro SARADC_CDAC=pex/outputs/cdac/pieces.txt:pnr/outputs/SARADC_CDAC.cdl --check $O/SARADC_hier.flat.ckt
+# Decomposition: only / without the capacitors on the DAC plates
+python3 sim/pex/cfilter.py $O/SARADC_tapeout.pex.ckt $O/SARADC_tapeout_plates.pex.ckt --keep '(VSH|FL)(\[\d+\])?$'
+python3 sim/pex/cfilter.py $O/SARADC_tapeout.pex.ckt $O/SARADC_tapeout_noplates.pex.ckt --drop '(VSH|FL)(\[\d+\])?$'
+python3 src/adc_char.py static --k 4 --workers 26 --netlist $O/SARADC_tapeout.pex.ckt $B   # ~7 h
+python3 sim/pex/dacpar.py $O/SARADC_tapeout.pex.ckt --style legacy --json <char dir>/plate_par.json
+C=sim/outputs/char/ngspice_SARADC; S=_mos_tt_10MHz_vdd1.2_ref0.4-0.8_cm0.6
+python3 sim/report/make_sim_report.py $C.flat$S --ref $C.flat_mos_tt_10MHz/static.json \
+  --pex tapeout=${C}_tapeout.pex$S --pex hier=${C}_hier.pex$S --pex plates=${C}_tapeout_plates.pex$S \
+  --pex noplates=${C}_tapeout_noplates.pex$S
+```
+
+The flat schematic for `--check` is the netlist `adc_char.py` flattens (before merging). One
+post-layout conversion takes minutes, so only the static transfer is simulated.

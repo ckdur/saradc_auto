@@ -9,7 +9,8 @@
 measurement report of the chip (RISCVConsole software/mso/report) compares against.
 --pex adds the static result of a post-layout netlist (a char dir of adc_char.py --netlist); if the
 char dir holds plate_par.json (sim/pex/dacpar.py) its plate parasitics are tabulated as well. NAME is
-tapeout (the fabricated layout) or hier (the hierarchical re-layout).
+tapeout (the fabricated layout), hier (the hierarchical re-layout), or plates / noplates (the
+taped-out netlist with only / without the capacitors on the DAC plates, sim/pex/cfilter.py).
 """
 import glob
 import json
@@ -287,13 +288,16 @@ def static_enob(r, amp_lsb=27.0, n=4093, cycles=1021):
     return sinad, (sinad - 1.76) / 6.02
 
 
-PEX_LABEL = {"tapeout": "post-layout, taped-out layout", "hier": "post-layout, hierarchical re-layout"}
+PEX_LABEL = {"tapeout": "post-layout, taped-out layout", "hier": "post-layout, hierarchical re-layout",
+             "plates": "taped-out, only the plate wiring C", "noplates": "taped-out, without the plate wiring C"}
+PEX_TAG = {"tapeout": "Tp", "hier": "Hi", "plates": "Pl", "noplates": "Np"}
+PEX_FIG = ("tapeout", "hier")  # The decompositions are only in the table
 
 
 def fig_pex(r, pex, build):
     """DNL/INL of the schematic and of the post-layout netlists."""
     fig, (a1, a2) = plt.subplots(2, 1, figsize=(FIG_W, 3.6), sharex=True)
-    runs = [("schematic", r)] + [(PEX_LABEL.get(k, k), p["r"]) for k, p in pex.items()]
+    runs = [("schematic", r)] + [(PEX_LABEL.get(k, k), p["r"]) for k, p in pex.items() if k in PEX_FIG]
     wd = 0.8 / len(runs)
     for i, (lbl, q) in enumerate(runs):
         a1.bar(np.arange(1, NCODES - 1) + (i - (len(runs) - 1) / 2) * wd, q["dnl"], width=wd, color=SERIES[i], label=lbl)
@@ -316,14 +320,20 @@ def write_pex(build, r, pex):
     with open(os.path.join(build, "table_pex.tex"), "w") as fo:
         fo.write("\\begin{tabular}{lcccccccc}\n\\toprule\n & \\multicolumn{5}{c}{Bit weight error (\\si{\\percent})} & "
                  "LSB & INL & ENOB$_{st}$ \\\\\n Netlist & 0 & 1 & 2 & 3 & 4 & (\\si{mV}) & (LSB rms) & (bits) \\\\\n\\midrule\n")
-        for lbl, q in [("Schematic", r)] + [(PEX_LABEL.get(k, k).capitalize(), p["r"]) for k, p in pex.items()]:
+        runs = [("Schematic", r)] + [(PEX_LABEL[k].capitalize(), pex[k]["r"]) for k in PEX_FIG if k in pex]
+        dec = [((lambda s: s[0].upper() + s[1:])(PEX_LABEL.get(k, k).split(", ", 1)[-1]), p["r"]) for k, p in pex.items() if k not in PEX_FIG]
+        for i, (lbl, q) in enumerate(runs + dec):
+            if i == len(runs):  # The decompositions of the taped-out netlist
+                fo.write("\\midrule\n\\multicolumn{9}{l}{Taped-out layout, part of the parasitics:} \\\\\n")
+            if i >= len(runs):
+                lbl = "\\quad " + lbl
             w = bit_weights(q)
             fo.write("%s & %s & %.2f & %.2f & %.2f \\\\\n" % (
                 lbl, " & ".join("%+.1f" % ((w[b] / 2 ** b - 1) * 100) for b in range(NBITS)), q["lsb"] * 1e3,
                 np.sqrt(np.mean(q["inl"] ** 2)), static_enob(q)[1]))
         fo.write("\\bottomrule\n\\end{tabular}\n")
     for k, p in pex.items():
-        tag = {"tapeout": "Tp", "hier": "Hi"}.get(k, k.capitalize())
+        tag = PEX_TAG.get(k, k.capitalize())
         q = p["r"]
         w = bit_weights(q)
         for b in range(NBITS):
@@ -571,7 +581,7 @@ def main():
     with open(os.path.join(build, "sim_summary.json"), "w") as fo:
         json.dump(summary, fo, indent=1, default=float)
 
-    for f in ("report.tex", "discussion.tex", "references.tex"):
+    for f in ("report.tex", "pex.tex", "discussion.tex", "references.tex"):
         shutil.copy(os.path.join(REPORT_DIR, f), build)
     subprocess.run(["latexmk", "-pdf", "-interaction=nonstopmode", "-halt-on-error", "report.tex"],
                    cwd=build, check=True, stdout=subprocess.DEVNULL)

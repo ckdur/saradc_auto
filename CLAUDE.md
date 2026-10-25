@@ -67,9 +67,7 @@ them. `pnr_legacy/outputs` and `signoff/outputs_legacy` hold a re-run of the fla
   `RISCVConsole/software/mso/results/sweep_20261022/`).
 - Schematic result: ideal (weights 1.000/1.998/3.999/8.001/15.992, DNL/INL within 0.01 LSB, ENOB 4.8).
   The chip measures bit weights -8 % to +7 % off binary, INL about 0.5 LSB rms, ENOB 3.8 at low
-  frequency. Candidate causes: DAC layout parasitics (routing from the switched plates of each bit to
-  the top plates), the undecoupled board references, unit-capacitor mismatch. **The post-layout
-  simulation is the open task.**
+  frequency. The post-layout simulation (below) explains most of it.
 
 ## Repository layout for simulation and extraction
 - `sim/`: simulations only (`sim/README.md`): `char.sh` (characterization steps), `report/`,
@@ -120,20 +118,31 @@ them. `pnr_legacy/outputs` and `signoff/outputs_legacy` hold a re-run of the fla
   so small pieces in parallel are the only practical way. kpex on the whole macro hit its 4 h
   timeout (single-threaded in the 2.5D engine despite `--threads 4`).
 
-## Post-layout static result (hierarchical layout, board conditions)
-- `sim/outputs/char/ngspice_SARADC_hier.pex_mos_tt_10MHz_vdd1.2_ref0.4-0.8_cm0.6/static.json`
-  (3.3 h with 26 workers, 32 CPU-hours; one 3-conversion job 18.5 min). LSB 27.6 mV (schematic 25.1 mV: the top-plate parasitics attenuate
-  the DAC), so transition 1 lies below the start of the staircase (-0.425 V) and is not in the file;
-  `make_sim_report.analyze_static` needs all transitions, so the staircase range must be widened.
-- Bit weights (least-squares fit on transitions 2..31, residual 0.07 LSB): -13.3/-4.3/+1.2/-1.7/+1.9 %
-  (bit0..bit4); the chip measures -7.8/-5.7/+6.7/-8.4/+3.5 %: same sign on all five bits, magnitudes
-  differ. DNL -0.48 ... +0.57 LSB. Schematic: all within 0.1 %.
+## Post-layout static results (board conditions, done)
+Char dirs `sim/outputs/char/ngspice_SARADC_<name>.pex_mos_tt_10MHz_vdd1.2_ref0.4-0.8_cm0.6/` (static.json +
+plate_par.json from `sim/pex/dacpar.py`). The staircase now extends itself until codes 0 and 31 are
+reached (`adc_char.py cmd_static`), so the attenuated post-layout DAC gets all 31 transitions.
+- Tapeout netlist: `pex/outputs/tapeout/{ana,dig}` (81 pieces, grids in pex/README.md; the cut at
+  y 177.48, not 180.54, which cuts cells), stitched with only `--top` into
+  `sim/outputs/pex/SARADC_tapeout.pex.ckt` (24198 MOS, 68519 C, check 572 nets 0 mismatches).
+  Static 7.2 h with 26 workers.
+- Bit weight errors (%, bit0..4), LSB, INL rms, ENOB of a quantized sine (static_enob):
+  schematic 0/0/0/0/0, 25.14 mV, 0.01, 4.81; tapeout -12.5/-6.8/+3.3/-5.2/+2.3, 26.78 mV, 0.33, 4.26;
+  hier -13.5/-4.7/+0.4/-2.5/+1.0, 27.88 mV, 0.17, 4.60; tapeout with only the plate C (cfilter.py
+  `--keep '(VSH|FL)(\[\d+\])?$'`) -6.2/-3.7/+2.6/-3.9/+1.6, 26.88 mV, 0.25; without them -10.6/-7.3/+1.7/-2.6/+1.6, 24.88 mV,
+  0.20 (each part has the pattern, not additive; the attenuation is all from the plates).
+  Chip: -7.8/-5.7/+6.7/-8.4/+3.5, INL 0.51, ENOB 3.81. Tapeout vs chip: same sign on all bits, INL
+  correlation 0.98, about half of the lost ENOB. Main cause: plate wiring C to VOUTH/VOUTL that differs
+  per bit (bit 1/3 bridges, MSB VSH 11.3 fF/unit to its own top plate, LSB FL 7-10 fF/unit to the
+  other one) and between halves in the tapeout (hier L is an exact mirror, tapeout L is not).
+- Reports: `make_sim_report.py <schematic dir> --ref <1.8 V dir>/static.json --pex tapeout=<dir>
+  --pex hier=<dir> --pex plates=<dir> --pex noplates=<dir>` (sim/report/pex.tex), then copy
+  sim_summary.json to RISCVConsole/software/mso/results/sweep_20261022/ and `make -C
+  RISCVConsole/software/mso/report` (comparison.tex, Section "Post-layout simulation").
 
-## Next task
-1. Widen the static staircase (gain error) and make the report handle the post-layout run.
-2. The same extraction and simulation for the tapeout layout (split of `signoff/outputs.tapeout`,
-   stitch with only `--top`), which is what was measured.
-3. Add the post-layout results to `sim/report` and to the measurement report in RISCVConsole.
+## Open
+- Remaining difference to the chip (bit 0 less reduced, bit 2 larger, bit 3 smaller): unit-cap
+  mismatch, wiring resistance (not extracted), undecoupled board references.
 
 ## Conventions
 - Commit only when the user asks; end commit messages with

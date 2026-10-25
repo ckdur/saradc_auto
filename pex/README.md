@@ -30,6 +30,18 @@ python3 pex/split.py pex/outputs/cdac --gds signoff/outputs/SARADC_CDAC.gds --de
   --xs 0 87.52 171.84 256.16 340.48 429.48 --ys 0 22.8 44.04 65.28 86.52 107.76 144.48
 ```
 
+The taped-out layout (what was fabricated and measured) is split in two runs, the analog part
+(arrays and channel; the cut at y 177.48 is a row boundary, 180.54 would cut cells) and the digital
+column on the right, on its own row boundaries (81 pieces, 6.6 min with 16 jobs):
+
+```bash
+G="--gds signoff/outputs.tapeout/SARADC.gds --def pnr_legacy/outputs.tapeout/SARADC.def"
+python3 pex/split.py pex/outputs/tapeout/ana $G -j 16 --xs 0 104.32 188.64 272.96 357.28 451.92 \
+  --ys 0 39.6 60.84 82.08 103.32 124.56 153 177.48 208.08 235.44 256.68 277.92 299.16 320.40 361.08
+python3 pex/split.py pex/outputs/tapeout/dig $G -j 11 --xs 451.92 566.44 \
+  --ys 0 48.96 79.56 110.16 140.76 171.36 201.96 232.56 263.16 293.76 324.36 361.08
+```
+
 The top level of the hierarchical layout is extracted without the macros (the stitcher puts the
 macro extraction in their place, `sim/pex/stitch.py`):
 
@@ -100,6 +112,7 @@ pex/kpex_full/kpex.sh run4 signoff/outputs.tapeout      # or run1 .. run4, each 
 | `arrH/`, `arrL/` | split extraction of the two capacitor arrays (flat PnR re-run) |
 | `cdac/` | split extraction of the `SARADC_CDAC` macro (hierarchical PnR) |
 | `top/` | the top level of the hierarchical PnR without the macros (`split/`, 60 pieces) |
+| `tapeout/` | the taped-out layout: `ana/` (70 pieces), `dig/` (11 pieces) |
 | `hier/` | tests on the hierarchical layout: `channel/` (first channel split, its right column cuts digital rows), `b1_1tile` .. `b4_half` (single-piece scaling), `cdac_full/` (kpex on the whole macro) |
 | `tests/` | first single-piece tests: `t1_cap` (one cap cell), `t2` (2 tiles), `t3*` (2x2), `t4` (4x3) |
 | `magic/`, `kpex_full/` | the whole-layout attempts (taped-out layout) |

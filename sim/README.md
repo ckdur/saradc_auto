@@ -5,7 +5,9 @@ and the helpers for post-layout netlists. Producing the extracted netlists is in
 (`pex/README.md`). The results were compared with the chip measurement in
 `RISCVConsole/software/mso` (branch `adc-sim-comparison`, see its `README.md`).
 
-All commands run from the root of `saradc_auto` after `source ~/init_openlane.sh`. Everything
+All commands run from the root of `saradc_auto` after `source ~/init_openlane.sh`. The tools take
+the number of bits from the environment variable `NBITS` (default 5, as `settings.mk`); the results
+below are for the 5-bit chip. Everything
 below `sim/outputs/` is git-ignored: the scripts here regenerate it.
 
 | Path | What it does | Output (git-ignored) |
@@ -110,6 +112,11 @@ python3 sim/report/make_sim_report.py $C.flat$S --ref $C.flat_mos_tt_10MHz/stati
   --pex tapeout=${C}_tapeout.pex$S --pex hier=${C}_hier.pex$S --pex plates=${C}_tapeout_plates.pex$S \
   --pex noplates=${C}_tapeout_noplates.pex$S
 ```
+
+For a layout of `pnr/` (e.g. after a routing change), `pex/hier_pex.sh <tag>` does the macro and
+top extraction, the stitch with its check and `dacpar.py` in one go (`sim/outputs/pex/SARADC_<tag>.*`).
+`make_sim_report.py --pex` knows the tags tapeout, hier, plates and noplates; a new variant needs
+an entry in `PEX_LABEL`/`PEX_TAG`/`PEX_FIG`.
 
 The flat schematic for `--check` is the netlist `adc_char.py` flattens (before merging). One
 post-layout conversion takes minutes, so only the static transfer is simulated.

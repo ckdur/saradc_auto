@@ -230,3 +230,18 @@ What remains different between bits:
   circuit, not the wiring.
 
 Next: the post-layout static of fix2 (about 7 h), to see what the weights become.
+
+**Other numbers of bits.**
+
+`saradc_nested_pattern` is generic for 2 to 5 bits, on the same grid as the circle. Bit 1 takes the
+middle of row 1, with bit 0 and the termination unit beside it. Every next bit is a band around the
+units placed so far: the row above them, its corners, the side columns going down, then the holes
+left inside. The 5-bit result is the pattern above.
+
+| | 2 bits | 3 bits | 4 bits |
+|---|---|---|---|
+| Rows (top to bottom) | `0 M M T` | `M M M M` / `0 1 1 T` | `M M M M M M` / `M 2 2 2 2 M` / `. 0 1 1 T .` |
+
+A `.` is a dummy unit. Above 5 bits the macro uses the circle with its bridges, as in the tapeout
+(`NBITS`, `README.md`). The bridges and the antenna behaviour of the larger circles are in
+`CLAUDE.md`.

@@ -54,6 +54,10 @@ python3 pex/split.py pex/outputs/top/split --gds pex/outputs/top/SARADC_nomacro.
   --ys 0 48.96 79.56 110.16 140.76 171.36 189.72 214.2 232.56 263.16 293.76 324.36 410.04
 ```
 
+The grids above (and those in `hier_pex.sh`) are for the 5-bit layout: for another `NBITS` the
+macro and the die change size, and the cut lines must be chosen again (between tiles and on row
+boundaries). `platewires.py` and `sim/pex/dacpar.py` take the number of bits from `NBITS`.
+
 `pex/hier_pex.sh <tag>` does all of it for the current `pnr/` + `signoff/outputs` (macro split, top
 split, stitch with the check against the flat schematic, `dacpar.py`; ~6 min) into
 `pex/outputs/{cdac,top}_<tag>/` and `sim/outputs/pex/SARADC_<tag>.{pex.ckt,flat.ckt,plate_par.json}`.

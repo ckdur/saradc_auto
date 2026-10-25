@@ -99,7 +99,10 @@ puts "\[Routing\] Creating vdd and vss for ties"
 create_stripes_vdd_vss $posx_cdac $posy_cdac $cdacx $nx $H $saradc_tap VDD VSS [expr 2*$metal2_w]
 
 puts "\[Routing\] Internal connections of the CDAC units"
-create_sw_cap_conn $posx_cdac $posy_cdac $posa $lsta $pw $ph $cdacx $cdacy $strip
+# Plates kept away from the top plates (docs/dac_wiring.md); ROUTE_FIX=0 gives the tapeout wiring
+set route_fix [expr {[info exists env(ROUTE_FIX)] ? $env(ROUTE_FIX) : 1}]
+puts "\[Routing\] route_fix $route_fix"
+create_sw_cap_conn $posx_cdac $posy_cdac $posa $lsta $pw $ph $cdacx $cdacy $strip $route_fix {VOUTH VOUTL}
 
 puts "\[Routing\] Column stripes, up to the top edge"
 create_stripes $posx_cdac $posy_cdac $cdacx $nx $H $strip $wthird $sthird

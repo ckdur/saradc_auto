@@ -154,12 +154,21 @@ Causes (taped-out layout, per unit):
 - flat flow: `strip_h`/`strip_l` use the same global order, the L switches are inverted, so the
   halves are not mirrors (L FL to VOUTH ~10 fF); the hierarchical flow (`pnr/`) fixes that;
 - bit 1/3 bridges (Metal5/TopMetal1 VSH+FL pairs) add ~9 fF per unit, 3.5 fF of it VSH-FL.
-To do, in `pnr/` (hierarchical flow; `pnr/tcl/cdac.tcl`, procedures in `pnr_legacy/tcl/saradc_conn.tcl`):
-1. Reorder/shield the Metal3 switch rails and the Metal4 tile slots so that VSH/FL never run next to
+Branch `dac-routing-fix` (2026-10-25), step 1 done: `create_sw_cap_conn ... $fix $tops` (fix 0 = tapeout,
+the legacy flow is unchanged; `pnr/tcl/cdac.tcl` uses fix 1, `ROUTE_FIX=0` for the old wiring). Switch-row
+Metal3 rails by role [VOUTH-port VI VSH VI VOUTL-port] (MSB: [VI VIP VSH VIN VI], VI = VOUT), no FL rail in
+the switch row (FL Metal2 rails stop at the caps), VSH/FL Metal4 tile stripes in the last two slots.
+Macro and top: DRT 0, DRC 0, LVS match; `pex/hier_pex.sh fix1` (stitch check 0 mismatches).
+Per unit, baseline -> fix1: FL to VOUTH/VOUTL 3.0/7.2 -> 0.6/0.4 fF (bits 1/3: 1.6/1.0, the bridges);
+MSB VSH to its VOUT 11.3 -> 5.2 (= the other bits per side); VSH to VREF/VIN 12 -> 21-22 (MSB 25.5, the
+shield rails, static nets). Left: the bit 1/3 bridges (+9 fF per unit on each plate, VSH-FL +3 fF).
+`pnr/outputs` and `signoff/outputs` now hold the fix1 layout (the parent chip reads them).
+The original plan, in `pnr/` (hierarchical flow; `pnr/tcl/cdac.tcl`, procedures in `pnr_legacy/tcl/saradc_conn.tcl`):
+1. (done, fix1) Reorder/shield the Metal3 switch rails and the Metal4 tile slots so that VSH/FL never run next to
    VOUTH/VOUTL (VSS or VI in between, or VOUT only as vias from the column stripes).
-2. The same rail list in the MSB tiles as in the LSB tiles; equal coupling per unit for every bit.
+2. (done, fix1) The same rail list in the MSB tiles as in the LSB tiles; equal coupling per unit for every bit.
 3. Remove the bit 1/3 bridges (placement without them) or give every bit identical dummy bridges.
-4. Check each change with `platewires.py --style macro` (seconds), then split extraction + stitch +
+4. (tools done: `pex/hier_pex.sh <tag>`) Check each change with `platewires.py --style macro` (seconds), then split extraction + stitch +
    `dacpar.py --style hier` +
    `platewires.py` (target: plate-to-VOUT C per unit equal for all bits and halves within a few
    0.1 fF), then the post-layout static (~7 h, 26 workers).

@@ -145,7 +145,15 @@ proc create_sw_conn {x y path sizex w s nsw} {
 # 4. An extension of the stripes through Metal3 in horizontal to VSH and FL
 # 5. Connections of the global vertical stripes
 # It takes the result of positiong from the last call of "pos_cdac_circle" or similar
-proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip} {
+# fix 0: the wiring of the tapeout. fix 1 (pnr/, docs/dac_wiring.md): the plates of every bit
+# are kept away from the top plates (tops: their net names), the same way for every unit:
+#  - the Metal3 rails of the switch row are, by role, [VOUTH-port VI VSH VI VOUTL-port], or
+#    [VI VOUTH-port VSH VOUTL-port VI] when VI is a top plate (the MSB, VI = VOUT): VSH is
+#    shielded on both sides by a net that is not a top plate, and FL is not in the switch row
+#    (the rails of the capacitor rows connect it; its Metal2 rails stop at the capacitors);
+#  - the Metal4 stripes of VSH and FL take the last two of the column slots, next to VIN,
+#    instead of the first two next to VOUTH.
+proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip {fix 0} {tops {}}} {
   setAddStripeMode -ignore_nondefault_domains true
   global metal1
   global metal1_py
@@ -260,6 +268,7 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip} {
     
     # Iterate all the instances
     set all_zsnnets {}
+    array unset port
     foreach inst $all_inst {
       # Extract the ZN, VDD, and VSS pins
       set instobj [$::block findInst $inst]
@@ -325,6 +334,16 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip} {
       if {[lsearch -exact $all_zsnnets $znnet] < 0} {
         lappend all_zsnnets $znnet
       }
+      # The net on the other side of the switch from VSH, per switch type
+      foreach type $types {
+        if {[string first ".${type}" $inst] >= 0} {
+          foreach n [list $znnet $zsnnet] {
+            if {$n != $vsh_name} {
+              set port($type) $n
+            }
+          }
+        }
+      }
       
       # Get the current instance's origin point
       set inst_llx [expr 1.0*[[$instobj getBBox] xMin] / $dbu]
@@ -365,6 +384,9 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip} {
     set x2 [expr $cap_llx + $fl_zn_llx + $metal2_w]
     set y1 [expr $cap_powu_lly]
     set y2 [expr $inst_ury - $abutsizey/2.0]
+    if {$fix} {
+      set y2 [expr $cap_powu_ury]
+    }
     #set y2 [expr $cap_powu_ury]
     set area "$x1 $y1 $x2 $y2"
     addStripe -nets $fl_name -layer $metal2 -direction vertical \
@@ -463,6 +485,15 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip} {
     }
     if {[lsearch -exact $all_zsnnets $vsh_name] < 0} {
       lappend all_zsnnets $vsh_name
+    }
+    if {$fix && [info exists port(vi2cap)] && [info exists port(cap2vouth)] && [info exists port(cap2voutl)]} {
+      if {[lsearch -exact $tops $port(vi2cap)] >= 0} {
+        set all_zsnnets [list $port(vi2cap) $port(cap2vouth) $vsh_name $port(cap2voutl) $port(vi2cap)]
+      } else {
+        set all_zsnnets [list $port(cap2vouth) $port(vi2cap) $vsh_name $port(vi2cap) $port(cap2voutl)]
+      }
+    } elseif {$fix} {
+      puts "\[create_sw_cap_conn\] $path\[$ind\]: not all switch types, legacy rails: $all_zsnnets"
     }
 
     set nall_zsnnets [llength $all_zsnnets]
@@ -570,6 +601,10 @@ proc create_sw_cap_conn {x y pos lst pw ph sizex sizey strip} {
     set netspan [expr ($nnets-1) * ($sthird+$wthird) + $wthird]
     set offset [expr ($sizex - $netspan)/2.0]
 
+    if {$fix} {
+      # The last two slots, after the column stripes
+      set offset [expr $offset + ($nnets-2)*($sthird+$wthird)]
+    }
     set x1 [expr $x + ($pi)*$sizex]
     set x2 [expr $x + ($pi+1)*$sizex]
     set y1 [expr $y + ($pj)*$sizey + $margind]

@@ -145,3 +145,37 @@ is the same code.
 - Reports:
   - `sim/report/pex.tex`: the post-layout section of the simulation report;
   - `RISCVConsole/software/mso/report/comparison.tex`: the measurement report.
+
+## 7. Corrections (branch `dac-routing-fix`)
+
+**Step 1 (fix1, 2026-10-25): switch rails and tile stripes.**
+
+`create_sw_cap_conn` (`pnr_legacy/tcl/saradc_conn.tcl`) has a new `fix` argument. The legacy flow
+calls it without one, so it keeps the tapeout wiring. `pnr/tcl/cdac.tcl` uses `fix 1`; `ROUTE_FIX=0`
+builds the old wiring for comparison. With `fix 1`:
+
+- **Switch-row Metal3 rails** are ordered by role:
+  - lower bits: VOUTH-port, VI, VSH, VI, VOUTL-port;
+  - MSB, whose VI is VOUT: VI, VIP, VSH, VIN, VI.
+
+  VSH is shielded on both sides by a net that is not a comparator input.
+- **FL** has no rail in the switch row. Its Metal2 rails stop at the capacitors, and the rails of
+  the capacitor rows connect it.
+- **Metal4 tile stripes** of VSH and FL take the last two column slots, next to VIN.
+
+Macro and top: routing 0 violations, DRC 0, LVS match. `pex/hier_pex.sh fix1` stitches with
+0 mismatches.
+
+| Per unit (fF), baseline → fix1 | Bits 0, 2 | Bits 1, 3 | Bit 4 (MSB) |
+|---|---|---|---|
+| FL → own / opposite comparator input | 3.0 / 7.2 → 0.5 / 0.4 | 3.5 / 7.7 → 1.4 / 0.9 | 3.0 / 0.2 → 0.5 / 0.1 |
+| VSH → VOUTH / VOUTL (H half) | 4.7 / 4.7 → 4.9 / 4.8 | 5.1 / 5.2 → 5.4 / 5.2 | 11.3 / 0.4 → 5.2 / 0.4 |
+| VSH → VREF/VIN/VIP (the shields) | 12.0 → 21.2 | 13.3 → 22.3 | 9.8 → 25.5 |
+| total VSH / FL | 99–101 / 65–66 → 105–107 / 51–52 | 108–109 / 75 → 114–115 / 60–62 | 98 / 64 → 104 / 50 |
+
+The halves stay exact mirrors.
+
+What is left of the bit-to-bit differences is the bridges of bits 1 and 3: about +9 fF per unit on
+each plate, VSH–FL +3 fF, and FL 1 fF closer to the comparator inputs. That is step 2.
+
+The post-layout static of fix1 has not been run yet (about 7 h).

@@ -9,6 +9,7 @@ simulation are in `sim/pex/`. All commands run from the root of `saradc_auto` af
 | `split.py` | split extraction: clips the layout into a grid of pieces and extracts each with kpex 2.5D (CC) in parallel. **This is the method that works.** | `pex/outputs/<run>/` |
 | `clip.py` | (used by `split.py`) clips one window of the GDS and labels every DEF net segment inside it | `<piece>.gds`, `<piece>.gds.nets` |
 | `platewires.py` | geometric attribution of the DAC plate couplings to VOUTH/VOUTL from the DEF (layer, facing length per gap, overlaps); see `docs/dac_wiring.md` | stdout, `--json` |
+| `nomacro.py`, `hier_pex.sh` | the top without the macros; the whole hierarchical extraction of one layout variant | `pex/outputs/{cdac,top}_<tag>/` |
 | `relabel.py` | copies the cell pin texts (L/2) to the text datatype (L/25) that the IHP LVS reads | |
 | `magic/` | `magic_pex.sh`: magic extraction of the whole layout, netgen LVS, `pex2xyce.py` | `pex/outputs/magic/` |
 | `kpex_full/` | `kpex.sh`: the kpex 2.5D runs on the whole flat layout (never finished), `strip_fill.py` | `pex/outputs/kpex_full/` |
@@ -47,11 +48,15 @@ The top level of the hierarchical layout is extracted without the macros (the st
 macro extraction in their place, `sim/pex/stitch.py`):
 
 ```bash
-klayout -b -r pex/outputs/top/nomacro.py     # writes pex/outputs/top/SARADC_nomacro.gds
+klayout -b -r pex/nomacro.py -rd gds=signoff/outputs/SARADC.gds -rd out=pex/outputs/top/SARADC_nomacro.gds
 python3 pex/split.py pex/outputs/top/split --gds pex/outputs/top/SARADC_nomacro.gds --def pnr/outputs/SARADC.def -j 14 \
   --xs 0 109.18 233.54 320.32 452.0 566.44 \
   --ys 0 48.96 79.56 110.16 140.76 171.36 189.72 214.2 232.56 263.16 293.76 324.36 410.04
 ```
+
+`pex/hier_pex.sh <tag>` does all of it for the current `pnr/` + `signoff/outputs` (macro split, top
+split, stitch with the check against the flat schematic, `dacpar.py`; ~6 min) into
+`pex/outputs/{cdac,top}_<tag>/` and `sim/outputs/pex/SARADC_<tag>.{pex.ckt,flat.ckt,plate_par.json}`.
 
 `nomacro.py` must remove the macro with `prune_cell`: `delete_cell_rec` also deletes the vias and
 the cells shared with the top level. The cut lines may only cross fillers and taps (the ys are row

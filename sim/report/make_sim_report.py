@@ -45,7 +45,7 @@ def pdk_version(char):
             "branch": git("rev-parse", "--abbrev-ref", "HEAD"), "date": git("log", "-1", "--format=%cd", "--date=short"),
             "remote": git("remote", "get-url", "origin")}
 
-NBITS = 5
+NBITS = int(os.environ.get("NBITS", 5))  # settings.mk
 NCODES = 1 << NBITS
 NHARM = 7
 

@@ -31,9 +31,12 @@ initialize_floorplan -site obssite -die_area "0 0 1000 1000" -core_area "10 10 9
 
 set posx_cdac [expr $mgn + $sizetap]
 set posy_cdac $mgn
-# Unit pattern: nested (default, every bit connected, no bridges) or circle (the tapeout one,
-# bits 1 and 3 joined by bridges); CDAC_PATTERN=circle for the old one
-set cdac_pattern [expr {[info exists env(CDAC_PATTERN)] ? $env(CDAC_PATTERN) : "nested"}]
+# Unit pattern: nested (every bit connected, no bridges; the default up to 5 bits) or circle (the
+# tapeout one, bits 1 and 3 joined by bridges; the default above 5 bits). CDAC_PATTERN overrides it.
+set cdac_pattern [expr {$nbits <= 5 ? "nested" : "circle"}]
+if {[info exists env(CDAC_PATTERN)]} {
+  set cdac_pattern $env(CDAC_PATTERN)
+}
 puts "\[cdac\] pattern $cdac_pattern"
 set pattern {}
 if {$cdac_pattern == "nested"} {

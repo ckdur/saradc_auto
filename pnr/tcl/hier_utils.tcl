@@ -128,25 +128,82 @@ proc saradc_cut_rows {x1 y1 x2 y2} {
   }
 }
 
-# Unit positions of a bridgeless pattern for pos_cdac_circle (nbits 5, the 8 x 4 units of the
-# circle, columns 1..8, rows 1..4): every bit is one connected group of units, so the plates
-# need no bridges, and bits 1..4 are symmetric about the vertical axis (nested U shapes):
+# Unit positions of a bridgeless pattern for pos_cdac_circle, for 2 to 5 bits (above that the
+# circle is used): the same grid of units as the circle (2n x n, columns 1..2n, rows 1..n, row 1
+# next to the bus after the flip), every bit one connected group of units, so the plates need no
+# bridges, and bits 1 and up symmetric about the vertical axis. Bit 1 takes the two middle units
+# of row 1 with bit 0 and the termination unit (T) beside it; every next bit is a band around the
+# units placed so far: the row above them (from the middle out), its two corners, the columns at
+# both sides downwards, then the holes left inside, in symmetric pairs. 5 bits:
 #   row 4: M M M M M M M M
 #   row 3: M 3 3 3 3 3 3 M
 #   row 2: M 3 2 2 2 2 3 M
-#   row 1: M M 0 1 1 T M M      (T: the termination unit)
-# Order: bit 0, the termination unit, bit 1 x2, bit 2 x4, bit 3 x8, MSB x16.
+#   row 1: M M 0 1 1 T M M
+# Order: bit 0, the termination unit, bit 1 x2, bit 2 x4, ..., MSB x2^(nbits-1).
 proc saradc_nested_pattern {nbits} {
-  if {$nbits != 5} {
-    utl::error ORD 502 "saradc_nested_pattern is only defined for 5 bits"
+  if {$nbits < 2 || $nbits > 5} {
+    utl::error ORD 502 "saradc_nested_pattern is defined for 2 to 5 bits, not $nbits"
   }
-  set p {{3 1} {6 1}}
-  lappend p {4 1} {5 1}
-  lappend p {3 2} {4 2} {5 2} {6 2}
-  foreach i {2 3 4 5 6 7} { lappend p "$i 3" }
-  lappend p {2 2} {7 2}
-  foreach i {1 2 3 4 5 6 7 8} { lappend p "$i 4" }
-  foreach j {3 2 1} { lappend p "1 $j" "8 $j" }
-  lappend p {2 1} {7 1}
+  # Grid of circle_gen for 2^nbits units
+  set sum [expr 1 << $nbits]
+  set n 1
+  while {2*$n*$n < $sum} {
+    incr n
+  }
+  set c $n
+  set p [list "[expr $c-1] 1" "[expr $c+2] 1" "$c 1" "[expr $c+1] 1"]
+  set used [dict create]
+  foreach q $p {
+    dict set used $q 1
+  }
+  set L [expr $c-1]
+  set R [expr $c+2]
+  set top 1
+  for {set b 2} {$b < $nbits} {incr b} {
+    # Candidate pairs (left right), in order
+    set cand {}
+    for {set k 0} {$c-$k >= $L} {incr k} {
+      lappend cand [list "[expr $c-$k] [expr $top+1]" "[expr $c+1+$k] [expr $top+1]"]
+    }
+    lappend cand [list "[expr $L-1] [expr $top+1]" "[expr $R+1] [expr $top+1]"]
+    for {set r $top} {$r >= 1} {incr r -1} {
+      lappend cand [list "[expr $L-1] $r" "[expr $R+1] $r"]
+    }
+    for {set r [expr $top+1]} {$r >= 1} {incr r -1} {
+      for {set k 0} {$c-$k >= $L-1} {incr k} {
+        lappend cand [list "[expr $c-$k] $r" "[expr $c+1+$k] $r"]
+      }
+    }
+    set need [expr 1 << $b]
+    foreach pair $cand {
+      if {$need == 0} {
+        break
+      }
+      set ok 1
+      foreach q $pair {
+        lassign $q i j
+        if {$i < 1 || $i > 2*$n || $j < 1 || $j > $n || [dict exists $used $q]} {
+          set ok 0
+        }
+      }
+      if {$ok} {
+        foreach q $pair {
+          lappend p $q
+          dict set used $q 1
+        }
+        incr need -2
+      }
+    }
+    if {$need > 0} {
+      utl::error ORD 503 "saradc_nested_pattern: no room for bit $b"
+    }
+    # Bounding box of what is placed
+    foreach q $p {
+      lassign $q i j
+      set L [expr min($L, $i)]
+      set R [expr max($R, $i)]
+      set top [expr max($top, $j)]
+    }
+  }
   return $p
 }

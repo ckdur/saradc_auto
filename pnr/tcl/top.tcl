@@ -9,7 +9,6 @@
 ##############################################################################
 source $env(PNR_DIR)/tcl/setup.tcl
 source $PNR_DIR/outputs/SARADC_CDAC.geom.tcl
-set X $env(X)
 set SYN_DIR $env(SYN_DIR)
 
 puts "SDC reading: ${TOP}.sdc.tcl"
@@ -19,7 +18,12 @@ unset_propagated_clock [all_clocks]
 ####################################
 ## Floorplan
 ####################################
-set dig_to_ana 451.92
+# Analog / digital boundary and die width: those of the 5-bit layout (macro 429.48 wide), moved by the
+# growth of the macro width in whole sites, so that other NBITS keep the same alignment. Never
+# narrower than for 5 bits: the channel (switch, comparator, logic buffers) needs that width
+# (with 3 bits and the boundary moved in, the buffers cannot be legalized).
+set dig_to_ana [expr 451.92 + max(0, ceil(($cdac_W - 429.48)/$track - 1e-9))*$track]
+set X [expr $dig_to_ana + 114.52]
 set corex [expr $margin]
 set corey [expr $margin]
 

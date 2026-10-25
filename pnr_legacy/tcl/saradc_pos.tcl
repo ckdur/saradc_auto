@@ -96,6 +96,15 @@ proc pos_cdac_circle {x y pathlsb pathmsb pathdummy nbits pw ph tapcap spctap in
   
   # Assign the dummy to the non-filtered positions, and also the perimeter
   set nofilt_pos [lrange $pos $sum end]
+  if {[llength $pattern] > 0} {
+    # The positions of the circle grid that the pattern leaves free
+    set nofilt_pos {}
+    foreach q $pos {
+      if {[lsearch -exact $filt_pos $q] < 0} {
+        lappend nofilt_pos $q
+      }
+    }
+  }
   set per [per_gen [expr $ncircle*2] $ncircle]
   set dumpos [concat $nofilt_pos $per]
   set ndumpos [llength $dumpos]

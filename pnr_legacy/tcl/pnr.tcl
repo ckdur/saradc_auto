@@ -191,7 +191,7 @@ set metal6_s [::ord::dbu_to_microns [[$tech findLayer TopMetal1] getSpacing]]
 set pw 3
 set ph 2
 # Number of bits of the ADC
-set nbits 5
+set nbits [expr {[info exists env(NBITS)] ? $env(NBITS) : 5}]
 # Number of rows (in stdcells) for the distance between a CDAC and the switch
 set nrow_hl_sw 5
 # Number in tracks of the distance between the CAP and the SW in the CDAC unit

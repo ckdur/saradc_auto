@@ -110,8 +110,8 @@ set metal2_px [expr $metal2_px + 0.02]
 # Capacitor WxH (3x2 in this case)
 set pw 3
 set ph 2
-# Number of bits of the ADC
-set nbits 5
+# Number of bits of the ADC (NBITS of settings.mk)
+set nbits [expr {[info exists env(NBITS)] ? $env(NBITS) : 5}]
 # Number of rows (in stdcells) for the distance between a CDAC and the switch
 set nrow_hl_sw 5
 # Number in tracks of the distance between the CAP and the SW in the CDAC unit

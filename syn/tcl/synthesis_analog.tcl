@@ -51,6 +51,10 @@ puts "LIBFF = $LIBFF"
 ################################################################
 ## Verilog read
 ################################################################
+# Number of bits (settings.mk): the `define NBITS of the RTL
+if {[info exists env(NBITS)]} {
+  verilog_defines -DNBITS=$env(NBITS)
+}
 foreach src $SYN_SRC {
   read_verilog $src
 }

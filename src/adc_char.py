@@ -31,9 +31,9 @@ SRC = os.path.join(ROOT, "src")
 SIMOUT = os.path.join(ROOT, "sim", "outputs")
 CELLS = os.path.join(ROOT, "cells")
 
-NBITS = 5
+NBITS = int(os.environ.get("NBITS", 5))  # settings.mk
 NCODES = 1 << NBITS
-CLK_PER_CONV = 7          # sSAMPLE + NBITS x sConv + sDone
+CLK_PER_CONV = NBITS + 2  # sSAMPLE + NBITS x sConv + sDone
 FIRST_SAMPLE_CLK = 5      # SAMPLE goes high on the clock edge where GO is seen
 SUPPLY = 1.8
 VREFH = SUPPLY * 0.9 / 1.2

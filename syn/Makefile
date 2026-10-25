@@ -22,18 +22,18 @@ all: $(SYN_ANA_NET) $(SYN_NET)
 HIER_DIR=$(SYN_DIR)/outputs/hier
 hier: $(HIER_DIR)/$(CDAC_TOP)_net.v $(HIER_DIR)/$(TOP)_net.v $(SYN_NET)
 
-$(HIER_DIR)/$(CDAC_TOP)_net.v: $(SYN_DIR)/tcl/synthesis_analog.tcl $(CDAC_SRC)
+$(HIER_DIR)/$(CDAC_TOP)_net.v: $(SYN_DIR)/tcl/synthesis_analog.tcl $(CDAC_SRC) $(NBITS_STAMP)
 	TOP=$(CDAC_TOP) SYN_SRC="$(CDAC_SRC)" SYN_OUT_DIR=$(HIER_DIR) \
 	  yosys -h tcl $(SYN_DIR)/tcl/synthesis_analog.tcl | tee yosys_$(CDAC_TOP).log
 
-$(HIER_DIR)/$(TOP)_net.v: $(SYN_DIR)/tcl/synthesis_analog.tcl $(HIER_SRC) $(HIER_LIB_SRC)
+$(HIER_DIR)/$(TOP)_net.v: $(SYN_DIR)/tcl/synthesis_analog.tcl $(HIER_SRC) $(HIER_LIB_SRC) $(NBITS_STAMP)
 	SYN_SRC="$(HIER_SRC)" SYN_LIB_SRC="$(HIER_LIB_SRC)" SYN_OUT_DIR=$(HIER_DIR) \
 	  yosys -h tcl $(SYN_DIR)/tcl/synthesis_analog.tcl | tee yosys_hier.log
 
-$(SYN_ANA_NET): $(SYN_DIR)/tcl/synthesis_analog.tcl $(SYN_SRC)
+$(SYN_ANA_NET): $(SYN_DIR)/tcl/synthesis_analog.tcl $(SYN_SRC) $(NBITS_STAMP)
 	yosys -h tcl $(SYN_DIR)/tcl/synthesis_analog.tcl | tee -a yosys_analog.log
 
-$(SYN_NET): $(SYN_DIR)/tcl/synthesis.tcl $(SYN_DIG_SRC)
+$(SYN_NET): $(SYN_DIR)/tcl/synthesis.tcl $(SYN_DIG_SRC) $(NBITS_STAMP)
 	yosys -h tcl $(SYN_DIR)/tcl/synthesis.tcl | tee -a yosys.log
 
 # Generating only the analog netlist (for subcircuits)

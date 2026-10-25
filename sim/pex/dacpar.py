@@ -2,6 +2,7 @@
 For the switched plate (VSH) and the floating plate (FL) of every bit of both halves, the total
 wiring C and its split by the other net, per unit capacitor (bit b has 2**b units).
 Usage: python3 dacpar.py <stitched.ckt> [--style legacy|hier] [--json out.json]"""
+import os
 import json
 import re
 import sys
@@ -9,7 +10,7 @@ from collections import defaultdict
 
 import capsum
 
-NBITS = 5
+NBITS = int(os.environ.get("NBITS", 5))  # settings.mk
 
 
 def plates(half, style):

@@ -6,6 +6,17 @@ TECH?=sg13g2f
 X=566.44
 Y=361.08
 # NOTE: Change Y at the moment of having a completed floorplan
+# (X and Y are the die of the flat flow, pnr_legacy/, for 5 bits; the hierarchical flow, pnr/,
+# computes its die from the macro)
+
+#######################################################
+# Number of bits of the ADC (2 to 8): `define NBITS of the RTL, nbits of the PnR, and the bit
+# count of the simulation tools. Override with `make NBITS=8 ...` or the environment.
+NBITS?=5
+export NBITS
+# The stamp changes when NBITS does, so that the synthesis (and everything after it) is redone
+NBITS_STAMP:=$(ROOT_DIR)/.nbits
+$(shell [ "$$(cat $(NBITS_STAMP) 2>/dev/null)" = "$(NBITS)" ] || echo $(NBITS) > $(NBITS_STAMP))
 
 #######################################################
 # Rules to create the files. 

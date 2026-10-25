@@ -1,7 +1,19 @@
 # saradc_auto: notes for Claude
 
-5-bit differential SAR ADC generator for IHP sg13g2 (`define NBITS 5` in `rtl/saradc.v` and
-`rtl/sar_logic_wreset.v`). The ADC is assembled from custom cells (`cells/`): unit capacitors are MOS
+Differential SAR ADC generator for IHP sg13g2, 2 to 8 bits; the chip has 5 (the default).
+`NBITS` (settings.mk, `make ... NBITS=8` or the environment) reaches every stage: the `` `define NBITS``
+of the RTL through Yosys (`verilog_defines`), `nbits` of both PnR flows, and the Python tools (`src/`,
+`sim/`, `pex/`, `os.environ`). The stamp `.nbits` (git-ignored) makes a change of it re-run the synthesis.
+`pnr/` derives the die width from the macro (5 bits: 566.44, as before; never narrower, the channel
+needs it); `pnr_legacy/` keeps X/Y of settings.mk (the 5-bit die).
+Tried 2026-10-25 (logs in sim/outputs/nb{3,5,8}/):
+- 5 bits: the full flow reproduces fix2 (same die, identical plate geometry), DRC 0, LVS match.
+- 8 bits: circle, macro 1104.04 x 315.84 (20 min), die 1241.0 x 752.76; top DRC 0 (antenna included),
+  LVS match. The macro alone fails the antenna rules (Ant.b, switch gates of bits 4 and 6: the long
+  control nets get their drivers only at the top); the top is clean.
+- 3 bits: nested, macro 260.84 x 100.8 DRC 0 / LVS match; top 566.44 x 312.12: one Metal1 short left by
+  the detailed router at `analog/cmp.buf_n0.impl` / net `analog/cmp.OUTNp` (same placement as in 5 bits;
+  64 or 120 iterations), so top LVS fails. Open. The ADC is assembled from custom cells (`cells/`): unit capacitors are MOS
 gates (`SARADC_CELL_INVX16_ASCAP`, 720 instances), switches `SARADC_CELL_INVX0_ASSW` (1452), plus the
 `sg13g2f` standard cells for the SAR logic and comparator. It is a macro of the ASICONE chip
 (parent repo `asicone_sg13g2`, which has this repo as a submodule). The chip is fabricated and measured.
@@ -162,7 +174,13 @@ Macro and top: DRT 0, DRC 0, LVS match; `pex/hier_pex.sh fix1` (stitch check 0 m
 Per unit, baseline -> fix1: FL to VOUTH/VOUTL 3.0/7.2 -> 0.6/0.4 fF (bits 1/3: 1.6/1.0, the bridges);
 MSB VSH to its VOUT 11.3 -> 5.2 (= the other bits per side); VSH to VREF/VIN 12 -> 21-22 (MSB 25.5, the
 shield rails, static nets). Left: the bit 1/3 bridges (+9 fF per unit on each plate, VSH-FL +3 fF).
-Step 2 done (fix2, the default now): `saradc_nested_pattern` (`pnr/tcl/hier_utils.tcl`, nested U shapes,
+Pattern by NBITS (`pnr/tcl/cdac.tcl`): 2..5 bits the nested pattern (generic `saradc_nested_pattern`,
+bands around the lower bits; 5 bits = fix2) with fix 2; above 5 the circle with its bridges and fix 1
+(`CDAC_PATTERN` overrides). 8 bits (circle): macro 1104.04 x 315.84, 20 min, DRT 0, LVS match, but DRC
+fails on antenna rules (Ant.b on Metal4..TopMetal2 at switch gates of bits 4 and 6: long control nets
+whose drivers are outside the macro); `repair_antennas` is not in the flows (commented out in
+pnr_legacy/tcl/pnr.tcl).
+Step 2 done (fix2, the default now for 5 bits): `saradc_nested_pattern` (`pnr/tcl/hier_utils.tcl`, nested U shapes,
 every bit connected, no bridges; `CDAC_PATTERN=circle` for the old one) + `fix 2` (Metal4 VSH/FL stripes only
 where the unit above/below is the same bit). DRC 0, LVS match, `pex/hier_pex.sh fix2` 0 mismatches.
 Per unit (H): VSH total 97.7-101.0 fF for all bits (baseline 97.9-109.0), FL 46.0-48.0 (64-76), VSH to

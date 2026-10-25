@@ -9,6 +9,7 @@ Usage: python3 pex/platewires.py <SARADC.def> [--style legacy|macro] [--dist 1.0
          [--json out.json]
   legacy: pnr_legacy/outputs*/SARADC.def (flat flow, both halves); macro: pnr/outputs/SARADC_CDAC.def
 (run in the venv: it needs klayout.db)."""
+import os
 import json
 import re
 import sys
@@ -16,7 +17,7 @@ from collections import defaultdict
 
 import klayout.db as db
 
-NBITS = 5
+NBITS = int(os.environ.get("NBITS", 5))  # settings.mk
 LAYERS = ['Metal1', 'Metal2', 'Metal3', 'Metal4', 'Metal5', 'TopMetal1', 'TopMetal2']
 
 

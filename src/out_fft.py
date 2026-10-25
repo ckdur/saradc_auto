@@ -7,7 +7,7 @@ if __name__ == "__main__":
     freqs = np.array([50000000, 200000000])
     freqs_str = ["{}".format(v) for v in freqs]
     N=128
-    nbits = 5  # TODO: Make it depending on the actual number of bits
+    nbits = int(os.environ.get("NBITS", 5))  # settings.mk
     k=((N/2)-1)
     
 

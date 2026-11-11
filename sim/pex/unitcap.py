@@ -8,7 +8,7 @@ import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 PDK = os.path.join(os.environ.get('PDK_ROOT', '/opt/ext/OpenPDKs'), 'ihp-sg13g2')
-CELL = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ROOT, 'cells', 'SARADC_CELL_INVX16_ASCAP.ckt')
+CELL = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.environ.get('CELLS_DIR', os.path.join(ROOT, 'cells', os.environ.get('TECH', 'sg13g2f'))), 'SARADC_CELL_INVX16_ASCAP.ckt')
 NAME = sys.argv[2] if len(sys.argv) > 2 else 'SARADC_CELL_INVX16_ASCAP'
 F = 1e6
 VDD = 1.2

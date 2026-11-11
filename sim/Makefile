@@ -55,10 +55,10 @@ $(CDL_XYCE_SRC): $(CDL_SRC)
 	sed 's/SARADC_FILL1_NOPOWER/dummynet SARADC_FILL1_NOPOWER/' $(CDL_SRC) > $(CDL_XYCE_SRC)
 
 DEPS=$(SIM_DIR)/outputs/SARADC_CELL_INVX16_ASCAP.ckt
-$(DEPS): $(ROOT_DIR)/cells/SARADC_CELL_INVX16_ASCAP.ckt
+$(DEPS): $(CELLS_DIR)/SARADC_CELL_INVX16_ASCAP.ckt
 	mkdir -p $(SIM_DIR)/outputs
-	cp $(ROOT_DIR)/cells/*.ckt $(SIM_DIR)/outputs
-	cp $(ROOT_DIR)/cells/*.cdl $(SIM_DIR)/outputs
+	cp $(CELLS_DIR)/*.ckt $(SIM_DIR)/outputs
+	cp $(CELLS_DIR)/*.cdl $(SIM_DIR)/outputs
 
 $(SIM_DIR)/outputs/saradc_tb.xyce.%.csv: $(TB_ANA_XYCE_SRC) $(CDL_XYCE_SRC) $(DEPS)
 	cp $(TB_ANA_XYCE_SRC) $(SIM_DIR)/outputs/saradc_tb.$*.sp
@@ -101,7 +101,7 @@ $(SIM_DIR)/outputs/sar_logic_tb.vcd: $(TB_SRC) $(VER_SIM_SRC)
 
 $(SIM_DIR)/outputs/sar_logic_tb_syn.vcd: $(TB_SRC) $(SYN_SIM_SRC)
 	mkdir -p $(SIM_DIR)/outputs
-	iverilog -D DIGTOP=$(DIGTOP) -D SYNTHESIS=1 -m sar_logic_tb -o $(SIM_DIR)/outputs/$(TOP)_syn.o $(TB_SRC) $(SYN_SIM_SRC) $(ROOT_DIR)/cells/sg13g2f.v
+	iverilog -D DIGTOP=$(DIGTOP) -D SYNTHESIS=1 -m sar_logic_tb -o $(SIM_DIR)/outputs/$(TOP)_syn.o $(TB_SRC) $(SYN_SIM_SRC) $(CELLS_DIR)/$(TECH).v
 	cd $(SIM_DIR)/outputs && $(SIM_DIR)/outputs/$(TOP)_syn.o
 
 clean:
@@ -122,8 +122,8 @@ question:
 	cp -r $(ROOT_DIR)/sim/Makefile $(SIM_DIR)/question/sim
 	cp -r $(ROOT_DIR)/sim/scripts $(SIM_DIR)/question/sim
 	cp -r $(ROOT_DIR)/src $(SIM_DIR)/question
-	cp -r $(ROOT_DIR)/cells/*.ckt $(SIM_DIR)/question/cells
-	cp -r $(ROOT_DIR)/cells/*.cdl $(SIM_DIR)/question/cells
+	cp -r $(CELLS_DIR)/*.ckt $(SIM_DIR)/question/cells
+	cp -r $(CELLS_DIR)/*.cdl $(SIM_DIR)/question/cells
 	cp -r $(ROOT_DIR)/settings.mk $(SIM_DIR)/question/
 
 .PHONY: clean

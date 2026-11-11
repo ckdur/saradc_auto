@@ -59,7 +59,7 @@ foreach src $SYN_SRC {
   read_verilog $src
 }
 
-read_verilog $env(ROOT_DIR)/cells/sg13g2f_blackboxes.v
+read_verilog $CELLS_DIR/${TECH}_blackboxes.v
 # Macros of the hierarchical flow, read as blackboxes
 if {[info exists env(SYN_LIB_SRC)]} {
   foreach src $env(SYN_LIB_SRC) {

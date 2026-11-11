@@ -1,7 +1,10 @@
 #######################################################
 # Proportional dimmentions
 ROOT_DIR?=$(abspath .)
+# Technology: the float standard cells and the ADC cells are in cells/$(TECH) (cells/README.md)
 TECH?=sg13g2f
+CELLS_DIR?=$(ROOT_DIR)/cells/$(TECH)
+export TECH CELLS_DIR
 
 X=566.44
 Y=361.08

@@ -1,0 +1,6 @@
+* SARADC_CELL_INVX0_ASSW (INVD0 of sky130f), cells/tools/build_cells.py
+.SUBCKT SARADC_CELL_INVX0_ASSW i vdd vss zn vnw vpw
+XU1_M_u2 zn i vss vpw sky130_fd_pr__nfet_01v8 l=1.500e-07 w=4.200e-07
+XU1_M_u3 zn i vdd vnw sky130_fd_pr__pfet_01v8 l=1.500e-07 w=5.500e-07
+.ENDS
+

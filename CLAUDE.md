@@ -1,10 +1,23 @@
 # saradc_auto: notes for Claude
 
 Differential SAR ADC generator for IHP sg13g2, 2 to 8 bits; the chip has 5 (the default, `NBITS`).
-The ADC is assembled from custom cells (`cells/`): unit capacitors are MOS gates
+The ADC is assembled from custom cells (`cells/$TECH`, `cells/sg13g2f` for the chip): unit capacitors are MOS gates
 (`SARADC_CELL_INVX16_ASCAP`, 720 instances at 5 bits), switches `SARADC_CELL_INVX0_ASSW` (1452), plus the
 `sg13g2f` standard cells for the SAR logic and comparator. It is a macro of the ASICONE chip
 (parent repo `asicone_sg13g2`, which has this repo as a submodule). The chip is fabricated and measured.
+
+## Technologies (`TECH`, branch `multitech`)
+- `TECH` (settings.mk, default `sg13g2f`) selects `cells/$TECH` (`CELLS_DIR`, exported); cells/settings.tcl
+  is generic (same file names for every technology). `cells/README.md` has the files and the state.
+- `sg13g2f` = the taped-out cells, moved unchanged (the full flow still gives DRC 0 / LVS match).
+- `sky130f`, `gf180mcuf` (3.3 V devices), `ics55f`: float standard cells from stdcell-gen
+  (~/Documents/IIZUKA_LAB/stdcell-gen, docs/float.md there) and the ADC cells derived from them by
+  `make -C cells TECH=<t>` (cells/tools/build_cells.py: INVD0 -> switch, INVD12 -> unit cap, TAPCELL
+  -> FILLTIE2, FILL1 -> FILL1/FILL1_NOPOWER; LEFs written from the layout). `make -C cells TECH=<t>
+  check`: DRC clean and LVS match (ics55: translated DRC deck in icsprout55-pdk, no LVS deck yet).
+- gf180mcuD exists only in the docker image factory.symbioticeda.com/asic-all:dev (the checks use it).
+- Still sg13g2-only: the liberty/verilog models (no characterization for the new ones), the RTL cell
+  prefix `sg13g2f_`, the PnR (layer names, tracks, CDAC wiring), signoff decks, simulation models.
 
 ## Number of bits (`NBITS`)
 - `NBITS` (settings.mk, default 5; `make ... NBITS=8` or the environment) reaches every stage: the

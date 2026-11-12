@@ -1,0 +1,4 @@
+* SARADC_FILLTIE2 (TAPCELL of sky130f), cells/tools/build_cells.py
+.SUBCKT SARADC_FILLTIE2 vdd vss
+.ENDS
+

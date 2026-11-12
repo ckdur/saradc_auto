@@ -1,0 +1,6 @@
+* SARADC_CELL_INVX0_ASSW (INVD0 of gf180mcuf), cells/tools/build_cells.py
+.SUBCKT SARADC_CELL_INVX0_ASSW i vdd vss zn vnw vpw
+XU1_M_u2 zn i vss vpw nfet_03v3 l=2.800e-07 w=4.000e-07
+XU1_M_u3 zn i vdd vnw pfet_03v3 l=2.800e-07 w=7.000e-07
+.ENDS
+

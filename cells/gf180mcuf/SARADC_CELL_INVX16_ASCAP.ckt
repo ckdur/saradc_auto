@@ -1,0 +1,28 @@
+* SARADC_CELL_INVX16_ASCAP (INVD12 of gf180mcuf), cells/tools/build_cells.py
+.SUBCKT SARADC_CELL_INVX16_ASCAP i vdd vss zn vnw vpw
+XU1_M_u2_0 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=0 $flip=0
+XU1_M_u2_1 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=1 $flip=1
+XU1_M_u2_2 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=2 $flip=0
+XU1_M_u2_3 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=3 $flip=1
+XU1_M_u2_4 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=4 $flip=0
+XU1_M_u2_5 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=5 $flip=1
+XU1_M_u2_6 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=6 $flip=0
+XU1_M_u2_7 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=7 $flip=1
+XU1_M_u2_8 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=8 $flip=0
+XU1_M_u2_9 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=9 $flip=1
+XU1_M_u2_10 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=10 $flip=0
+XU1_M_u2_11 zn i vss vpw nfet_03v3 l=2.800e-07 w=8.000e-07 $pos=11 $flip=1
+XU1_M_u3_0 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=0 $flip=0
+XU1_M_u3_1 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=1 $flip=1
+XU1_M_u3_2 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=2 $flip=0
+XU1_M_u3_3 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=3 $flip=1
+XU1_M_u3_4 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=4 $flip=0
+XU1_M_u3_5 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=5 $flip=1
+XU1_M_u3_6 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=6 $flip=0
+XU1_M_u3_7 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=7 $flip=1
+XU1_M_u3_8 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=8 $flip=0
+XU1_M_u3_9 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=9 $flip=1
+XU1_M_u3_10 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=10 $flip=0
+XU1_M_u3_11 zn i vdd vnw pfet_03v3 l=2.800e-07 w=1.400e-06 $pos=11 $flip=1
+.ENDS
+

@@ -1,0 +1,61 @@
+VERSION 5.7 ;
+DIVIDERCHAR "/" ;
+BUSBITCHARS "[]" ;
+
+MACRO SARADC_CELL_INVX0_ASSW
+  CLASS BLOCK ;
+  FOREIGN SARADC_CELL_INVX0_ASSW ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 1.800 BY 6.120 ;
+  SYMMETRY X Y R90 ;
+  PIN vnw
+  END vnw
+  PIN vpw
+  END vpw
+  PIN vdd
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER li1 ;
+        RECT 1.195 5.030 1.525 5.200 ;
+        RECT 1.275 5.200 1.445 6.035 ;
+        RECT 0.000 6.035 1.800 6.205 ;
+      LAYER met1 ;
+        RECT 0.000 5.985 1.800 6.255 ;
+    END
+  END vdd
+  PIN vss
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER li1 ;
+        RECT 0.000 -0.085 1.800 0.085 ;
+        RECT 1.275 0.085 1.445 0.920 ;
+        RECT 1.195 0.920 1.525 1.090 ;
+      LAYER met1 ;
+        RECT 0.000 -0.135 1.800 0.135 ;
+    END
+  END vss
+  PIN i
+    DIRECTION INPUT ;
+    USE SIGNAL ;
+    ANTENNAGATEAREA 0.145500 ;
+    PORT
+      LAYER li1 ;
+        RECT 0.655 1.980 0.985 2.150 ;
+        RECT 0.735 2.150 0.905 2.690 ;
+    END
+  END i
+  PIN zn
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER li1 ;
+        RECT 0.115 0.920 0.445 1.090 ;
+        RECT 0.195 1.090 0.365 5.030 ;
+        RECT 0.115 5.030 0.445 5.200 ;
+    END
+  END zn
+END SARADC_CELL_INVX0_ASSW
+
+END LIBRARY

@@ -1,0 +1,33 @@
+VERSION 5.7 ;
+DIVIDERCHAR "/" ;
+BUSBITCHARS "[]" ;
+
+MACRO SARADC_FILL1
+  CLASS BLOCK ;
+  FOREIGN SARADC_FILL1 ;
+  ORIGIN 0.000 0.000 ;
+  SIZE 0.360 BY 6.120 ;
+  SYMMETRY X Y R90 ;
+  PIN vdd
+    DIRECTION INOUT ;
+    USE POWER ;
+    PORT
+      LAYER li1 ;
+        RECT 0.000 6.035 0.360 6.205 ;
+      LAYER met1 ;
+        RECT 0.000 5.985 0.360 6.255 ;
+    END
+  END vdd
+  PIN vss
+    DIRECTION INOUT ;
+    USE GROUND ;
+    PORT
+      LAYER li1 ;
+        RECT 0.000 -0.085 0.360 0.085 ;
+      LAYER met1 ;
+        RECT 0.000 -0.135 0.360 0.135 ;
+    END
+  END vss
+END SARADC_FILL1
+
+END LIBRARY

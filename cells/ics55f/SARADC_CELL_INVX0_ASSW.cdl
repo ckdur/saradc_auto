@@ -1,0 +1,6 @@
+* SARADC_CELL_INVX0_ASSW (INVD0 of ics55f), cells/tools/build_cells.py
+.SUBCKT SARADC_CELL_INVX0_ASSW i vdd vss zn vnw vpw
+MU1_M_u2 zn i vss vpw nm1p2_svt_lp l=6.000e-08 w=2.000e-07
+MU1_M_u3 zn i vdd vnw pm1p2_svt_lp l=6.000e-08 w=3.000e-07
+.ENDS
+

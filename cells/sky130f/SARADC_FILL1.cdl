@@ -1,0 +1,4 @@
+* SARADC_FILL1 (FILL1 of sky130f), cells/tools/build_cells.py
+.SUBCKT SARADC_FILL1 vdd vss
+.ENDS
+

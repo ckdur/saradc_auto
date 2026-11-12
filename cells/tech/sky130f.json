@@ -1,0 +1,21 @@
+{
+  "comment": "sky130A float cells (stdcell-gen sky130f). GDS layer/datatype pairs; lef: names in the tech LEF (null: not in it).",
+  "tech": "sky130f",
+  "site": "obssite",
+  "boundary": [235, 4],
+  "diff": [65, 20],
+  "conductors": {
+    "poly": {"gds": [66, 20], "texts": [[66, 5], [66, 20]], "lef": null},
+    "cont": {"gds": [66, 44], "cut": true, "lef": "licon"},
+    "m1":   {"gds": [67, 20], "texts": [[67, 5], [67, 16]], "lef": "li1"},
+    "v1":   {"gds": [67, 44], "cut": true, "lef": "mcon"},
+    "m2":   {"gds": [68, 20], "texts": [[68, 5], [68, 16]], "lef": "met1"},
+    "v2":   {"gds": [68, 44], "cut": true, "lef": "via"},
+    "m3":   {"gds": [69, 20], "texts": [[69, 5], [69, 16]], "lef": "met2"}
+  },
+  "connect": [["poly", "cont"], ["sd", "cont"], ["cont", "m1"], ["m1", "v1"], ["v1", "m2"], ["m2", "v2"], ["v2", "m3"]],
+  "nopower_keep": [[64, 20], [93, 44], [94, 20], [235, 4]],
+  "nmos": ["sky130_fd_pr__nfet_01v8"],
+  "pmos": ["sky130_fd_pr__pfet_01v8"],
+  "techlef": "$PDK_ROOT/sky130A/libs.ref/sky130_fd_sc_hd/techlef/sky130_fd_sc_hd__nom.tlef"
+}

@@ -1,0 +1,17 @@
+i,input,signal
+vdd,inputOutput,supply
+vss,inputOutput,ground
+zn,output,signal
+z,output,signal
+a1,input,signal
+a2,input,signal
+a3,input,signal
+b,input,signal
+c,input,signal
+i0,input,signal
+i1,input,signal
+s,input,signal
+cp,input,signal
+d,input,signal
+q,output,signal
+cdn,input,signal

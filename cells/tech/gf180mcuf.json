@@ -1,0 +1,21 @@
+{
+  "comment": "gf180mcuD float cells, 3.3 V devices (stdcell-gen gf180mcuf). GDS layer/datatype pairs; lef: names in the tech LEF.",
+  "tech": "gf180mcuf",
+  "site": "obssite",
+  "boundary": [0, 0],
+  "diff": [22, 0],
+  "conductors": {
+    "poly": {"gds": [30, 0], "texts": [[30, 10], [30, 0]], "lef": "Poly2"},
+    "cont": {"gds": [33, 0], "cut": true, "lef": "CON"},
+    "m1":   {"gds": [34, 0], "texts": [[34, 10]], "lef": "Metal1"},
+    "v1":   {"gds": [35, 0], "cut": true, "lef": "Via1"},
+    "m2":   {"gds": [36, 0], "texts": [[36, 10]], "lef": "Metal2"},
+    "v2":   {"gds": [38, 0], "cut": true, "lef": "Via2"},
+    "m3":   {"gds": [42, 0], "texts": [[42, 10]], "lef": "Metal3"}
+  },
+  "connect": [["poly", "cont"], ["sd", "cont"], ["cont", "m1"], ["m1", "v1"], ["v1", "m2"], ["m2", "v2"], ["v2", "m3"]],
+  "nopower_keep": [[21, 0], [31, 0], [32, 0], [0, 0]],
+  "nmos": ["nfet_03v3"],
+  "pmos": ["pfet_03v3"],
+  "techlef": "$PDK_ROOT/gf180mcuD/libs.ref/gf180mcu_fd_sc_mcu7t5v0/techlef/gf180mcu_fd_sc_mcu7t5v0__nom.tlef"
+}

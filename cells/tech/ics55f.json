@@ -1,0 +1,21 @@
+{
+  "comment": "ICsprout 55 float cells, 1.2 V core SVT (stdcell-gen ics55f). GDS layer/datatype pairs; lef: names in the tech LEF.",
+  "tech": "ics55f",
+  "site": "obssite",
+  "boundary": [351, 12],
+  "diff": [2, 1],
+  "conductors": {
+    "poly": {"gds": [41, 1], "texts": [[41, 6], [41, 1]], "lef": "POLY"},
+    "cont": {"gds": [72, 1], "cut": true, "lef": "CT"},
+    "m1":   {"gds": [81, 1], "texts": [[81, 6]], "lef": "MET1"},
+    "v1":   {"gds": [91, 1], "cut": true, "lef": "VIA1"},
+    "m2":   {"gds": [82, 1], "texts": [[82, 6]], "lef": "MET2"},
+    "v2":   {"gds": [92, 1], "cut": true, "lef": "VIA2"},
+    "m3":   {"gds": [83, 1], "texts": [[83, 6]], "lef": "MET3"}
+  },
+  "connect": [["poly", "cont"], ["sd", "cont"], ["cont", "m1"], ["m1", "v1"], ["v1", "m2"], ["m2", "v2"], ["v2", "m3"]],
+  "nopower_keep": [[9, 1], [52, 1], [53, 1], [351, 12]],
+  "nmos": ["nm1p2_svt_lp"],
+  "pmos": ["pm1p2_svt_lp"],
+  "techlef": "$ICS55_PDK_DIR/ics55/libs.tech/librelane/N551P6M_ecos.lef"
+}

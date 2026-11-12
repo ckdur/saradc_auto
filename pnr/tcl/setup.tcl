@@ -54,12 +54,12 @@ foreach dir {outputs reports} {
 ####################################
 ## Cells declaration
 ####################################
-set BUFCells [list sg13g2f_BUFFD1]
-set INVCells [list sg13g2f_INVD1]
-set FILLERCells [list sg13g2f_FILL1 sg13g2f_FILL2 sg13g2f_FILL4 sg13g2f_FILL8]
-set TAPCells [list sg13g2f_TAPCELL]
+set BUFCells [list ${TECH}_BUFFD1]
+set INVCells [list ${TECH}_INVD1]
+set FILLERCells [list ${TECH}_FILL1 ${TECH}_FILL2 ${TECH}_FILL4 ${TECH}_FILL8]
+set TAPCells [list ${TECH}_TAPCELL]
 set DCAPCells [list ]
-set DIODECells [list sg13g2f_ANTENNA]
+set DIODECells [list ${TECH}_ANTENNA]
 
 ####################################
 ## Technology
@@ -69,7 +69,7 @@ set ::tech [[::ord::get_db] getTech]
 set ::block [$::chip getBlock]
 set dbu [$tech getDbUnitsPerMicron]
 
-set siteobj [[[::ord::get_db] findLib sg13g2f] findSite obssite]
+set siteobj [[[::ord::get_db] findLib $TECH] findSite obssite]
 set row   [expr 1.0*[$siteobj getHeight] / $dbu]
 set track [expr 1.0*[$siteobj getWidth] / $dbu]
 set pitch [expr 32*$row]

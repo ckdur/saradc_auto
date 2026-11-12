@@ -51,15 +51,15 @@ proc pos_stdcell_comp {x y path} {
     set upx [expr $upx + $up_sizex]
     set dwx [expr $dwx + $dw_sizex]
     if {[expr $upx+$up_sizex-$tapx] > 40 } {
-      saradc_place_inst -name tapcell_up_inst_$i -cell sg13g2f_TAPCELL -location "$upx $upy" -orientation MX -status LOCKED
-      saradc_place_inst -name tapcell_dw_inst_$i -cell sg13g2f_TAPCELL -location "$dwx $dwy" -orientation R0 -status LOCKED
+      saradc_place_inst -name tapcell_up_inst_$i -cell [lindex $::TAPCells 0] -location "$upx $upy" -orientation MX -status LOCKED
+      saradc_place_inst -name tapcell_dw_inst_$i -cell [lindex $::TAPCells 0] -location "$dwx $dwy" -orientation R0 -status LOCKED
       set upx [expr $upx + [::ord::dbu_to_microns [[[$::block findInst tapcell_up_inst_$i] getBBox] getDX]]]
       set dwx [expr $dwx + [::ord::dbu_to_microns [[[$::block findInst tapcell_dw_inst_$i] getBBox] getDX]]]
       set tapx $upx
     }
   }
-  saradc_place_inst -name tapcell_up_inst_$n -cell sg13g2f_TAPCELL -location "$upx $upy" -orientation MX -status LOCKED
-  saradc_place_inst -name tapcell_dw_inst_$n -cell sg13g2f_TAPCELL -location "$dwx $dwy" -orientation R0 -status LOCKED
+  saradc_place_inst -name tapcell_up_inst_$n -cell [lindex $::TAPCells 0] -location "$upx $upy" -orientation MX -status LOCKED
+  saradc_place_inst -name tapcell_dw_inst_$n -cell [lindex $::TAPCells 0] -location "$dwx $dwy" -orientation R0 -status LOCKED
   
   set compx [expr $upx - $x]
   set compy [expr 2*$row]

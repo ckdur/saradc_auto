@@ -18,7 +18,11 @@ The ADC is assembled from custom cells (`cells/$TECH`, `cells/sg13g2f` for the c
 - gf180mcuD exists only in the docker image factory.symbioticeda.com/asic-all:dev (the checks use it).
 - Liberty/verilog of the new ones: lctime in stdcell-gen (`make -f Makefile.<t> char_lib`, tt only),
   merged by cells/tools/merge_lib.py (`make -C cells TECH=<t>`); the SAR logic maps and simulates on them.
-- Still sg13g2-only: the RTL cell prefix `sg13g2f_`, the PnR (layer names, tracks, CDAC wiring), signoff decks, simulation models.
+- RTL: the `SARADC_CELL_*` wrappers map to the cells of TECH in `rtl/cell_def/<TECH>.v` (`CELL_DEF`,
+  settings.mk; sg13g2f.v is the old rtl/cell_def.v; INVD1 of stdcell-gen has its output on `z`, not `zn`).
+  The synthesis gives the same analog netlists in every technology. pnr/tcl uses `${TECH}_` for its cell
+  lists, tie cells and site; the legacy procedures it sources take the tap cell from `TAPCells`.
+- Still sg13g2-only: the PnR (layer names, tracks, CDAC wiring), signoff decks, simulation models.
 
 ## Number of bits (`NBITS`)
 - `NBITS` (settings.mk, default 5; `make ... NBITS=8` or the environment) reaches every stage: the

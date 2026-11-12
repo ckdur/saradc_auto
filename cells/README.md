@@ -58,5 +58,7 @@ make -C cells TECH=sky130f check                        # DRC/LVS of the ADC cel
 
 The libraries load in OpenSTA and yosys; the SAR logic (`rtl/sar_logic_wreset.v`) maps onto each
 of them, and its gate-level simulation with `<TECH>.v` gives the same testbench waveforms as the
-RTL (after the reset). Not done yet for the new technologies: the flow itself (the RTL cell prefix,
-PnR layers, tracks and the CDAC wiring are still sg13g2).
+RTL (after the reset). The RTL wrappers (`SARADC_CELL_*`) map to these cells in
+`rtl/cell_def/<TECH>.v`, and the synthesis (`make -C syn all hier TECH=<t>`) gives the same analog
+netlists as sg13g2f. Not done yet for the new technologies: the PnR (layers, tracks and the CDAC
+wiring are still sg13g2), signoff and simulation.

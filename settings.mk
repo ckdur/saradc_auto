@@ -4,6 +4,8 @@ ROOT_DIR?=$(abspath .)
 # Technology: the float standard cells and the ADC cells are in cells/$(TECH) (cells/README.md)
 TECH?=sg13g2f
 CELLS_DIR?=$(ROOT_DIR)/cells/$(TECH)
+# The SARADC_CELL_* wrappers mapped to the standard cells of TECH
+CELL_DEF?=$(ROOT_DIR)/rtl/cell_def/$(TECH).v
 export TECH CELLS_DIR
 
 X=566.44
@@ -31,7 +33,7 @@ SYN_SRC?=$(ROOT_DIR)/rtl/cap.v \
 $(ROOT_DIR)/rtl/cdac_dummy.v \
 $(ROOT_DIR)/rtl/cdac_unit.v \
 $(ROOT_DIR)/rtl/cdac.v \
-$(ROOT_DIR)/rtl/cell_def.v \
+$(CELL_DEF) \
 $(ROOT_DIR)/rtl/comp.v \
 $(ROOT_DIR)/rtl/saradc_analog.v \
 $(ROOT_DIR)/rtl/sw.v \
@@ -45,10 +47,10 @@ CDAC_SRC?=$(ROOT_DIR)/rtl/cap.v \
 $(ROOT_DIR)/rtl/cdac_dummy.v \
 $(ROOT_DIR)/rtl/cdac_unit.v \
 $(ROOT_DIR)/rtl/cdac.v \
-$(ROOT_DIR)/rtl/cell_def.v \
+$(CELL_DEF) \
 $(ROOT_DIR)/rtl/sw.v \
 $(ROOT_DIR)/rtl/hier/cdac_half.v
-HIER_SRC?=$(ROOT_DIR)/rtl/cell_def.v \
+HIER_SRC?=$(CELL_DEF) \
 $(ROOT_DIR)/rtl/comp.v \
 $(ROOT_DIR)/rtl/sw.v \
 $(ROOT_DIR)/rtl/sar_logic_buf.v \

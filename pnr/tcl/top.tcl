@@ -93,8 +93,8 @@ add_global_connection -net AVDD -pin_pattern {nothinghere} -power
 set_voltage_domain -region ANALOG -power AVDD -ground VSS -secondary_power VDD
 set_voltage_domain -power VDD -ground VSS -secondary_power AVDD
 
-insert_tiecells "sg13g2f_TIEL/zn" -prefix "TIE_ZERO_"
-insert_tiecells "sg13g2f_TIEH/z" -prefix "TIE_ONE_"
+insert_tiecells "${TECH}_TIEL/zn" -prefix "TIE_ZERO_"
+insert_tiecells "${TECH}_TIEH/z" -prefix "TIE_ONE_"
 
 set die_width $X
 set fo [open FPlanFinal.size w]

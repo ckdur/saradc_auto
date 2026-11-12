@@ -36,7 +36,13 @@ all build check:
 else
 all: build
 
-build: $(CELLS_DIR)/$(TECH).gds $(CELLS_DIR)/$(TECH).tech.lef
+build: $(CELLS_DIR)/$(TECH).gds $(CELLS_DIR)/$(TECH).tech.lef $(CELLS_DIR)/$(TECH).lib
+
+# The liberty and verilog models, from the per-cell liberty files of stdcell-gen
+# (make -f Makefile.$(TECH) char_lib PYTHON3=<venv>/bin/python there)
+$(CELLS_DIR)/$(TECH).lib: $(CELLS_DIR)/$(TECH).gds $(TOOLS)/merge_lib.py $(wildcard $(STD_CELLS:%=$(STDCELL_TMP)/$(TECH)_%.lib))
+	mkdir -p $(CELLS_DIR)
+	python3 $(TOOLS)/merge_lib.py $(TECH) $(STDCELL_TMP) $(CELLS_DIR) $(CELLS_DIR)/$(TECH).lef $(STD_CELLS)
 
 $(CELLS_DIR)/$(TECH).gds: $(TECH_JSON) $(TOOLS)/build_cells.py $(STD_CELLS:%=$(STDCELL_TMP)/$(TECH)_%.gds)
 	klayout -b -r $(TOOLS)/build_cells.py -rd tech=$(TECH_JSON) -rd src=$(STDCELL_TMP) -rd out=$(CELLS_DIR) \

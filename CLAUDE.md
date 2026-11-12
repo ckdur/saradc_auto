@@ -16,8 +16,9 @@ The ADC is assembled from custom cells (`cells/$TECH`, `cells/sg13g2f` for the c
   -> FILLTIE2, FILL1 -> FILL1/FILL1_NOPOWER; LEFs written from the layout). `make -C cells TECH=<t>
   check`: DRC clean and LVS match (ics55: translated DRC deck in icsprout55-pdk, no LVS deck yet).
 - gf180mcuD exists only in the docker image factory.symbioticeda.com/asic-all:dev (the checks use it).
-- Still sg13g2-only: the liberty/verilog models (no characterization for the new ones), the RTL cell
-  prefix `sg13g2f_`, the PnR (layer names, tracks, CDAC wiring), signoff decks, simulation models.
+- Liberty/verilog of the new ones: lctime in stdcell-gen (`make -f Makefile.<t> char_lib`, tt only),
+  merged by cells/tools/merge_lib.py (`make -C cells TECH=<t>`); the SAR logic maps and simulates on them.
+- Still sg13g2-only: the RTL cell prefix `sg13g2f_`, the PnR (layer names, tracks, CDAC wiring), signoff decks, simulation models.
 
 ## Number of bits (`NBITS`)
 - `NBITS` (settings.mk, default 5; `make ... NBITS=8` or the environment) reaches every stage: the

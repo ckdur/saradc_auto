@@ -5,6 +5,10 @@
 ##############################################################################
 set TOP $env(TOP)
 set PNR_DIR $env(PNR_DIR)
+# outputs/, reports/ for sg13g2f; outputs_<TECH>, reports_<TECH> for the others (TECH_SFX, settings.mk)
+set TECH_SFX [expr {[info exists env(TECH_SFX)] ? $env(TECH_SFX) : ""}]
+set PNR_OUT $PNR_DIR/outputs$TECH_SFX
+set PNR_REP $PNR_DIR/reports$TECH_SFX
 set ROOT_DIR $env(ROOT_DIR)
 set LEGACY_TCL $ROOT_DIR/pnr_legacy/tcl
 
@@ -13,14 +17,14 @@ set LEGACY_TCL $ROOT_DIR/pnr_legacy/tcl
 ###############################################################
 source $ROOT_DIR/cells/settings.tcl
 
-# Macros made by this flow (LEF and CDL in outputs/)
+# Macros made by this flow (LEF and CDL in $PNR_OUT)
 set MACROS {}
 if {[info exists env(MACROS)]} {
   set MACROS $env(MACROS)
 }
 foreach macro $MACROS {
-  lappend LEFS $PNR_DIR/outputs/$macro.lef
-  lappend CDLS $PNR_DIR/outputs/$macro.cdl
+  lappend LEFS $PNR_OUT/$macro.lef
+  lappend CDLS $PNR_OUT/$macro.cdl
 }
 
 # We assume the first LIB is the standard cell lib
@@ -45,11 +49,7 @@ foreach netlist $env(NETLISTS) {
 }
 link_design ${TOP}
 
-foreach dir {outputs reports} {
-  if {![file exists $dir]} {
-    file mkdir $dir
-  }
-}
+file mkdir $PNR_OUT $PNR_REP
 
 ####################################
 ## Cells declaration

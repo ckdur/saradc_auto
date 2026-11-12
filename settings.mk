@@ -6,7 +6,14 @@ TECH?=sg13g2f
 CELLS_DIR?=$(ROOT_DIR)/cells/$(TECH)
 # The SARADC_CELL_* wrappers mapped to the standard cells of TECH
 CELL_DEF?=$(ROOT_DIR)/rtl/cell_def/$(TECH).v
-export TECH CELLS_DIR
+# Results per technology: sg13g2f (the chip) keeps <stage>/outputs and <stage>/reports; the others
+# use <stage>/outputs_<TECH> and <stage>/reports_<TECH> (like signoff/outputs_legacy), so a run of
+# one technology never overwrites another (the parent chip reads pnr/outputs and signoff/outputs)
+TECH_SFX=$(if $(filter sg13g2f,$(TECH)),,_$(TECH))
+TECHS=sg13g2f sky130f gf180mcuf ics55f
+# The logs of sg13g2f, without the ones of the other technologies (for its `make clean`)
+SG13G2F_LOGS=$(filter-out $(foreach t,$(filter-out sg13g2f,$(TECHS)),%_$(t).log %_$(t).log.%),$(wildcard *.log*))
+export TECH CELLS_DIR TECH_SFX
 
 X=566.44
 Y=361.08
@@ -20,7 +27,7 @@ Y=361.08
 NBITS?=5
 export NBITS
 # The stamp changes when NBITS does, so that the synthesis (and everything after it) is redone
-NBITS_STAMP:=$(ROOT_DIR)/.nbits
+NBITS_STAMP:=$(ROOT_DIR)/.nbits$(TECH_SFX)
 $(shell [ "$$(cat $(NBITS_STAMP) 2>/dev/null)" = "$(NBITS)" ] || echo $(NBITS) > $(NBITS_STAMP))
 
 #######################################################

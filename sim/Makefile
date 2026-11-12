@@ -24,7 +24,10 @@ XYCE_RUN_COMMAND=Xyce -plugin $(PDK_ROOT)/$(PDK)/libs.tech/xyce/plugins/libXyce_
 
 TB_SRC=$(ROOT_DIR)/rtl/sar_logic_tb.v
 VER_SIM_SRC=$(ROOT_DIR)/rtl/$(DIGTOP).v
-SYN_SIM_SRC=$(ROOT_DIR)/syn/outputs/$(DIGTOP)_net.v
+# The gate-level simulation of the synthesized SAR logic, per technology (outputs_<TECH> except
+# sg13g2f, settings.mk); the analog simulations are sg13g2 only
+SYN_SIM_SRC=$(ROOT_DIR)/syn/outputs$(TECH_SFX)/$(DIGTOP)_net.v
+SIM_OUT=$(SIM_DIR)/outputs$(TECH_SFX)
 
 ana: $(SIM_DIR)/outputs/saradc_tb.csv
 
@@ -42,7 +45,7 @@ rcx: $(SIM_DIR)/outputs/saradc_tb_rcx.csv
 
 sim: $(SIM_DIR)/outputs/sar_logic_tb.vcd
 
-syn: $(SIM_DIR)/outputs/sar_logic_tb_syn.vcd
+syn: $(SIM_OUT)/sar_logic_tb_syn.vcd
 
 
 # Simulation commands
@@ -99,10 +102,10 @@ $(SIM_DIR)/outputs/sar_logic_tb.vcd: $(TB_SRC) $(VER_SIM_SRC)
 	iverilog -D DIGTOP=$(DIGTOP) -s sar_logic_tb -o $(SIM_DIR)/outputs/$(TOP).o $(TB_SRC) $(VER_SIM_SRC)
 	cd $(SIM_DIR)/outputs && $(SIM_DIR)/outputs/$(TOP).o
 
-$(SIM_DIR)/outputs/sar_logic_tb_syn.vcd: $(TB_SRC) $(SYN_SIM_SRC)
-	mkdir -p $(SIM_DIR)/outputs
-	iverilog -D DIGTOP=$(DIGTOP) -D SYNTHESIS=1 -m sar_logic_tb -o $(SIM_DIR)/outputs/$(TOP)_syn.o $(TB_SRC) $(SYN_SIM_SRC) $(CELLS_DIR)/$(TECH).v
-	cd $(SIM_DIR)/outputs && $(SIM_DIR)/outputs/$(TOP)_syn.o
+$(SIM_OUT)/sar_logic_tb_syn.vcd: $(TB_SRC) $(SYN_SIM_SRC)
+	mkdir -p $(SIM_OUT)
+	iverilog -D DIGTOP=$(DIGTOP) -D SYNTHESIS=1 -m sar_logic_tb -o $(SIM_OUT)/$(TOP)_syn.o $(TB_SRC) $(SYN_SIM_SRC) $(CELLS_DIR)/$(TECH).v
+	cd $(SIM_OUT) && $(SIM_OUT)/$(TOP)_syn.o
 
 clean:
 	rm -rfv *.log* *.ic* *.tr* *.su* *.mt* *.st* *.pa* outputs
@@ -110,8 +113,8 @@ clean:
 viewsim: $(SIM_DIR)/outputs/sar_logic_tb.vcd
 	gtkwave $(SIM_DIR)/outputs/sar_logic_tb.vcd
 
-viewsyn: $(SIM_DIR)/outputs/sar_logic_tb_syn.vcd
-	gtkwave $(SIM_DIR)/outputs/sar_logic_tb_syn.vcd
+viewsyn: $(SIM_OUT)/sar_logic_tb_syn.vcd
+	gtkwave $(SIM_OUT)/sar_logic_tb_syn.vcd
 
 question:
 	mkdir -p $(SIM_DIR)/question/

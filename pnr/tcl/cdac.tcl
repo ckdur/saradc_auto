@@ -201,28 +201,28 @@ set_global_routing_layer_adjustment Metal1-Metal5 0.05
 set_routing_layers -signal Metal1-Metal5 -clock Metal1-Metal5
 set_macro_extension 0
 pin_access
-if { [catch {global_route -allow_congestion -congestion_iterations 50 -verbose -congestion_report_file $PNR_DIR/reports/${TOP}_congestion.rpt} errmsg] } {
+if { [catch {global_route -allow_congestion -congestion_iterations 50 -verbose -congestion_report_file $PNR_REP/${TOP}_congestion.rpt} errmsg] } {
   puts stderr $errmsg
   puts "Global routing failed with congestions, but is ignored on purpose"
 }
 set_thread_count 10
-detailed_route -output_drc $PNR_DIR/reports/${TOP}.drc \
-  -output_maze $PNR_DIR/reports/${TOP}_maze.log \
+detailed_route -output_drc $PNR_REP/${TOP}.drc \
+  -output_maze $PNR_REP/${TOP}_maze.log \
   -droute_end_iter 64 -verbose 1 -drc_report_iter_step 5
 
 #################################################
 ## Write out final files
 #################################################
 saradc_signal_nets {VDD VSS}
-write_db $PNR_DIR/outputs/${TOP}.odb
-write_verilog $PNR_DIR/outputs/${TOP}.v
-write_verilog -include_pwr_gnd $PNR_DIR/outputs/${TOP}_pg.v
-write_def $PNR_DIR/outputs/${TOP}.def
-write_abstract_lef $PNR_DIR/outputs/${TOP}.lef
-write_cdl -masters ${CDLS} $PNR_DIR/outputs/${TOP}.cdl
+write_db $PNR_OUT/${TOP}.odb
+write_verilog $PNR_OUT/${TOP}.v
+write_verilog -include_pwr_gnd $PNR_OUT/${TOP}_pg.v
+write_def $PNR_OUT/${TOP}.def
+write_abstract_lef $PNR_OUT/${TOP}.lef
+write_cdl -masters ${CDLS} $PNR_OUT/${TOP}.cdl
 
 # Geometry for the top (top.tcl)
-set fo [open $PNR_DIR/outputs/${TOP}.geom.tcl w]
+set fo [open $PNR_OUT/${TOP}.geom.tcl w]
 puts $fo "# Written by cdac.tcl"
 foreach var {W H mgn posx_cdac posy_cdac cdacx cdacy nx ny nrow busy rowy} {
   puts $fo "set cdac_$var [format %.6g [set $var]]"

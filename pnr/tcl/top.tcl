@@ -8,7 +8,7 @@
 ## stripes and the supply stripes of the macros are continued from their edges.
 ##############################################################################
 source $env(PNR_DIR)/tcl/setup.tcl
-source $PNR_DIR/outputs/SARADC_CDAC.geom.tcl
+source $PNR_OUT/SARADC_CDAC.geom.tcl
 set SYN_DIR $env(SYN_DIR)
 
 puts "SDC reading: ${TOP}.sdc.tcl"
@@ -97,7 +97,7 @@ insert_tiecells "${TECH}_TIEL/zn" -prefix "TIE_ZERO_"
 insert_tiecells "${TECH}_TIEH/z" -prefix "TIE_ONE_"
 
 set die_width $X
-set fo [open FPlanFinal.size w]
+set fo [open FPlanFinal$TECH_SFX.size w]
 puts $fo "Floorplan size: \{X Y\} = \{$X $Y\}"
 close $fo
 
@@ -227,7 +227,7 @@ global_connect
 pos_stdcell_box [expr $cmp_x+$compx+$row] [expr $posy_sw-2*$row] [expr $dig_to_ana-($cmp_x+$compx+$row)-3*$margin] analog/buflogic
 pos_stdcell_box [expr $dig_to_ana+$row+2*$margin] [expr $posy_sw-10*$row] [expr ($X-$dig_to_ana)-3*$margin-$row] digital
 
-write_def $PNR_DIR/outputs/${TOP}.pre.def
+write_def $PNR_OUT/${TOP}.pre.def
 
 ###################################
 ## Placement
@@ -306,7 +306,7 @@ if { [catch {check_placement -verbose} errmsg] } {
   puts stderr $errmsg
   puts "Check placement failed, but is ignored on purpose"
 }
-report_cts -out_file $PNR_DIR/reports/cts.rpt
+report_cts -out_file $PNR_REP/cts.rpt
 
 ###############################################
 # Global routing
@@ -314,7 +314,7 @@ report_cts -out_file $PNR_DIR/reports/cts.rpt
 set_propagated_clock [all_clocks]
 set_macro_extension 0
 pin_access
-if { [catch {global_route -allow_congestion -congestion_iterations 50 -verbose -congestion_report_file $PNR_DIR/reports/congestion.rpt} errmsg] } {
+if { [catch {global_route -allow_congestion -congestion_iterations 50 -verbose -congestion_report_file $PNR_REP/congestion.rpt} errmsg] } {
   puts stderr $errmsg
   puts "Global routing failed with congestions, but is ignored on purpose"
 }
@@ -329,7 +329,7 @@ if { [catch {repair_design -verbose} errmsg] } {
 }
 global_route -start_incremental -allow_congestion
 detailed_placement {*}[saradc_dpl_args]
-global_route -end_incremental -allow_congestion -congestion_report_file $PNR_DIR/reports/${TOP}_congestion_post_repair_design.rpt
+global_route -end_incremental -allow_congestion -congestion_report_file $PNR_REP/${TOP}_congestion_post_repair_design.rpt
 
 if { [catch {repair_timing -verbose -setup_margin 0 -repair_tns 100} errmsg] } {
   puts stderr $errmsg
@@ -337,7 +337,7 @@ if { [catch {repair_timing -verbose -setup_margin 0 -repair_tns 100} errmsg] } {
 }
 global_route -start_incremental -allow_congestion
 detailed_placement {*}[saradc_dpl_args]
-global_route -end_incremental -allow_congestion -congestion_report_file $PNR_DIR/reports/${TOP}_congestion_post_repair_timing.rpt
+global_route -end_incremental -allow_congestion -congestion_report_file $PNR_REP/${TOP}_congestion_post_repair_timing.rpt
 estimate_parasitics -global_routing
 
 ###############################################
@@ -359,17 +359,17 @@ global_connect
 # Detail routing
 ###############################################
 set_thread_count 10
-detailed_route -output_drc $PNR_DIR/reports/${TOP}.drc \
-  -output_maze $PNR_DIR/reports/${TOP}_maze.log \
+detailed_route -output_drc $PNR_REP/${TOP}.drc \
+  -output_maze $PNR_REP/${TOP}_maze.log \
   -droute_end_iter 64 -verbose 1 -drc_report_iter_step 5
 
 #################################################
 ## Write out final files
 #################################################
 saradc_signal_nets {AVDD VDD VSS}
-write_db $PNR_DIR/outputs/${TOP}.odb
-write_verilog $PNR_DIR/outputs/${TOP}.v
-write_verilog -include_pwr_gnd $PNR_DIR/outputs/${TOP}_pg.v
-write_def $PNR_DIR/outputs/${TOP}.def
-write_abstract_lef $PNR_DIR/outputs/${TOP}.lef
-write_cdl -masters ${CDLS} $PNR_DIR/outputs/${TOP}.cdl
+write_db $PNR_OUT/${TOP}.odb
+write_verilog $PNR_OUT/${TOP}.v
+write_verilog -include_pwr_gnd $PNR_OUT/${TOP}_pg.v
+write_def $PNR_OUT/${TOP}.def
+write_abstract_lef $PNR_OUT/${TOP}.lef
+write_cdl -masters ${CDLS} $PNR_OUT/${TOP}.cdl

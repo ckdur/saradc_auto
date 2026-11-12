@@ -2,6 +2,10 @@ ROOT_DIR=$(abspath ../)
 SHELL=/bin/bash
 .SHELLFLAGS=-o pipefail -c
 include $(ROOT_DIR)/settings.mk
+# The flat flow of the tapeout: sg13g2f only (the other technologies use pnr/)
+ifneq ($(TECH),sg13g2f)
+$(error pnr_legacy is the sg13g2f tapeout flow; use pnr/ for TECH=$(TECH))
+endif
 PNR_DIR=$(abspath .)
 SYN_DIR=$(abspath ../syn)
 RTL_DIR=$(abspath ../rtl)

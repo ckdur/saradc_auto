@@ -6,25 +6,27 @@ SIGN_DIR=$(abspath .)
 #   make -C signoff PNR_DIR=../pnr_legacy OUT_DIR=outputs_legacy REP_DIR=reports_legacy
 # A macro of the hierarchical PnR: make -C signoff TOP=SARADC_CDAC
 PNR_DIR?=../pnr
-OUT_DIR?=outputs
-REP_DIR?=reports
+# outputs/, reports/ for sg13g2f; outputs_<TECH>, reports_<TECH> for the others (settings.mk)
+OUT_DIR?=outputs$(TECH_SFX)
+REP_DIR?=reports$(TECH_SFX)
 override PNR_DIR:=$(abspath $(PNR_DIR))
 override OUT_DIR:=$(abspath $(OUT_DIR))
 override REP_DIR:=$(abspath $(REP_DIR))
+PNR_OUT=$(PNR_DIR)/outputs$(TECH_SFX)
 # Macros the top instantiates (LEF, GDS and CDL from their own PnR/signoff)
 MACROS?=$(if $(filter SARADC,$(TOP)),$(if $(findstring pnr_legacy,$(PNR_DIR)),,SARADC_CDAC),)
-MACRO_LEFS=$(MACROS:%=$(PNR_DIR)/outputs/%.lef)
+MACRO_LEFS=$(MACROS:%=$(PNR_OUT)/%.lef)
 MACRO_GDSS=$(MACROS:%=$(OUT_DIR)/%.gds)
-MACRO_CDLS=$(MACROS:%=$(PNR_DIR)/outputs/%.cdl)
+MACRO_CDLS=$(MACROS:%=$(PNR_OUT)/%.cdl)
 
 GDS=$(OUT_DIR)/$(TOP).gds
-DEF=$(PNR_DIR)/outputs/$(TOP).def
+DEF=$(PNR_OUT)/$(TOP).def
 
 GDSPRE=$(OUT_DIR)/$(TOP).pre.gds
-DEFPRE=$(PNR_DIR)/outputs/$(TOP).pre.def
+DEFPRE=$(PNR_OUT)/$(TOP).pre.def
 
 SPICE=$(OUT_DIR)/$(TOP).spice
-NET=$(PNR_DIR)/outputs/$(TOP).cdl
+NET=$(PNR_OUT)/$(TOP).cdl
 
 PDK_ROOT?=/opt/ext/OpenPDKs/IHP-Open-PDK
 PDK?=ihp-sg13g2
@@ -47,7 +49,7 @@ gdspre: $(GDSPRE)
 
 gds: $(GDS)
 
-$(OUT_DIR)/%.gds: $(PNR_DIR)/outputs/%.def
+$(OUT_DIR)/%.gds: $(PNR_OUT)/%.def
 	mkdir -p $(OUT_DIR)
 	mkdir -p $(REP_DIR)
 ifeq ($(PDK_FILE),none)

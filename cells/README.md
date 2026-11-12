@@ -60,5 +60,6 @@ The libraries load in OpenSTA and yosys; the SAR logic (`rtl/sar_logic_wreset.v`
 of them, and its gate-level simulation with `<TECH>.v` gives the same testbench waveforms as the
 RTL (after the reset). The RTL wrappers (`SARADC_CELL_*`) map to these cells in
 `rtl/cell_def/<TECH>.v`, and the synthesis (`make -C syn all hier TECH=<t>`) gives the same analog
-netlists as sg13g2f. Not done yet for the new technologies: the PnR (layers, tracks and the CDAC
+netlists as sg13g2f, in `syn/outputs_<TECH>` (each technology has its own `outputs_<TECH>` and
+`reports_<TECH>` in syn, pnr and signoff; sg13g2f keeps `outputs`). Not done yet for the new technologies: the PnR (layers, tracks and the CDAC
 wiring are still sg13g2), signoff and simulation.

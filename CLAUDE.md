@@ -22,6 +22,11 @@ The ADC is assembled from custom cells (`cells/$TECH`, `cells/sg13g2f` for the c
   settings.mk; sg13g2f.v is the old rtl/cell_def.v; INVD1 of stdcell-gen has its output on `z`, not `zn`).
   The synthesis gives the same analog netlists in every technology. pnr/tcl uses `${TECH}_` for its cell
   lists, tie cells and site; the legacy procedures it sources take the tap cell from `TAPCells`.
+- Results per technology: sg13g2f keeps `<stage>/outputs` and `reports` (the parent chip reads
+  pnr/outputs, signoff/outputs); the others write `outputs_<TECH>`, `reports_<TECH>`, logs
+  `*_<TECH>.log` (`TECH_SFX` in settings.mk; syn, pnr, signoff and the gate-level sim of sim/), with
+  their own NBITS stamp `.nbits_<TECH>`. `make clean` removes only the results of TECH.
+  pnr_legacy/ (the tapeout flow) refuses any TECH other than sg13g2f.
 - Still sg13g2-only: the PnR (layer names, tracks, CDAC wiring), signoff decks, simulation models.
 
 ## Number of bits (`NBITS`)

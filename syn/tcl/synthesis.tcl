@@ -4,9 +4,11 @@
 set TOP $env(DIGTOP)
 set SYN_DIR $env(SYN_DIR)
 set SYN_SRC $env(SYN_DIG_SRC)
-set LOGS $env(SYN_DIR)/logs
-set REPORTS $env(SYN_DIR)/reports
-set OUTPUTS $env(SYN_DIR)/outputs
+# outputs/, reports/ for sg13g2f; outputs_<TECH>, reports_<TECH> for the others (TECH_SFX, settings.mk)
+set TECH_SFX [expr {[info exists env(TECH_SFX)] ? $env(TECH_SFX) : ""}]
+set LOGS $env(SYN_DIR)/logs$TECH_SFX
+set REPORTS $env(SYN_DIR)/reports$TECH_SFX
+set OUTPUTS $env(SYN_DIR)/outputs$TECH_SFX
 set ROOT_DIR $env(ROOT_DIR)
 
 set SYN_EFF high

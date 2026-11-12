@@ -8,6 +8,7 @@ logFile
 *.st*
 *.pa*
 outputs/
+outputs_*/
 outputs/*
 question/*
 question.zip
